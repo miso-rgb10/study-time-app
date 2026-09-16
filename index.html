@@ -218,7 +218,12 @@ button:hover {
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
@@ -232,7 +237,33 @@ button:hover {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  console.log("Firebase接続OK！");
+  window.addRecord = async function () {
+
+    const subject = document.getElementById("subject").value;
+    const minutes = Number(document.getElementById("minutes").value);
+
+    if (!minutes || minutes <= 0) {
+      alert("勉強時間を入力してください！");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "studySessions"), {
+        studentId: "MwgOSaEOm5zbvFdTE1Ko",
+        subject: subject,
+        minutes: minutes,
+        date: serverTimestamp()
+      });
+
+      document.getElementById("minutes").value = "";
+
+      alert("Firebaseに保存しました！");
+
+    } catch (error) {
+      console.error(error);
+      alert("保存できませんでした。Firestoreのルールを確認してください。");
+    }
+  };
 </script>
 
 </body>
