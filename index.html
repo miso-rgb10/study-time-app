@@ -162,11 +162,12 @@ button:hover {
 </header>
 
 <div class="container">
+
   <div class="card">
-  <h2>🔐 ログイン</h2>
-  <button onclick="loginWithGoogle()">Googleでログイン</button>
-  <p id="loginStatus">ログインしていません</p>
-</div>
+    <h2>🔐 ログイン</h2>
+    <button onclick="loginWithGoogle()">Googleでログイン</button>
+    <p id="loginStatus">ログインしていません</p>
+  </div>
 
   <div class="card">
     <h2>📝 勉強時間を記録</h2>
@@ -222,72 +223,108 @@ button:hover {
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-  import {
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+import {
   getAuth,
   GoogleAuthProvider,
   signInWithRedirect
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
-    authDomain: "studytime11111-9c9f1.firebaseapp.com",
-    projectId: "studytime11111-9c9f1",
-    storageBucket: "studytime11111-9c9f1.firebasestorage.app",
-    messagingSenderId: "292063415300",
-    appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
-  };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  
+const firebaseConfig = {
+  apiKey: "AIzaSyCJH9rm_ygt9xbuIDdDZuAXEgy_Rsdlxz4",
+  authDomain: "studytime11111-9c9f1.firebaseapp.com",
+  projectId: "studytime11111-9c9f1",
+  storageBucket: "studytime11111-9c9f1.firebasestorage.app",
+  messagingSenderId: "292063415300",
+  appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 
 const auth = getAuth(app);
+
 const provider = new GoogleAuthProvider();
 
-  window.loginWithGoogle = async function () {
+
+window.loginWithGoogle = async function () {
+
   try {
+
     await signInWithRedirect(auth, provider);
+
   } catch (error) {
+
     console.error(error);
+
     alert("Googleログインに失敗しました。");
+
   }
+
 };
-  
 
-  window.addRecord = async function () {
 
-    const subject = document.getElementById("subject").value;
-    const minutes = Number(document.getElementById("minutes").value);
+window.addRecord = async function () {
 
-    if (!minutes || minutes <= 0) {
-      alert("勉強時間を入力してください！");
-      return;
-    }
+  const subject =
+    document.getElementById("subject").value;
 
-    try {
-      await addDoc(collection(db, "studySessions"), {
+  const minutes =
+    Number(document.getElementById("minutes").value);
+
+
+  if (!minutes || minutes <= 0) {
+
+    alert("勉強時間を入力してください！");
+
+    return;
+
+  }
+
+
+  try {
+
+    await addDoc(
+      collection(db, "studySessions"),
+      {
         studentId: "MwgOSaEOm5zbvFdTE1Ko",
         subject: subject,
         minutes: minutes,
         date: serverTimestamp()
-      });
+      }
+    );
 
-      document.getElementById("minutes").value = "";
 
-      alert("Firebaseに保存しました！");
+    document.getElementById("minutes").value = "";
 
-    } catch (error) {
-      console.error(error);
-      alert("保存できませんでした。Firestoreのルールを確認してください。");
-    }
-  };
+    alert("Firebaseに保存しました！");
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "保存できませんでした。Firestoreのルールを確認してください。"
+    );
+
+  }
+
+};
+
 </script>
 
 </body>
