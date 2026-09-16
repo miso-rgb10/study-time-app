@@ -228,11 +228,14 @@ button:hover {
     collection,
     addDoc,
     serverTimestamp
+    doc,
+    setDoc
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
   import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect
+  signInWithRedirect,
+    onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -251,19 +254,25 @@ button:hover {
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-window.loginWithGoogle = async function () {
+  window.loginWithGoogle = async function () {
   try {
     await signInWithRedirect(auth, provider);
-
-    document.getElementById("loginStatus").textContent =
-      "ログイン中：" + result.user.displayName;
-
-    alert("Googleログインしました！");
   } catch (error) {
     console.error(error);
     alert("Googleログインに失敗しました。");
   }
 };
+  onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    document.getElementById("loginStatus").textContent =
+      "ログイン中：" + user.displayName;
+
+    await setDoc(doc(db, "students", user.uid), {
+      nickname: user.displayName,
+      classId: "z6bxH8sYFjcdfENFXn3K"
+    });
+  }
+});
 
   window.addRecord = async function () {
 
