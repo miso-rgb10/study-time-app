@@ -163,16 +163,24 @@ button:hover {
 
 <div class="container">
 
+  <!-- ログイン -->
   <div class="card">
     <h2>🔐 ログイン</h2>
-    <button onclick="loginWithGoogle()">Googleでログイン</button>
+
+    <button id="loginButton" onclick="loginWithGoogle()">
+      Googleでログイン
+    </button>
+
     <p id="loginStatus">ログインしていません</p>
   </div>
 
+
+  <!-- 勉強時間を記録 -->
   <div class="card">
     <h2>📝 勉強時間を記録</h2>
 
     <label>科目</label>
+
     <select id="subject">
       <option value="国語">国語</option>
       <option value="数学">数学</option>
@@ -183,63 +191,107 @@ button:hover {
     </select>
 
     <label>勉強時間（分）</label>
-    <input type="number" id="minutes" min="1" placeholder="例：60">
 
-    <button onclick="addRecord()">記録する</button>
+    <input
+      type="number"
+      id="minutes"
+      min="1"
+      placeholder="例：60"
+    >
+
+    <button onclick="addRecord()">
+      記録する
+    </button>
   </div>
 
+
+  <!-- 今日のまとめ -->
   <div class="card">
     <h2>📊 今日のまとめ</h2>
 
     <div class="summary">
+
       <div class="summary-box">
         今日の時間
-        <div class="summary-number" id="todayTotal">0分</div>
+        <div class="summary-number" id="todayTotal">
+          0分
+        </div>
       </div>
 
       <div class="summary-box">
         記録数
-        <div class="summary-number" id="recordCount">0</div>
+        <div class="summary-number" id="recordCount">
+          0
+        </div>
       </div>
+
     </div>
   </div>
 
+
+  <!-- 科目別 -->
   <div class="card">
     <h2>📈 科目別</h2>
     <div id="subjectChart"></div>
   </div>
 
+
+  <!-- 記録一覧 -->
   <div class="card">
     <h2>📅 記録一覧</h2>
     <div id="records"></div>
   </div>
 
+
+  <!-- 削除 -->
   <div class="card">
-    <button onclick="clearAll()" style="background:#777;">
+
+    <button
+      onclick="clearAll()"
+      style="background:#777;"
+    >
       すべての記録を削除
     </button>
+
   </div>
 
 </div>
 
+
 <script type="module">
 
+/* =========================
+   Firebase
+========================= */
+
 import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
 import {
   getFirestore,
   collection,
   addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  serverTimestamp,
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc
+}
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged
+}
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+
+/* =========================
+   Firebase設定
+========================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyCJH9rm_ygt9xbuIDdDZuAXEgy_Rsdlxz4",
@@ -260,6 +312,17 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 
+/* =========================
+   クラスID
+========================= */
+
+const CLASS_ID = "z6bxH8sYFjcdfENFXn3K";
+
+
+/* =========================
+   Googleログイン
+========================= */
+
 window.loginWithGoogle = async function () {
 
   try {
@@ -270,25 +333,164 @@ window.loginWithGoogle = async function () {
 
     console.error(error);
 
-    alert("Googleログインに失敗しました。");
+    alert(
+      "Googleログインに失敗しました。\n" +
+      error.code + "\n" +
+      error.message
+    );
 
   }
 
 };
 
 
+/* =========================
+   ログイン状態を確認
+========================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+  const status =
+    document.getElementById("loginStatus");
+
+  const button =
+    document.getElementById("loginButton");
+
+
+  if (user) {
+
+    /* Googleアカウントの名前 */
+
+    const name =
+      user.displayName || "Googleユーザー";
+
+
+    status.textContent =
+      "👤 " + name + " さんでログイン中";
+
+
+    button.textContent =
+      "ログイン済み";
+
+
+    button.disabled = true;
+
+
+    /* =========================
+       studentsに自動登録
+    ========================= */
+
+    try {
+
+      await setDoc(
+        doc(db, "students", user.uid),
+        {
+          nickname: name,
+          classId: CLASS_ID
+        },
+        {
+          merge: true
+        }
+      );
+
+      console.log(
+        "studentsに登録しました:",
+        name
+      );
+
+    } catch (error) {
+
+      console.error(
+        "students登録エラー:",
+        error
+      );
+
+    }
+
+  } else {
+
+    status.textContent =
+      "ログインしていません";
+
+    button.textContent =
+      "Googleでログイン";
+
+    button.disabled = false;
+
+  }
+
+});
+
+
+/* =========================
+   リダイレクト後のログイン確認
+========================= */
+
+try {
+
+  const result =
+    await getRedirectResult(auth);
+
+  if (result && result.user) {
+
+    console.log(
+      "Googleログイン成功:",
+      result.user.displayName
+    );
+
+  }
+
+} catch (error) {
+
+  console.error(
+    "ログイン結果エラー:",
+    error
+  );
+
+  alert(
+    "Googleログインでエラーが発生しました。\n" +
+    error.code + "\n" +
+    error.message
+  );
+
+}
+
+
+/* =========================
+   勉強時間を記録
+========================= */
+
 window.addRecord = async function () {
+
+  const user = auth.currentUser;
+
+
+  if (!user) {
+
+    alert(
+      "先にGoogleログインしてください！"
+    );
+
+    return;
+
+  }
+
 
   const subject =
     document.getElementById("subject").value;
 
+
   const minutes =
-    Number(document.getElementById("minutes").value);
+    Number(
+      document.getElementById("minutes").value
+    );
 
 
   if (!minutes || minutes <= 0) {
 
-    alert("勉強時間を入力してください！");
+    alert(
+      "勉強時間を入力してください！"
+    );
 
     return;
 
@@ -300,17 +502,29 @@ window.addRecord = async function () {
     await addDoc(
       collection(db, "studySessions"),
       {
-        studentId: "MwgOSaEOm5zbvFdTE1Ko",
+
+        /* GoogleアカウントのUID */
+
+        studentId: user.uid,
+
         subject: subject,
+
         minutes: minutes,
+
         date: serverTimestamp()
+
       }
     );
 
 
-    document.getElementById("minutes").value = "";
+    document.getElementById(
+      "minutes"
+    ).value = "";
 
-    alert("Firebaseに保存しました！");
+
+    alert(
+      "Firebaseに保存しました！"
+    );
 
 
   } catch (error) {
@@ -318,7 +532,80 @@ window.addRecord = async function () {
     console.error(error);
 
     alert(
-      "保存できませんでした。Firestoreのルールを確認してください。"
+      "保存できませんでした。\n" +
+      error.code + "\n" +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================
+   記録削除
+========================= */
+
+window.clearAll = async function () {
+
+  const user = auth.currentUser;
+
+
+  if (!user) {
+
+    alert(
+      "先にGoogleログインしてください！"
+    );
+
+    return;
+
+  }
+
+
+  const ok =
+    confirm(
+      "自分の記録をすべて削除しますか？"
+    );
+
+
+  if (!ok) return;
+
+
+  try {
+
+    const snapshot =
+      await getDocs(
+        collection(db, "studySessions")
+      );
+
+
+    for (const item of snapshot.docs) {
+
+      const data = item.data();
+
+
+      if (
+        data.studentId === user.uid
+      ) {
+
+        await deleteDoc(item.ref);
+
+      }
+
+    }
+
+
+    alert(
+      "記録を削除しました！"
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "削除できませんでした。"
     );
 
   }
