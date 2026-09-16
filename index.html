@@ -216,196 +216,23 @@ button:hover {
 
 </div>
 
-<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-let records = JSON.parse(localStorage.getItem("studyRecords")) || [];
-
-function saveRecords() {
-  localStorage.setItem("studyRecords", JSON.stringify(records));
-}
-
-function addRecord() {
-
-  const subject = document.getElementById("subject").value;
-  const minutes = Number(document.getElementById("minutes").value);
-
-  if (!minutes || minutes <= 0) {
-    alert("勉強時間を入力してください！");
-    return;
-  }
-
-  const now = new Date();
-
-  const record = {
-    id: Date.now(),
-    subject: subject,
-    minutes: minutes,
-    date: now.toISOString()
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
+    authDomain: "studytime11111-9c9f1.firebaseapp.com",
+    projectId: "studytime11111-9c9f1",
+    storageBucket: "studytime11111-9c9f1.firebasestorage.app",
+    messagingSenderId: "292063415300",
+    appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
   };
 
-  records.push(record);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  saveRecords();
-
-  document.getElementById("minutes").value = "";
-
-  updateScreen();
-}
-
-function deleteRecord(id) {
-
-  records = records.filter(record => record.id !== id);
-
-  saveRecords();
-
-  updateScreen();
-}
-
-function clearAll() {
-
-  if (!confirm("本当にすべての記録を削除しますか？")) {
-    return;
-  }
-
-  records = [];
-
-  saveRecords();
-
-  updateScreen();
-}
-
-function formatDate(dateString) {
-
-  const date = new Date(dateString);
-
-  return date.getFullYear() + "/" +
-    (date.getMonth() + 1) + "/" +
-    date.getDate();
-}
-
-function isToday(dateString) {
-
-  const date = new Date(dateString);
-  const today = new Date();
-
-  return date.getFullYear() === today.getFullYear() &&
-         date.getMonth() === today.getMonth() &&
-         date.getDate() === today.getDate();
-}
-
-function updateScreen() {
-
-  updateSummary();
-  updateChart();
-  updateRecords();
-
-}
-
-function updateSummary() {
-
-  const todayRecords = records.filter(record => isToday(record.date));
-
-  const total = todayRecords.reduce(
-    (sum, record) => sum + record.minutes,
-    0
-  );
-
-  document.getElementById("todayTotal").textContent =
-    total + "分";
-
-  document.getElementById("recordCount").textContent =
-    todayRecords.length;
-}
-
-function updateChart() {
-
-  const chart = document.getElementById("subjectChart");
-
-  const subjects = {};
-
-  records.forEach(record => {
-
-    if (!subjects[record.subject]) {
-      subjects[record.subject] = 0;
-    }
-
-    subjects[record.subject] += record.minutes;
-
-  });
-
-  const values = Object.values(subjects);
-
-  if (values.length === 0) {
-    chart.innerHTML =
-      '<div class="empty">まだ記録がありません</div>';
-    return;
-  }
-
-  const max = Math.max(...values);
-
-  chart.innerHTML = "";
-
-  Object.keys(subjects).forEach(subject => {
-
-    const minutes = subjects[subject];
-
-    const percent = (minutes / max) * 100;
-
-    chart.innerHTML += `
-      <div class="bar">
-        <div class="bar-label">
-          <span>${subject}</span>
-          <span>${minutes}分</span>
-        </div>
-
-        <div class="bar-background">
-          <div class="bar-fill"
-               style="width:${percent}%"></div>
-        </div>
-      </div>
-    `;
-
-  });
-}
-
-function updateRecords() {
-
-  const area = document.getElementById("records");
-
-  if (records.length === 0) {
-    area.innerHTML =
-      '<div class="empty">まだ記録がありません</div>';
-    return;
-  }
-
-  const sorted = [...records].reverse();
-
-  area.innerHTML = "";
-
-  sorted.forEach(record => {
-
-    area.innerHTML += `
-      <div class="record">
-
-        <div>
-          <strong>${record.subject}</strong><br>
-          ${record.minutes}分
-          <small>・${formatDate(record.date)}</small>
-        </div>
-
-        <button class="delete"
-          onclick="deleteRecord(${record.id})">
-          削除
-        </button>
-
-      </div>
-    `;
-
-  });
-}
-
-updateScreen();
-
+  console.log("Firebase接続OK！");
 </script>
 
 </body>
