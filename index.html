@@ -1,69 +1,412 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>勉強時間管理</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学習時間アプリ</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  background: #f5f7fb;
+  color: #222;
+}
+
+header {
+  background: #4f7cff;
+  color: white;
+  padding: 24px 16px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+button {
+  border: none;
+  background: #4f7cff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.summary-box {
+  background: #f0f4ff;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+}
+
+.summary-number {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.record {
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.record:last-child {
+  border-bottom: none;
+}
+
+.delete {
+  width: auto;
+  padding: 7px 10px;
+  background: #e74c3c;
+  font-size: 13px;
+  margin: 0;
+}
+
+.bar {
+  margin: 12px 0;
+}
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.bar-background {
+  height: 18px;
+  background: #e9edf5;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #4f7cff;
+  border-radius: 10px;
+}
+
+.empty {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+@media (max-width: 500px) {
+  header h1 {
+    font-size: 22px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .summary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+</style>
 </head>
 
 <body>
-  <h1>📚 勉強時間管理</h1>
 
-  <h2 id="timer">00:00:00</h2>
+<header>
+  <h1>📚 学習時間</h1>
+  <p>毎日の勉強を記録しよう！</p>
+</header>
 
-  <button id="start">勉強開始</button>
-  <button id="stop">一時停止</button>
-  <button id="reset">リセット</button>
+<div class="container">
 
-  <p id="status">現在：勉強していません</p>
+  <div class="card">
+    <h2>📝 勉強時間を記録</h2>
 
-  <script>
-    let startTime = null;
-    let elapsedTime = 0;
-    let timer = null;
+    <label>科目</label>
+    <select id="subject">
+      <option value="国語">国語</option>
+      <option value="数学">数学</option>
+      <option value="英語">英語</option>
+      <option value="理科">理科</option>
+      <option value="社会">社会</option>
+      <option value="その他">その他</option>
+    </select>
 
-    function updateTimer() {
-      const total = elapsedTime + (Date.now() - startTime);
+    <label>勉強時間（分）</label>
+    <input type="number" id="minutes" min="1" placeholder="例：60">
 
-      const h = Math.floor(total / 3600000);
-      const m = Math.floor((total % 3600000) / 60000);
-      const s = Math.floor((total % 60000) / 1000);
+    <button onclick="addRecord()">記録する</button>
+  </div>
 
-      document.getElementById("timer").textContent =
-        String(h).padStart(2, "0") + ":" +
-        String(m).padStart(2, "0") + ":" +
-        String(s).padStart(2, "0");
+  <div class="card">
+    <h2>📊 今日のまとめ</h2>
+
+    <div class="summary">
+      <div class="summary-box">
+        今日の時間
+        <div class="summary-number" id="todayTotal">0分</div>
+      </div>
+
+      <div class="summary-box">
+        記録数
+        <div class="summary-number" id="recordCount">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📈 科目別</h2>
+    <div id="subjectChart"></div>
+  </div>
+
+  <div class="card">
+    <h2>📅 記録一覧</h2>
+    <div id="records"></div>
+  </div>
+
+  <div class="card">
+    <button onclick="clearAll()" style="background:#777;">
+      すべての記録を削除
+    </button>
+  </div>
+
+</div>
+
+<script>
+
+let records = JSON.parse(localStorage.getItem("studyRecords")) || [];
+
+function saveRecords() {
+  localStorage.setItem("studyRecords", JSON.stringify(records));
+}
+
+function addRecord() {
+
+  const subject = document.getElementById("subject").value;
+  const minutes = Number(document.getElementById("minutes").value);
+
+  if (!minutes || minutes <= 0) {
+    alert("勉強時間を入力してください！");
+    return;
+  }
+
+  const now = new Date();
+
+  const record = {
+    id: Date.now(),
+    subject: subject,
+    minutes: minutes,
+    date: now.toISOString()
+  };
+
+  records.push(record);
+
+  saveRecords();
+
+  document.getElementById("minutes").value = "";
+
+  updateScreen();
+}
+
+function deleteRecord(id) {
+
+  records = records.filter(record => record.id !== id);
+
+  saveRecords();
+
+  updateScreen();
+}
+
+function clearAll() {
+
+  if (!confirm("本当にすべての記録を削除しますか？")) {
+    return;
+  }
+
+  records = [];
+
+  saveRecords();
+
+  updateScreen();
+}
+
+function formatDate(dateString) {
+
+  const date = new Date(dateString);
+
+  return date.getFullYear() + "/" +
+    (date.getMonth() + 1) + "/" +
+    date.getDate();
+}
+
+function isToday(dateString) {
+
+  const date = new Date(dateString);
+  const today = new Date();
+
+  return date.getFullYear() === today.getFullYear() &&
+         date.getMonth() === today.getMonth() &&
+         date.getDate() === today.getDate();
+}
+
+function updateScreen() {
+
+  updateSummary();
+  updateChart();
+  updateRecords();
+
+}
+
+function updateSummary() {
+
+  const todayRecords = records.filter(record => isToday(record.date));
+
+  const total = todayRecords.reduce(
+    (sum, record) => sum + record.minutes,
+    0
+  );
+
+  document.getElementById("todayTotal").textContent =
+    total + "分";
+
+  document.getElementById("recordCount").textContent =
+    todayRecords.length;
+}
+
+function updateChart() {
+
+  const chart = document.getElementById("subjectChart");
+
+  const subjects = {};
+
+  records.forEach(record => {
+
+    if (!subjects[record.subject]) {
+      subjects[record.subject] = 0;
     }
 
-    document.getElementById("start").onclick = () => {
-      if (timer !== null) return;
+    subjects[record.subject] += record.minutes;
 
-      startTime = Date.now();
-      timer = setInterval(updateTimer, 1000);
-      document.getElementById("status").textContent = "現在：勉強中 📖";
-    };
+  });
 
-    document.getElementById("stop").onclick = () => {
-      if (timer === null) return;
+  const values = Object.values(subjects);
 
-      elapsedTime += Date.now() - startTime;
-      clearInterval(timer);
-      timer = null;
-      updateTimer();
+  if (values.length === 0) {
+    chart.innerHTML =
+      '<div class="empty">まだ記録がありません</div>';
+    return;
+  }
 
-      document.getElementById("status").textContent = "現在：一時停止中";
-    };
+  const max = Math.max(...values);
 
-    document.getElementById("reset").onclick = () => {
-      clearInterval(timer);
+  chart.innerHTML = "";
 
-      timer = null;
-      startTime = null;
-      elapsedTime = 0;
+  Object.keys(subjects).forEach(subject => {
 
-      document.getElementById("timer").textContent = "00:00:00";
-      document.getElementById("status").textContent = "現在：勉強していません";
-    };
-  </script>
+    const minutes = subjects[subject];
+
+    const percent = (minutes / max) * 100;
+
+    chart.innerHTML += `
+      <div class="bar">
+        <div class="bar-label">
+          <span>${subject}</span>
+          <span>${minutes}分</span>
+        </div>
+
+        <div class="bar-background">
+          <div class="bar-fill"
+               style="width:${percent}%"></div>
+        </div>
+      </div>
+    `;
+
+  });
+}
+
+function updateRecords() {
+
+  const area = document.getElementById("records");
+
+  if (records.length === 0) {
+    area.innerHTML =
+      '<div class="empty">まだ記録がありません</div>';
+    return;
+  }
+
+  const sorted = [...records].reverse();
+
+  area.innerHTML = "";
+
+  sorted.forEach(record => {
+
+    area.innerHTML += `
+      <div class="record">
+
+        <div>
+          <strong>${record.subject}</strong><br>
+          ${record.minutes}分
+          <small>・${formatDate(record.date)}</small>
+        </div>
+
+        <button class="delete"
+          onclick="deleteRecord(${record.id})">
+          削除
+        </button>
+
+      </div>
+    `;
+
+  });
+}
+
+updateScreen();
+
+</script>
+
 </body>
 </html>
