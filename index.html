@@ -162,6 +162,11 @@ button:hover {
 </header>
 
 <div class="container">
+  <div class="card">
+  <h2>🔐 ログイン</h2>
+  <button onclick="loginWithGoogle()">Googleでログイン</button>
+  <p id="loginStatus">ログインしていません</p>
+</div>
 
   <div class="card">
     <h2>📝 勉強時間を記録</h2>
@@ -224,6 +229,11 @@ button:hover {
     addDoc,
     serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
@@ -236,6 +246,24 @@ button:hover {
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+window.loginWithGoogle = async function () {
+  try {
+    const result = await signInWithPopup(auth, provider);
+
+    document.getElementById("loginStatus").textContent =
+      "ログイン中：" + result.user.displayName;
+
+    alert("Googleログインしました！");
+  } catch (error) {
+    console.error(error);
+    alert("Googleログインに失敗しました。");
+  }
+};
 
   window.addRecord = async function () {
 
