@@ -262,17 +262,7 @@ const provider = new GoogleAuthProvider();
     alert("Googleログインに失敗しました。");
   }
 };
-  onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    document.getElementById("loginStatus").textContent =
-      "ログイン中：" + user.displayName;
-
-    await setDoc(doc(db, "students", user.uid), {
-      nickname: user.displayName,
-      classId: "z6bxH8sYFjcdfENFXn3K"
-    });
-  }
-});
+  
 
   window.addRecord = async function () {
 
