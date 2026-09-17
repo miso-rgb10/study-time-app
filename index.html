@@ -2054,6 +2054,41 @@ function updateRankings() {
     type
   ) {
 
+    const user =
+      auth.currentUser;
+
+
+    /*
+      上位3人＋自分だけ表示
+      自分が1〜3位なら重複しない
+    */
+
+    const displayRanking =
+      ranking.slice(0, 3);
+
+
+    if (user) {
+
+      const myIndex =
+        ranking.findIndex(
+          (student) =>
+            student.id === user.uid
+        );
+
+
+      if (
+        myIndex >= 3
+      ) {
+
+        displayRanking.push(
+          ranking[myIndex]
+        );
+
+      }
+
+    }
+
+
     let html = "";
 
 
@@ -2093,11 +2128,23 @@ function updateRankings() {
       "<tbody>";
 
 
-    ranking.forEach(
-      (student, index) => {
+    displayRanking.forEach(
+      (student) => {
+
+        /*
+          元ランキングの中での実際の順位を取得
+        */
+
+        const actualIndex =
+          ranking.findIndex(
+            (item) =>
+              item.id ===
+              student.id
+          );
+
 
         const rank =
-          index + 1;
+          actualIndex + 1;
 
 
         let medal = "";
@@ -2120,10 +2167,6 @@ function updateRankings() {
           medal = rank;
 
         }
-
-
-        const user =
-          auth.currentUser;
 
 
         const isMe =
@@ -2910,6 +2953,37 @@ function updateMvpRanking() {
     "回";
 
 
+  /*
+    MVPランキングも
+    上位3人＋自分だけ表示
+  */
+
+  const displayRanking =
+    ranking.slice(0, 3);
+
+
+  if (user) {
+
+    const myIndex =
+      ranking.findIndex(
+        (student) =>
+          student.id === user.uid
+      );
+
+
+    if (
+      myIndex >= 3
+    ) {
+
+      displayRanking.push(
+        ranking[myIndex]
+      );
+
+    }
+
+  }
+
+
   let html =
     '<table class="mvp-ranking-table">';
 
@@ -2925,11 +2999,19 @@ function updateMvpRanking() {
     "<tbody>";
 
 
-  ranking.forEach(
-    (student, index) => {
+  displayRanking.forEach(
+    (student) => {
+
+      const actualIndex =
+        ranking.findIndex(
+          (item) =>
+            item.id ===
+            student.id
+        );
+
 
       const rank =
-        index + 1;
+        actualIndex + 1;
 
 
       let medal =
