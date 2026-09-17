@@ -195,6 +195,92 @@ button:disabled {
   background: #e74c3c;
 }
 
+
+/* =========================
+   ランキング
+========================= */
+
+.ranking-card {
+  background: linear-gradient(
+    135deg,
+    #fff9e6,
+    #ffffff
+  );
+}
+
+.ranking-title {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.ranking-subtitle {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: -8px;
+  margin-bottom: 15px;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ranking-table th {
+  background: #f0f4ff;
+  padding: 10px 6px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.ranking-table td {
+  padding: 12px 6px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.ranking-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ranking-number {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.ranking-name {
+  text-align: left !important;
+  font-weight: bold;
+}
+
+.ranking-minutes {
+  font-weight: bold;
+}
+
+.ranking-section {
+  margin-bottom: 25px;
+}
+
+.ranking-section:last-child {
+  margin-bottom: 0;
+}
+
+.ranking-divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 25px 0;
+}
+
+.my-rank {
+  background: #f0f4ff;
+}
+
+.ranking-loading {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
 @media (max-width: 500px) {
 
   header h1 {
@@ -213,6 +299,15 @@ button:disabled {
     font-size: 34px;
   }
 
+  .ranking-table th,
+  .ranking-table td {
+    padding: 9px 4px;
+    font-size: 13px;
+  }
+
+  .ranking-number {
+    font-size: 18px;
+  }
 }
 </style>
 </head>
@@ -257,6 +352,27 @@ button:disabled {
 
 
   <!-- =========================
+       ランキング
+  ========================= -->
+
+  <div class="card ranking-card">
+
+    <h2 class="ranking-title">
+      🏆 クラス学習ランキング
+    </h2>
+
+    <div id="rankingContent">
+
+      <div class="ranking-loading">
+        ログインするとランキングが表示されます
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
        リアルタイムタイマー
   ========================= -->
 
@@ -269,19 +385,13 @@ button:disabled {
     <select id="timerSubject">
 
       <option value="国語">国語</option>
-
       <option value="数学">数学</option>
-
       <option value="英語">英語</option>
-
       <option value="理科">理科</option>
-
       <option value="社会">社会</option>
-
       <option value="その他">その他</option>
 
     </select>
-
 
     <div class="timer-box">
 
@@ -334,19 +444,13 @@ button:disabled {
     <select id="subject">
 
       <option value="国語">国語</option>
-
       <option value="数学">数学</option>
-
       <option value="英語">英語</option>
-
       <option value="理科">理科</option>
-
       <option value="社会">社会</option>
-
       <option value="その他">その他</option>
 
     </select>
-
 
     <label>勉強時間（分）</label>
 
@@ -356,7 +460,6 @@ button:disabled {
       min="1"
       placeholder="例：60"
     >
-
 
     <button onclick="addRecord()">
       記録する
@@ -387,7 +490,6 @@ button:disabled {
         </div>
 
       </div>
-
 
       <div class="summary-box">
 
@@ -552,6 +654,19 @@ let timerStartTime = null;
 
 
 /* =========================
+   ランキング用変数
+========================= */
+
+let classStudents = [];
+
+let classSessions = [];
+
+let rankingStudentsUnsubscribe = null;
+
+let rankingSessionsUnsubscribe = null;
+
+
+/* =========================
    Googleログイン
 ========================= */
 
@@ -591,38 +706,30 @@ function updateTimerDisplay() {
     return;
   }
 
-
   const elapsed =
     Math.floor(
       (Date.now() - timerStartTime) / 1000
     );
 
-
   const hours =
     Math.floor(elapsed / 3600);
-
 
   const minutes =
     Math.floor(
       (elapsed % 3600) / 60
     );
 
-
   const seconds =
     elapsed % 60;
-
 
   const displayHours =
     String(hours).padStart(2, "0");
 
-
   const displayMinutes =
     String(minutes).padStart(2, "0");
 
-
   const displaySeconds =
     String(seconds).padStart(2, "0");
-
 
   document.getElementById(
     "timerDisplay"
@@ -646,7 +753,6 @@ window.startTimer =
     const user =
       auth.currentUser;
 
-
     if (!user) {
 
       alert(
@@ -657,31 +763,25 @@ window.startTimer =
 
     }
 
-
     timerStartTime =
       Date.now();
-
 
     document.getElementById(
       "timerStatus"
     ).textContent =
       "🔴 勉強中";
 
-
     document.getElementById(
       "startTimerButton"
     ).style.display =
       "none";
-
 
     document.getElementById(
       "stopTimerButton"
     ).style.display =
       "block";
 
-
     updateTimerDisplay();
-
 
     timerInterval =
       setInterval(
@@ -703,10 +803,8 @@ window.stopTimer =
       return;
     }
 
-
     const user =
       auth.currentUser;
-
 
     if (!user) {
 
@@ -718,31 +816,25 @@ window.stopTimer =
 
     }
 
-
     const elapsedSeconds =
       Math.floor(
         (Date.now() - timerStartTime) / 1000
       );
 
-
     clearInterval(
       timerInterval
     );
 
-
     timerInterval =
       null;
 
-
     timerStartTime =
       null;
-
 
     document.getElementById(
       "timerStatus"
     ).textContent =
       "保存中...";
-
 
     const minutes =
       Math.max(
@@ -752,12 +844,10 @@ window.stopTimer =
         )
       );
 
-
     const subject =
       document.getElementById(
         "timerSubject"
       ).value;
-
 
     try {
 
@@ -786,12 +876,10 @@ window.stopTimer =
 
       );
 
-
       document.getElementById(
         "timerDisplay"
       ).textContent =
         "00:00:00";
-
 
       document.getElementById(
         "timerStatus"
@@ -800,13 +888,11 @@ window.stopTimer =
         minutes +
         "分を記録しました";
 
-
     } catch (error) {
 
       console.error(
         error
       );
-
 
       alert(
         "タイマー記録を保存できませんでした。\n" +
@@ -815,7 +901,6 @@ window.stopTimer =
         error.message
       );
 
-
       document.getElementById(
         "timerStatus"
       ).textContent =
@@ -823,12 +908,10 @@ window.stopTimer =
 
     }
 
-
     document.getElementById(
       "startTimerButton"
     ).style.display =
       "block";
-
 
     document.getElementById(
       "stopTimerButton"
@@ -839,7 +922,7 @@ window.stopTimer =
 
 
 /* =========================
-   記録を表示
+   自分の記録を表示
 ========================= */
 
 function showRecords(snapshot) {
@@ -849,33 +932,27 @@ function showRecords(snapshot) {
       "records"
     );
 
-
   const todayTotalElement =
     document.getElementById(
       "todayTotal"
     );
-
 
   const recordCountElement =
     document.getElementById(
       "recordCount"
     );
 
-
   const chartElement =
     document.getElementById(
       "subjectChart"
     );
 
-
   let records = [];
-
 
   snapshot.forEach((item) => {
 
     const data =
       item.data();
-
 
     records.push({
 
@@ -910,13 +987,11 @@ function showRecords(snapshot) {
         ? a.date.toDate().getTime()
         : 0;
 
-
     const timeB =
       b.date &&
       b.date.toDate
         ? b.date.toDate().getTime()
         : 0;
-
 
     return timeB - timeA;
 
@@ -930,10 +1005,8 @@ function showRecords(snapshot) {
   const now =
     new Date();
 
-
   let todayTotal =
     0;
-
 
   records.forEach((record) => {
 
@@ -941,15 +1014,11 @@ function showRecords(snapshot) {
       !record.date ||
       !record.date.toDate
     ) {
-
       return;
-
     }
-
 
     const date =
       record.date.toDate();
-
 
     if (
 
@@ -975,11 +1044,9 @@ function showRecords(snapshot) {
 
   });
 
-
   todayTotalElement.textContent =
     todayTotal +
     "分";
-
 
   recordCountElement.textContent =
     records.length;
@@ -992,19 +1059,13 @@ function showRecords(snapshot) {
   const subjects = {
 
     "国語": 0,
-
     "数学": 0,
-
     "英語": 0,
-
     "理科": 0,
-
     "社会": 0,
-
     "その他": 0
 
   };
-
 
   records.forEach((record) => {
 
@@ -1020,17 +1081,14 @@ function showRecords(snapshot) {
 
   });
 
-
   const maxMinutes =
     Math.max(
       ...Object.values(subjects),
       1
     );
 
-
   chartElement.innerHTML =
     "";
-
 
   Object.entries(subjects)
     .forEach(
@@ -1041,20 +1099,16 @@ function showRecords(snapshot) {
             "div"
           );
 
-
         bar.className =
           "bar";
-
 
         const label =
           document.createElement(
             "div"
           );
 
-
         label.className =
           "bar-label";
-
 
         label.innerHTML =
           "<span>" +
@@ -1064,26 +1118,21 @@ function showRecords(snapshot) {
           minutes +
           "分</span>";
 
-
         const background =
           document.createElement(
             "div"
           );
 
-
         background.className =
           "bar-background";
-
 
         const fill =
           document.createElement(
             "div"
           );
 
-
         fill.className =
           "bar-fill";
-
 
         fill.style.width =
           (
@@ -1093,21 +1142,17 @@ function showRecords(snapshot) {
           ) +
           "%";
 
-
         background.appendChild(
           fill
         );
-
 
         bar.appendChild(
           label
         );
 
-
         bar.appendChild(
           background
         );
-
 
         chartElement.appendChild(
           bar
@@ -1124,7 +1169,6 @@ function showRecords(snapshot) {
   recordsElement.innerHTML =
     "";
 
-
   if (
     records.length === 0
   ) {
@@ -1134,11 +1178,9 @@ function showRecords(snapshot) {
       'まだ記録がありません' +
       '</div>';
 
-
     return;
 
   }
-
 
   records.forEach((record) => {
 
@@ -1147,24 +1189,19 @@ function showRecords(snapshot) {
         "div"
       );
 
-
     recordElement.className =
       "record";
-
 
     const info =
       document.createElement(
         "div"
       );
 
-
     info.className =
       "record-info";
 
-
     let dateText =
       "日時不明";
-
 
     if (
       record.date &&
@@ -1174,14 +1211,12 @@ function showRecords(snapshot) {
       const date =
         record.date.toDate();
 
-
       dateText =
         date.toLocaleString(
           "ja-JP"
         );
 
     }
-
 
     info.innerHTML =
       "<strong>" +
@@ -1193,20 +1228,16 @@ function showRecords(snapshot) {
       dateText +
       "</div>";
 
-
     const deleteButton =
       document.createElement(
         "button"
       );
 
-
     deleteButton.textContent =
       "削除";
 
-
     deleteButton.className =
       "delete";
-
 
     deleteButton.onclick =
       () =>
@@ -1214,16 +1245,13 @@ function showRecords(snapshot) {
           record.id
         );
 
-
     recordElement.appendChild(
       info
     );
 
-
     recordElement.appendChild(
       deleteButton
     );
-
 
     recordsElement.appendChild(
       recordElement
@@ -1257,7 +1285,6 @@ function listenToMyRecords(user) {
 
     );
 
-
   onSnapshot(
 
     recordsQuery,
@@ -1280,6 +1307,540 @@ function listenToMyRecords(user) {
     }
 
   );
+
+}
+
+
+/* =========================
+   ランキング表示
+========================= */
+
+function updateRankings() {
+
+  const rankingContent =
+    document.getElementById(
+      "rankingContent"
+    );
+
+  if (
+    classStudents.length === 0
+  ) {
+
+    rankingContent.innerHTML =
+      '<div class="ranking-loading">' +
+      'クラスのメンバーがまだ登録されていません' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  /* =========================
+     今日の日付
+  ========================= */
+
+  const now =
+    new Date();
+
+  const todayYear =
+    now.getFullYear();
+
+  const todayMonth =
+    now.getMonth();
+
+  const todayDate =
+    now.getDate();
+
+
+  /* =========================
+     学生ごとの集計
+  ========================= */
+
+  const rankingData =
+    classStudents.map(
+      (student) => {
+
+        let todayMinutes = 0;
+
+        let allTimeMinutes = 0;
+
+
+        classSessions.forEach(
+          (session) => {
+
+            if (
+              session.studentId !==
+              student.id
+            ) {
+              return;
+            }
+
+
+            const minutes =
+              Number(
+                session.minutes
+              ) || 0;
+
+
+            allTimeMinutes +=
+              minutes;
+
+
+            if (
+              session.date &&
+              session.date.toDate
+            ) {
+
+              const date =
+                session.date.toDate();
+
+
+              if (
+
+                date.getFullYear() ===
+                  todayYear
+
+                &&
+
+                date.getMonth() ===
+                  todayMonth
+
+                &&
+
+                date.getDate() ===
+                  todayDate
+
+              ) {
+
+                todayMinutes +=
+                  minutes;
+
+              }
+
+            }
+
+          }
+        );
+
+
+        return {
+
+          id:
+            student.id,
+
+          name:
+            student.nickname ||
+            "名前未設定",
+
+          todayMinutes:
+            todayMinutes,
+
+          allTimeMinutes:
+            allTimeMinutes
+
+        };
+
+      }
+    );
+
+
+  /* =========================
+     今日ランキング
+  ========================= */
+
+  const todayRanking =
+    [...rankingData].sort(
+      (a, b) =>
+        b.todayMinutes -
+        a.todayMinutes
+    );
+
+
+  /* =========================
+     全期間ランキング
+  ========================= */
+
+  const allTimeRanking =
+    [...rankingData].sort(
+      (a, b) =>
+        b.allTimeMinutes -
+        a.allTimeMinutes
+    );
+
+
+  /* =========================
+     ランキングHTML
+  ========================= */
+
+  function createRankingTable(
+    ranking,
+    type
+  ) {
+
+    let html = "";
+
+    html +=
+      '<table class="ranking-table">';
+
+    html +=
+      "<thead>";
+
+    html +=
+      "<tr>";
+
+    html +=
+      "<th>順位</th>";
+
+    html +=
+      "<th>名前</th>";
+
+    html +=
+      "<th>勉強時間</th>";
+
+    html +=
+      "</tr>";
+
+    html +=
+      "</thead>";
+
+    html +=
+      "<tbody>";
+
+
+    ranking.forEach(
+      (student, index) => {
+
+        const rank =
+          index + 1;
+
+
+        let medal =
+          "";
+
+        if (rank === 1) {
+          medal = "🥇";
+        } else if (rank === 2) {
+          medal = "🥈";
+        } else if (rank === 3) {
+          medal = "🥉";
+        } else {
+          medal = rank;
+        }
+
+
+        const user =
+          auth.currentUser;
+
+
+        const isMe =
+          user &&
+          user.uid ===
+            student.id;
+
+
+        const rowClass =
+          isMe
+            ? "my-rank"
+            : "";
+
+
+        const minutes =
+          type === "today"
+            ? student.todayMinutes
+            : student.allTimeMinutes;
+
+
+        html +=
+          '<tr class="' +
+          rowClass +
+          '">';
+
+
+        html +=
+          '<td class="ranking-number">' +
+          medal +
+          "</td>";
+
+
+        html +=
+          '<td class="ranking-name">';
+
+
+        if (isMe) {
+
+          html +=
+            "👤 " +
+            escapeHtml(
+              student.name
+            ) +
+            "（自分）";
+
+        } else {
+
+          html +=
+            escapeHtml(
+              student.name
+            );
+
+        }
+
+
+        html +=
+          "</td>";
+
+
+        html +=
+          '<td class="ranking-minutes">' +
+          minutes +
+          "分</td>";
+
+
+        html +=
+          "</tr>";
+
+      }
+    );
+
+
+    html +=
+      "</tbody>";
+
+    html +=
+      "</table>";
+
+
+    return html;
+
+  }
+
+
+  rankingContent.innerHTML =
+
+    '<div class="ranking-section">' +
+
+      '<h3>🏆 今日のランキング</h3>' +
+
+      '<p class="ranking-subtitle">' +
+      '今日の勉強時間' +
+      '</p>' +
+
+      createRankingTable(
+        todayRanking,
+        "today"
+      ) +
+
+    "</div>" +
+
+    '<hr class="ranking-divider">' +
+
+    '<div class="ranking-section">' +
+
+      '<h3>🌟 全期間ランキング</h3>' +
+
+      '<p class="ranking-subtitle">' +
+      'これまでに記録した合計時間' +
+      '</p>' +
+
+      createRankingTable(
+        allTimeRanking,
+        "all"
+      ) +
+
+    "</div>";
+
+}
+
+
+/* =========================
+   HTMLエスケープ
+========================= */
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+
+}
+
+
+/* =========================
+   クラスランキングを
+   リアルタイム取得
+========================= */
+
+function listenToRankings(user) {
+
+  /* =========================
+     クラスメンバー
+  ========================= */
+
+  const studentsQuery =
+    query(
+
+      collection(
+        db,
+        "students"
+      ),
+
+      where(
+        "classId",
+        "==",
+        CLASS_ID
+      )
+
+    );
+
+
+  if (
+    rankingStudentsUnsubscribe
+  ) {
+
+    rankingStudentsUnsubscribe();
+
+  }
+
+
+  rankingStudentsUnsubscribe =
+    onSnapshot(
+
+      studentsQuery,
+
+      (snapshot) => {
+
+        classStudents =
+          [];
+
+
+        snapshot.forEach(
+          (item) => {
+
+            const data =
+              item.data();
+
+
+            classStudents.push({
+
+              id:
+                item.id,
+
+              nickname:
+                data.nickname ||
+                "名前未設定",
+
+              classId:
+                data.classId
+
+            });
+
+          }
+        );
+
+
+        updateRankings();
+
+      },
+
+      (error) => {
+
+        console.error(
+          "クラスメンバー取得エラー:",
+          error
+        );
+
+
+        document.getElementById(
+          "rankingContent"
+        ).innerHTML =
+          '<div class="ranking-loading">' +
+          'ランキングを読み込めませんでした' +
+          '</div>';
+
+      }
+
+    );
+
+
+  /* =========================
+     勉強記録
+  ========================= */
+
+  if (
+    rankingSessionsUnsubscribe
+  ) {
+
+    rankingSessionsUnsubscribe();
+
+  }
+
+
+  rankingSessionsUnsubscribe =
+    onSnapshot(
+
+      collection(
+        db,
+        "studySessions"
+      ),
+
+      (snapshot) => {
+
+        classSessions =
+          [];
+
+
+        snapshot.forEach(
+          (item) => {
+
+            const data =
+              item.data();
+
+
+            classSessions.push({
+
+              id:
+                item.id,
+
+              studentId:
+                data.studentId,
+
+              subject:
+                data.subject,
+
+              minutes:
+                Number(
+                  data.minutes
+                ) || 0,
+
+              date:
+                data.date
+
+            });
+
+          }
+        );
+
+
+        updateRankings();
+
+      },
+
+      (error) => {
+
+        console.error(
+          "ランキング記録取得エラー:",
+          error
+        );
+
+      }
+
+    );
 
 }
 
@@ -1341,7 +1902,6 @@ onAuthStateChanged(
       document.getElementById(
         "loginStatus"
       );
-
 
     const button =
       document.getElementById(
@@ -1461,10 +2021,19 @@ onAuthStateChanged(
 
 
       /* =========================
-         自分の記録を読み込む
+         自分の記録
       ========================= */
 
       listenToMyRecords(
+        user
+      );
+
+
+      /* =========================
+         クラスランキング
+      ========================= */
+
+      listenToRankings(
         user
       );
 
@@ -1490,7 +2059,6 @@ try {
     "ログイン結果エラー:",
     error
   );
-
 
   alert(
     "Googleログインでエラーが発生しました。\n" +
@@ -1519,7 +2087,6 @@ window.addRecord =
         "先にGoogleログインしてください！"
       );
 
-
       return;
 
     }
@@ -1547,7 +2114,6 @@ window.addRecord =
       alert(
         "勉強時間を入力してください！"
       );
-
 
       return;
 
@@ -1630,7 +2196,6 @@ async function deleteRecord(
       "先にGoogleログインしてください！"
     );
 
-
     return;
 
   }
@@ -1694,7 +2259,6 @@ window.clearAll =
       alert(
         "先にGoogleログインしてください！"
       );
-
 
       return;
 
