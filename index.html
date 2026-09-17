@@ -271,6 +271,174 @@ button:disabled {
   padding: 20px;
 }
 
+/* =========================
+   MVP
+========================= */
+
+.mvp-card {
+  background: linear-gradient(
+    135deg,
+    #fff7d6,
+    #ffffff
+  );
+}
+
+.mvp-title {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.mvp-subtitle {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  margin-top: 0;
+}
+
+.mvp-count-box {
+  background: #fff3b8;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  margin: 15px 0 20px;
+}
+
+.mvp-count-label {
+  font-size: 14px;
+}
+
+.mvp-count {
+  font-size: 34px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.calendar-header button {
+  width: auto;
+  margin: 0;
+  padding: 8px 14px;
+}
+
+.calendar-month {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.calendar th {
+  font-size: 12px;
+  padding: 7px 0;
+  color: #777;
+}
+
+.calendar td {
+  height: 62px;
+  border: 1px solid #eee;
+  text-align: center;
+  vertical-align: top;
+  padding: 5px 2px;
+  cursor: pointer;
+  background: white;
+}
+
+.calendar td:hover {
+  background: #f5f7ff;
+}
+
+.calendar .other-month {
+  color: #ccc;
+  background: #fafafa;
+}
+
+.calendar-day-number {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.mvp-mark {
+  display: block;
+  font-size: 17px;
+  margin-top: 4px;
+}
+
+.today-calendar {
+  outline: 2px solid #4f7cff;
+  outline-offset: -2px;
+}
+
+.mvp-selected {
+  background: #fff3b8 !important;
+}
+
+.mvp-detail {
+  background: #fff9e6;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 15px;
+  text-align: center;
+}
+
+.mvp-detail-date {
+  font-size: 14px;
+  color: #777;
+}
+
+.mvp-detail-name {
+  font-size: 21px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.mvp-detail-time {
+  margin-top: 5px;
+  color: #555;
+}
+
+.mvp-ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.mvp-ranking-table th {
+  background: #f0f4ff;
+  padding: 9px 5px;
+  font-size: 13px;
+}
+
+.mvp-ranking-table td {
+  padding: 11px 5px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+.mvp-ranking-table tr:last-child td {
+  border-bottom: none;
+}
+
+.mvp-ranking-name {
+  text-align: left !important;
+  font-weight: bold;
+}
+
+.mvp-me {
+  background: #f0f4ff;
+}
+
 @media (max-width: 500px) {
   header h1 {
     font-size: 22px;
@@ -297,6 +465,18 @@ button:disabled {
   .ranking-number {
     font-size: 18px;
   }
+
+  .calendar td {
+    height: 56px;
+  }
+
+  .calendar-day-number {
+    font-size: 12px;
+  }
+
+  .mvp-mark {
+    font-size: 15px;
+  }
 }
 </style>
 </head>
@@ -310,6 +490,7 @@ button:disabled {
 
 <div class="container">
 
+  <!-- ログイン -->
   <div class="card">
     <h2>🔐 ログイン</h2>
 
@@ -334,6 +515,7 @@ button:disabled {
     </p>
   </div>
 
+  <!-- 通常ランキング -->
   <div class="card ranking-card">
     <h2 class="ranking-title">
       🏆 クラス学習ランキング
@@ -346,6 +528,72 @@ button:disabled {
     </div>
   </div>
 
+  <!-- MVP -->
+  <div class="card mvp-card">
+    <h2 class="mvp-title">
+      🏅 毎日のMVP
+    </h2>
+
+    <p class="mvp-subtitle">
+      その日の勉強時間が一番長かった人がMVP！
+    </p>
+
+    <div class="mvp-count-box">
+      <div class="mvp-count-label">
+        🏆 あなたのMVP獲得回数
+      </div>
+
+      <div id="myMvpCount" class="mvp-count">
+        0回
+      </div>
+    </div>
+
+    <div class="calendar-header">
+      <button onclick="changeCalendarMonth(-1)">
+        ◀
+      </button>
+
+      <div id="calendarMonth" class="calendar-month">
+        2026年9月
+      </div>
+
+      <button onclick="changeCalendarMonth(1)">
+        ▶
+      </button>
+    </div>
+
+    <table class="calendar">
+      <thead>
+        <tr>
+          <th>日</th>
+          <th>月</th>
+          <th>火</th>
+          <th>水</th>
+          <th>木</th>
+          <th>金</th>
+          <th>土</th>
+        </tr>
+      </thead>
+
+      <tbody id="calendarBody"></tbody>
+    </table>
+
+    <div id="mvpDetail" class="mvp-detail">
+      日付をタップするとMVPが表示されます
+    </div>
+
+    <hr class="ranking-divider">
+
+    <h3>👑 MVP獲得回数ランキング</h3>
+
+    <div id="mvpRankingContent">
+      <div class="ranking-loading">
+        ログインすると表示されます
+      </div>
+    </div>
+  </div>
+
+  <!-- タイマー -->
   <div class="card">
     <h2>⏱️ リアルタイム勉強タイマー</h2>
 
@@ -390,6 +638,7 @@ button:disabled {
     </div>
   </div>
 
+  <!-- 手動記録 -->
   <div class="card">
     <h2>📝 勉強時間を記録</h2>
 
@@ -418,6 +667,7 @@ button:disabled {
     </button>
   </div>
 
+  <!-- 今日のまとめ -->
   <div class="card">
     <h2>📊 今日のまとめ</h2>
 
@@ -442,11 +692,13 @@ button:disabled {
     </div>
   </div>
 
+  <!-- 科目別 -->
   <div class="card">
     <h2>📈 科目別</h2>
     <div id="subjectChart"></div>
   </div>
 
+  <!-- 記録一覧 -->
   <div class="card">
     <h2>📅 記録一覧</h2>
 
@@ -553,18 +805,13 @@ const ALLOWED_DOMAIN =
   "gs.seito-fku.ed.jp";
 
 
-/*
-   Googleログイン画面で
-   学校ドメインを優先
-*/
-
 provider.setCustomParameters({
   hd: ALLOWED_DOMAIN
 });
 
 
 /* =========================
-   ログイン状態の保存設定
+   ログイン状態保存
 ========================= */
 
 try {
@@ -593,7 +840,7 @@ const CLASS_ID =
 
 
 /* =========================
-   タイマー用変数
+   タイマー
 ========================= */
 
 let timerInterval = null;
@@ -602,7 +849,7 @@ let timerStartTime = null;
 
 
 /* =========================
-   ランキング用変数
+   ランキング
 ========================= */
 
 let classStudents = [];
@@ -614,6 +861,17 @@ let rankingStudentsUnsubscribe = null;
 let rankingSessionsUnsubscribe = null;
 
 let myRecordsUnsubscribe = null;
+
+
+/* =========================
+   MVP
+========================= */
+
+let calendarDate = new Date();
+
+calendarDate.setDate(1);
+
+let selectedMvpDateKey = null;
 
 
 /* =========================
@@ -642,14 +900,9 @@ window.loginWithGoogle =
           provider
         );
 
-
       const user =
         result.user;
 
-
-      /* =========================
-         学校ドメイン確認
-      ========================= */
 
       if (!user.email) {
 
@@ -687,13 +940,6 @@ window.loginWithGoogle =
 
       }
 
-
-      /*
-         正しい学校アカウントなら
-         onAuthStateChanged が処理する
-      */
-
-
     } catch (error) {
 
       console.error(
@@ -717,8 +963,7 @@ window.loginWithGoogle =
       ) {
 
         message +=
-          "ポップアップがブロックされています。\n" +
-          "ブラウザのポップアップ設定を確認してください。";
+          "ポップアップがブロックされています。";
 
       } else if (
         error.code ===
@@ -737,6 +982,7 @@ window.loginWithGoogle =
           "ログイン処理がキャンセルされました。";
 
       } else if (
+        error.code ||
         error.message
       ) {
 
@@ -748,31 +994,7 @@ window.loginWithGoogle =
       }
 
 
-      /*
-         自分で表示した学校ドメイン拒否
-         のエラーは二重表示しない
-      */
-
-      if (
-        error.message !==
-        "学校アカウントではありません。"
-      ) {
-
-        /*
-           missing initial state なども
-           ここで表示される
-        */
-
-        if (
-          error.code ||
-          error.message
-        ) {
-
-          alert(message);
-
-        }
-
-      }
+      alert(message);
 
     }
 
@@ -952,11 +1174,34 @@ window.logout =
         '</div>';
 
 
+      document.getElementById(
+        "mvpRankingContent"
+      ).innerHTML =
+        '<div class="ranking-loading">' +
+        'ログインすると表示されます' +
+        '</div>';
+
+
+      document.getElementById(
+        "myMvpCount"
+      ).textContent =
+        "0回";
+
+
+      document.getElementById(
+        "mvpDetail"
+      ).innerHTML =
+        "日付をタップするとMVPが表示されます";
+
+
       classStudents =
         [];
 
       classSessions =
         [];
+
+
+      renderCalendar();
 
 
     } catch (error) {
@@ -989,21 +1234,28 @@ function updateTimerDisplay() {
     return;
   }
 
+
   const elapsed =
     Math.floor(
       (Date.now() - timerStartTime) / 1000
     );
 
+
   const hours =
-    Math.floor(elapsed / 3600);
+    Math.floor(
+      elapsed / 3600
+    );
+
 
   const minutes =
     Math.floor(
       (elapsed % 3600) / 60
     );
 
+
   const seconds =
     elapsed % 60;
+
 
   document.getElementById(
     "timerDisplay"
@@ -1028,6 +1280,7 @@ window.startTimer =
     const user =
       auth.currentUser;
 
+
     if (!user) {
 
       alert(
@@ -1038,25 +1291,31 @@ window.startTimer =
 
     }
 
+
     timerStartTime =
       Date.now();
+
 
     document.getElementById(
       "timerStatus"
     ).textContent =
       "🔴 勉強中";
 
+
     document.getElementById(
       "startTimerButton"
     ).style.display =
       "none";
+
 
     document.getElementById(
       "stopTimerButton"
     ).style.display =
       "block";
 
+
     updateTimerDisplay();
+
 
     timerInterval =
       setInterval(
@@ -1078,8 +1337,10 @@ window.stopTimer =
       return;
     }
 
+
     const user =
       auth.currentUser;
+
 
     if (!user) {
 
@@ -1091,20 +1352,25 @@ window.stopTimer =
 
     }
 
+
     const elapsedSeconds =
       Math.floor(
         (Date.now() - timerStartTime) / 1000
       );
 
+
     clearInterval(
       timerInterval
     );
 
+
     timerInterval =
       null;
 
+
     timerStartTime =
       null;
+
 
     document.getElementById(
       "timerStatus"
@@ -1137,6 +1403,7 @@ window.stopTimer =
         ),
 
         {
+
           studentId:
             user.uid,
 
@@ -1148,6 +1415,7 @@ window.stopTimer =
 
           date:
             serverTimestamp()
+
         }
 
       );
@@ -1171,12 +1439,14 @@ window.stopTimer =
 
       console.error(error);
 
+
       alert(
         "タイマー記録を保存できませんでした。\n" +
         error.code +
         "\n" +
         error.message
       );
+
 
       document.getElementById(
         "timerStatus"
@@ -1191,6 +1461,7 @@ window.stopTimer =
     ).style.display =
       "block";
 
+
     document.getElementById(
       "stopTimerButton"
     ).style.display =
@@ -1200,7 +1471,7 @@ window.stopTimer =
 
 
 /* =========================
-   自分の記録を表示
+   自分の記録表示
 ========================= */
 
 function showRecords(snapshot) {
@@ -1210,15 +1481,18 @@ function showRecords(snapshot) {
       "records"
     );
 
+
   const todayTotalElement =
     document.getElementById(
       "todayTotal"
     );
 
+
   const recordCountElement =
     document.getElementById(
       "recordCount"
     );
+
 
   const chartElement =
     document.getElementById(
@@ -1233,6 +1507,7 @@ function showRecords(snapshot) {
 
     const data =
       item.data();
+
 
     records.push({
 
@@ -1263,11 +1538,13 @@ function showRecords(snapshot) {
         ? a.date.toDate().getTime()
         : 0;
 
+
     const timeB =
       b.date &&
       b.date.toDate
         ? b.date.toDate().getTime()
         : 0;
+
 
     return timeB - timeA;
 
@@ -1276,6 +1553,7 @@ function showRecords(snapshot) {
 
   const now =
     new Date();
+
 
   let todayTotal =
     0;
@@ -1287,7 +1565,9 @@ function showRecords(snapshot) {
       !record.date ||
       !record.date.toDate
     ) {
+
       return;
+
     }
 
 
@@ -1322,6 +1602,7 @@ function showRecords(snapshot) {
 
   todayTotalElement.textContent =
     todayTotal + "分";
+
 
   recordCountElement.textContent =
     records.length;
@@ -1374,6 +1655,7 @@ function showRecords(snapshot) {
             "div"
           );
 
+
         bar.className =
           "bar";
 
@@ -1382,6 +1664,7 @@ function showRecords(snapshot) {
           document.createElement(
             "div"
           );
+
 
         label.className =
           "bar-label";
@@ -1401,6 +1684,7 @@ function showRecords(snapshot) {
             "div"
           );
 
+
         background.className =
           "bar-background";
 
@@ -1409,6 +1693,7 @@ function showRecords(snapshot) {
           document.createElement(
             "div"
           );
+
 
         fill.className =
           "bar-fill";
@@ -1426,13 +1711,16 @@ function showRecords(snapshot) {
           fill
         );
 
+
         bar.appendChild(
           label
         );
 
+
         bar.appendChild(
           background
         );
+
 
         chartElement.appendChild(
           bar
@@ -1455,6 +1743,7 @@ function showRecords(snapshot) {
       'まだ記録がありません' +
       '</div>';
 
+
     return;
 
   }
@@ -1467,6 +1756,7 @@ function showRecords(snapshot) {
         "div"
       );
 
+
     recordElement.className =
       "record";
 
@@ -1475,6 +1765,7 @@ function showRecords(snapshot) {
       document.createElement(
         "div"
       );
+
 
     info.className =
       "record-info";
@@ -1491,6 +1782,7 @@ function showRecords(snapshot) {
 
       const date =
         record.date.toDate();
+
 
       dateText =
         date.toLocaleString(
@@ -1516,8 +1808,10 @@ function showRecords(snapshot) {
         "button"
       );
 
+
     deleteButton.textContent =
       "削除";
+
 
     deleteButton.className =
       "delete";
@@ -1534,9 +1828,11 @@ function showRecords(snapshot) {
       info
     );
 
+
     recordElement.appendChild(
       deleteButton
     );
+
 
     recordsElement.appendChild(
       recordElement
@@ -1554,7 +1850,9 @@ function showRecords(snapshot) {
 function listenToMyRecords(user) {
 
   if (myRecordsUnsubscribe) {
+
     myRecordsUnsubscribe();
+
   }
 
 
@@ -1603,7 +1901,7 @@ function listenToMyRecords(user) {
 
 
 /* =========================
-   ランキング表示
+   通常ランキング
 ========================= */
 
 function updateRankings() {
@@ -1623,6 +1921,7 @@ function updateRankings() {
       'クラスのメンバーがまだ登録されていません' +
       '</div>';
 
+
     return;
 
   }
@@ -1631,11 +1930,14 @@ function updateRankings() {
   const now =
     new Date();
 
+
   const todayYear =
     now.getFullYear();
 
+
   const todayMonth =
     now.getMonth();
+
 
   const todayDate =
     now.getDate();
@@ -1657,7 +1959,9 @@ function updateRankings() {
               session.studentId !==
               student.id
             ) {
+
               return;
+
             }
 
 
@@ -1752,29 +2056,38 @@ function updateRankings() {
 
     let html = "";
 
+
     html +=
       '<table class="ranking-table">';
+
 
     html +=
       "<thead>";
 
+
     html +=
       "<tr>";
+
 
     html +=
       "<th>順位</th>";
 
+
     html +=
       "<th>名前</th>";
+
 
     html +=
       "<th>勉強時間</th>";
 
+
     html +=
       "</tr>";
 
+
     html +=
       "</thead>";
+
 
     html +=
       "<tbody>";
@@ -1886,6 +2199,7 @@ function updateRankings() {
     html +=
       "</tbody>";
 
+
     html +=
       "</table>";
 
@@ -1933,6 +2247,778 @@ function updateRankings() {
 
 
 /* =========================
+   MVP用の日付キー
+========================= */
+
+function dateKey(date) {
+
+  return (
+    date.getFullYear() +
+    "-" +
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+      date.getDate()
+    ).padStart(2, "0")
+  );
+
+}
+
+
+/* =========================
+   セッションの日付キー
+========================= */
+
+function sessionDateKey(session) {
+
+  if (
+    !session.date ||
+    !session.date.toDate
+  ) {
+
+    return null;
+
+  }
+
+
+  return dateKey(
+    session.date.toDate()
+  );
+
+}
+
+
+/* =========================
+   MVPを計算
+========================= */
+
+function calculateDailyMvp() {
+
+  const dailyTotals = {};
+
+
+  classSessions.forEach(
+    (session) => {
+
+      const key =
+        sessionDateKey(
+          session
+        );
+
+
+      if (!key) {
+        return;
+      }
+
+
+      if (
+        !dailyTotals[key]
+      ) {
+
+        dailyTotals[key] = {};
+
+      }
+
+
+      const studentId =
+        session.studentId;
+
+
+      if (
+        !dailyTotals[key][studentId]
+      ) {
+
+        dailyTotals[key][studentId] =
+          0;
+
+      }
+
+
+      dailyTotals[key][studentId] +=
+        Number(
+          session.minutes
+        ) || 0;
+
+    }
+  );
+
+
+  const dailyMvp = {};
+
+
+  Object.entries(
+    dailyTotals
+  ).forEach(
+    ([key, students]) => {
+
+      const entries =
+        Object.entries(
+          students
+        );
+
+
+      if (
+        entries.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      const maxMinutes =
+        Math.max(
+          ...entries.map(
+            ([, minutes]) =>
+              minutes
+          )
+        );
+
+
+      if (
+        maxMinutes <= 0
+      ) {
+
+        return;
+
+      }
+
+
+      const winners =
+        entries
+          .filter(
+            ([, minutes]) =>
+              minutes ===
+              maxMinutes
+          )
+          .map(
+            ([studentId]) =>
+              studentId
+          );
+
+
+      dailyMvp[key] = {
+
+        studentIds:
+          winners,
+
+        minutes:
+          maxMinutes
+
+      };
+
+    }
+  );
+
+
+  return dailyMvp;
+
+}
+
+
+/* =========================
+   MVPカレンダー
+========================= */
+
+function renderCalendar() {
+
+  const year =
+    calendarDate.getFullYear();
+
+
+  const month =
+    calendarDate.getMonth();
+
+
+  document.getElementById(
+    "calendarMonth"
+  ).textContent =
+    year +
+    "年" +
+    (month + 1) +
+    "月";
+
+
+  const body =
+    document.getElementById(
+      "calendarBody"
+    );
+
+
+  body.innerHTML =
+    "";
+
+
+  const firstDay =
+    new Date(
+      year,
+      month,
+      1
+    ).getDay();
+
+
+  const lastDate =
+    new Date(
+      year,
+      month + 1,
+      0
+    ).getDate();
+
+
+  const previousLastDate =
+    new Date(
+      year,
+      month,
+      0
+    ).getDate();
+
+
+  const dailyMvp =
+    calculateDailyMvp();
+
+
+  let day = 1;
+
+  let nextDay = 1;
+
+
+  for (
+    let week = 0;
+    week < 6;
+    week++
+  ) {
+
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+
+    for (
+      let weekday = 0;
+      weekday < 7;
+      weekday++
+    ) {
+
+      const cell =
+        document.createElement(
+          "td"
+        );
+
+
+      let currentDate;
+
+
+      if (
+        week === 0 &&
+        weekday < firstDay
+      ) {
+
+        const previousDate =
+          previousLastDate -
+          firstDay +
+          weekday +
+          1;
+
+
+        cell.classList.add(
+          "other-month"
+        );
+
+
+        cell.innerHTML =
+          '<div class="calendar-day-number">' +
+          previousDate +
+          "</div>";
+
+
+      } else if (
+        day > lastDate
+      ) {
+
+        cell.classList.add(
+          "other-month"
+        );
+
+
+        cell.innerHTML =
+          '<div class="calendar-day-number">' +
+          nextDay +
+          "</div>";
+
+
+        nextDay++;
+
+
+      } else {
+
+        currentDate =
+          new Date(
+            year,
+            month,
+            day
+          );
+
+
+        const key =
+          dateKey(
+            currentDate
+          );
+
+
+        const today =
+          new Date();
+
+
+        if (
+          currentDate.getFullYear() ===
+            today.getFullYear()
+          &&
+          currentDate.getMonth() ===
+            today.getMonth()
+          &&
+          currentDate.getDate() ===
+            today.getDate()
+        ) {
+
+          cell.classList.add(
+            "today-calendar"
+          );
+
+        }
+
+
+        if (
+          selectedMvpDateKey ===
+          key
+        ) {
+
+          cell.classList.add(
+            "mvp-selected"
+          );
+
+        }
+
+
+        let mark = "";
+
+
+        if (
+          dailyMvp[key]
+        ) {
+
+          mark =
+            '<span class="mvp-mark">🏆</span>';
+
+        }
+
+
+        cell.innerHTML =
+          '<div class="calendar-day-number">' +
+          day +
+          "</div>" +
+          mark;
+
+
+        cell.onclick =
+          function () {
+
+            selectedMvpDateKey =
+              key;
+
+            renderCalendar();
+
+            showMvpDetail(
+              key
+            );
+
+          };
+
+
+        day++;
+
+      }
+
+
+      row.appendChild(
+        cell
+      );
+
+    }
+
+
+    body.appendChild(
+      row
+    );
+
+
+    if (
+      day > lastDate &&
+      week >= 4
+    ) {
+
+      break;
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   カレンダー月変更
+========================= */
+
+window.changeCalendarMonth =
+  function (amount) {
+
+    calendarDate.setMonth(
+      calendarDate.getMonth() +
+      amount
+    );
+
+
+    selectedMvpDateKey =
+      null;
+
+
+    renderCalendar();
+
+
+    document.getElementById(
+      "mvpDetail"
+    ).innerHTML =
+      "日付をタップするとMVPが表示されます";
+
+  };
+
+
+/* =========================
+   MVP詳細
+========================= */
+
+function showMvpDetail(key) {
+
+  const detail =
+    document.getElementById(
+      "mvpDetail"
+    );
+
+
+  const dailyMvp =
+    calculateDailyMvp();
+
+
+  const mvp =
+    dailyMvp[key];
+
+
+  const parts =
+    key.split("-");
+
+
+  const displayDate =
+    parts[0] +
+    "年" +
+    Number(parts[1]) +
+    "月" +
+    Number(parts[2]) +
+    "日";
+
+
+  if (!mvp) {
+
+    detail.innerHTML =
+      '<div class="mvp-detail-date">' +
+      displayDate +
+      "</div>" +
+      '<div class="mvp-detail-name">' +
+      "MVPなし" +
+      "</div>" +
+      '<div class="mvp-detail-time">' +
+      "この日はまだ学習記録がありません" +
+      "</div>";
+
+    return;
+
+  }
+
+
+  const names =
+    mvp.studentIds.map(
+      (studentId) => {
+
+        const student =
+          classStudents.find(
+            (item) =>
+              item.id ===
+              studentId
+          );
+
+
+        return student
+          ? student.nickname ||
+            "名前未設定"
+          : "名前未設定";
+
+      }
+    );
+
+
+  const nameHtml =
+    names
+      .map(
+        (name) =>
+          "🏆 " +
+          escapeHtml(name)
+      )
+      .join(
+        "<br>"
+      );
+
+
+  detail.innerHTML =
+    '<div class="mvp-detail-date">' +
+    displayDate +
+    "</div>" +
+    '<div class="mvp-detail-name">' +
+    nameHtml +
+    "</div>" +
+    '<div class="mvp-detail-time">' +
+    "合計 " +
+    mvp.minutes +
+    "分" +
+    "</div>";
+
+}
+
+
+/* =========================
+   MVPランキング
+========================= */
+
+function updateMvpRanking() {
+
+  const element =
+    document.getElementById(
+      "mvpRankingContent"
+    );
+
+
+  if (
+    classStudents.length === 0
+  ) {
+
+    element.innerHTML =
+      '<div class="ranking-loading">' +
+      'クラスのメンバーがまだ登録されていません' +
+      '</div>';
+
+    document.getElementById(
+      "myMvpCount"
+    ).textContent =
+      "0回";
+
+    return;
+
+  }
+
+
+  const dailyMvp =
+    calculateDailyMvp();
+
+
+  const counts = {};
+
+
+  classStudents.forEach(
+    (student) => {
+
+      counts[student.id] =
+        0;
+
+    }
+  );
+
+
+  Object.values(
+    dailyMvp
+  ).forEach(
+    (mvp) => {
+
+      mvp.studentIds.forEach(
+        (studentId) => {
+
+          if (
+            counts[studentId] !==
+            undefined
+          ) {
+
+            counts[studentId]++;
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+
+  const ranking =
+    classStudents
+      .map(
+        (student) => ({
+
+          id:
+            student.id,
+
+          name:
+            student.nickname ||
+            "名前未設定",
+
+          count:
+            counts[student.id] ||
+            0
+
+        })
+      )
+      .sort(
+        (a, b) =>
+          b.count -
+          a.count
+      );
+
+
+  const user =
+    auth.currentUser;
+
+
+  const myCount =
+    user
+      ? counts[user.uid] || 0
+      : 0;
+
+
+  document.getElementById(
+    "myMvpCount"
+  ).textContent =
+    myCount +
+    "回";
+
+
+  let html =
+    '<table class="mvp-ranking-table">';
+
+
+  html +=
+    "<thead>" +
+    "<tr>" +
+    "<th>順位</th>" +
+    "<th>名前</th>" +
+    "<th>MVP</th>" +
+    "</tr>" +
+    "</thead>" +
+    "<tbody>";
+
+
+  ranking.forEach(
+    (student, index) => {
+
+      const rank =
+        index + 1;
+
+
+      let medal =
+        rank;
+
+
+      if (rank === 1) {
+        medal = "🥇";
+      } else if (rank === 2) {
+        medal = "🥈";
+      } else if (rank === 3) {
+        medal = "🥉";
+      }
+
+
+      const isMe =
+        user &&
+        user.uid ===
+          student.id;
+
+
+      html +=
+        '<tr class="' +
+        (
+          isMe
+            ? "mvp-me"
+            : ""
+        ) +
+        '">';
+
+
+      html +=
+        "<td>" +
+        medal +
+        "</td>";
+
+
+      html +=
+        '<td class="mvp-ranking-name">';
+
+
+      if (isMe) {
+
+        html +=
+          "👤 " +
+          escapeHtml(
+            student.name
+          ) +
+          "（自分）";
+
+      } else {
+
+        html +=
+          escapeHtml(
+            student.name
+          );
+
+      }
+
+
+      html +=
+        "</td>";
+
+
+      html +=
+        "<td><strong>" +
+        student.count +
+        "回</strong></td>";
+
+
+      html +=
+        "</tr>";
+
+    }
+  );
+
+
+  html +=
+    "</tbody>" +
+    "</table>";
+
+
+  element.innerHTML =
+    html;
+
+}
+
+
+/* =========================
    HTMLエスケープ
 ========================= */
 
@@ -1943,8 +3029,10 @@ function escapeHtml(text) {
       "div"
     );
 
+
   div.textContent =
     text;
+
 
   return div.innerHTML;
 
@@ -1952,7 +3040,7 @@ function escapeHtml(text) {
 
 
 /* =========================
-   クラスランキング
+   クラスランキング取得
 ========================= */
 
 function listenToRankings(user) {
@@ -2020,6 +3108,10 @@ function listenToRankings(user) {
 
 
         updateRankings();
+
+        updateMvpRanking();
+
+        renderCalendar();
 
       },
 
@@ -2095,11 +3187,25 @@ function listenToRankings(user) {
             });
 
           }
-
         );
 
 
         updateRankings();
+
+        updateMvpRanking();
+
+        renderCalendar();
+
+
+        if (
+          selectedMvpDateKey
+        ) {
+
+          showMvpDetail(
+            selectedMvpDateKey
+          );
+
+        }
 
       },
 
@@ -2175,10 +3281,12 @@ onAuthStateChanged(
         "loginStatus"
       );
 
+
     const button =
       document.getElementById(
         "loginButton"
       );
+
 
     const logoutButton =
       document.getElementById(
@@ -2187,11 +3295,6 @@ onAuthStateChanged(
 
 
     if (user) {
-
-      /*
-         念のためログイン状態変更時にも
-         学校ドメインを確認
-      */
 
       const email =
         user.email
@@ -2215,12 +3318,14 @@ onAuthStateChanged(
 
         }
 
+
         alert(
           "このアプリは学校のGoogleアカウント専用です。\n\n" +
           "@" +
           ALLOWED_DOMAIN +
           " のアカウントを使用してください。"
         );
+
 
         return;
 
@@ -2341,6 +3446,11 @@ onAuthStateChanged(
         user
       );
 
+
+      updateMvpRanking();
+
+      renderCalendar();
+
     } else {
 
       status.textContent =
@@ -2369,6 +3479,26 @@ onAuthStateChanged(
         '<div class="ranking-loading">' +
         'ログインするとランキングが表示されます' +
         '</div>';
+
+
+      document.getElementById(
+        "mvpRankingContent"
+      ).innerHTML =
+        '<div class="ranking-loading">' +
+        'ログインすると表示されます' +
+        '</div>';
+
+
+      document.getElementById(
+        "mvpDetail"
+      ).innerHTML =
+        "日付をタップするとMVPが表示されます";
+
+
+      document.getElementById(
+        "myMvpCount"
+      ).textContent =
+        "0回";
 
 
       document.getElementById(
@@ -2403,6 +3533,9 @@ onAuthStateChanged(
       classSessions =
         [];
 
+
+      renderCalendar();
+
     }
 
   }
@@ -2425,6 +3558,7 @@ window.addRecord =
       alert(
         "先にGoogleログインしてください！"
       );
+
 
       return;
 
@@ -2453,6 +3587,7 @@ window.addRecord =
       alert(
         "勉強時間を入力してください！"
       );
+
 
       return;
 
@@ -2535,6 +3670,7 @@ async function deleteRecord(
       "先にGoogleログインしてください！"
     );
 
+
     return;
 
   }
@@ -2564,6 +3700,7 @@ async function deleteRecord(
       )
 
     );
+
 
   } catch (error) {
 
@@ -2598,6 +3735,7 @@ window.clearAll =
       alert(
         "先にGoogleログインしてください！"
       );
+
 
       return;
 
@@ -2676,6 +3814,13 @@ window.clearAll =
     }
 
   };
+
+
+/* =========================
+   初期カレンダー
+========================= */
+
+renderCalendar();
 
 </script>
 
