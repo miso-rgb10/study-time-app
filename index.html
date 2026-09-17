@@ -408,6 +408,75 @@ button:disabled {
   color: #555;
 }
 
+/* =========================
+   過去データ
+========================= */
+
+.history-detail {
+  background: #f5f7fb;
+  border-radius: 14px;
+  padding: 15px;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.history-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.history-summary {
+  background: white;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.history-student {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.history-student:last-child {
+  border-bottom: none;
+}
+
+.history-name {
+  font-weight: bold;
+  flex: 1;
+}
+
+.history-minutes {
+  font-weight: bold;
+}
+
+.history-subject {
+  font-size: 12px;
+  color: #777;
+  margin-top: 3px;
+}
+
+.admin-history {
+  background: linear-gradient(
+    135deg,
+    #eee9ff,
+    #ffffff
+  );
+  border: 1px solid #ddd4ff;
+}
+
+.admin-label {
+  text-align: center;
+  font-weight: bold;
+  color: #6548b8;
+  margin-bottom: 10px;
+}
+
 .mvp-ranking-table {
   width: 100%;
   border-collapse: collapse;
@@ -579,7 +648,12 @@ button:disabled {
     </table>
 
     <div id="mvpDetail" class="mvp-detail">
-      日付をタップするとMVPが表示されます
+      日付をタップすると詳細が表示されます
+    </div>
+
+    <!-- 過去データ -->
+    <div id="historyDetail" class="history-detail">
+      カレンダーの日付をタップすると、その日の勉強時間を確認できます。
     </div>
 
     <hr class="ranking-divider">
@@ -803,6 +877,25 @@ const provider =
 
 const ALLOWED_DOMAIN =
   "gs.seito-fku.ed.jp";
+
+
+/* =========================
+   管理者UID
+========================= */
+
+const ADMIN_UID =
+  "QhPJqo4HoMTBhybxZB8YAftxaTJ3";
+
+
+function isAdmin() {
+
+  const user =
+    auth.currentUser;
+
+  return !!user &&
+    user.uid === ADMIN_UID;
+
+}
 
 
 provider.setCustomParameters({
@@ -1191,7 +1284,13 @@ window.logout =
       document.getElementById(
         "mvpDetail"
       ).innerHTML =
-        "日付をタップするとMVPが表示されます";
+        "日付をタップすると詳細が表示されます";
+
+
+      document.getElementById(
+        "historyDetail"
+      ).innerHTML =
+        "カレンダーの日付をタップすると、その日の勉強時間を確認できます。";
 
 
       classStudents =
@@ -2058,11 +2157,6 @@ function updateRankings() {
       auth.currentUser;
 
 
-    /*
-      上位3人＋自分だけ表示
-      自分が1〜3位なら重複しない
-    */
-
     const displayRanking =
       ranking.slice(0, 3);
 
@@ -2130,10 +2224,6 @@ function updateRankings() {
 
     displayRanking.forEach(
       (student) => {
-
-        /*
-          元ランキングの中での実際の順位を取得
-        */
 
         const actualIndex =
           ranking.findIndex(
@@ -2259,7 +2349,7 @@ function updateRankings() {
       '<h3>🏆 今日のランキング</h3>' +
 
       '<p class="ranking-subtitle">' +
-      '今日の勉強時間' +
+      '上位3人＋自分の順位を表示' +
       '</p>' +
 
       createRankingTable(
@@ -2276,7 +2366,7 @@ function updateRankings() {
       '<h3>🌟 全期間ランキング</h3>' +
 
       '<p class="ranking-subtitle">' +
-      'これまでに記録した合計時間' +
+      '上位3人＋自分の順位を表示' +
       '</p>' +
 
       createRankingTable(
@@ -2462,7 +2552,7 @@ function calculateDailyMvp() {
 
 
 /* =========================
-   MVPカレンダー
+   カレンダー
 ========================= */
 
 function renderCalendar() {
@@ -2677,6 +2767,10 @@ function renderCalendar() {
               key
             );
 
+            showHistoryDetail(
+              key
+            );
+
           };
 
 
@@ -2734,7 +2828,13 @@ window.changeCalendarMonth =
     document.getElementById(
       "mvpDetail"
     ).innerHTML =
-      "日付をタップするとMVPが表示されます";
+      "日付をタップすると詳細が表示されます";
+
+
+    document.getElementById(
+      "historyDetail"
+    ).innerHTML =
+      "カレンダーの日付をタップすると、その日の勉強時間を確認できます。";
 
   };
 
@@ -2835,6 +2935,342 @@ function showMvpDetail(key) {
     mvp.minutes +
     "分" +
     "</div>";
+
+}
+
+
+/* =========================
+   過去データ表示
+========================= */
+
+function showHistoryDetail(key) {
+
+  const element =
+    document.getElementById(
+      "historyDetail"
+    );
+
+
+  const user =
+    auth.currentUser;
+
+
+  if (!user) {
+
+    element.innerHTML =
+      "ログインすると過去の勉強時間を確認できます。";
+
+    return;
+
+  }
+
+
+  const parts =
+    key.split("-");
+
+
+  const displayDate =
+    parts[0] +
+    "年" +
+    Number(parts[1]) +
+    "月" +
+    Number(parts[2]) +
+    "日";
+
+
+  /*
+    その日の記録だけを集める
+  */
+
+  const daySessions =
+    classSessions.filter(
+      (session) =>
+        sessionDateKey(session) === key
+    );
+
+
+  if (
+    isAdmin()
+  ) {
+
+    /* =========================
+       管理者
+       全員分表示
+    ========================= */
+
+    const totals = {};
+
+
+    classStudents.forEach(
+      (student) => {
+
+        totals[student.id] = {
+
+          name:
+            student.nickname ||
+            "名前未設定",
+
+          total:
+            0,
+
+          subjects: {}
+
+        };
+
+      }
+    );
+
+
+    daySessions.forEach(
+      (session) => {
+
+        const student =
+          totals[session.studentId];
+
+
+        if (!student) {
+          return;
+        }
+
+
+        const minutes =
+          Number(
+            session.minutes
+          ) || 0;
+
+
+        student.total +=
+          minutes;
+
+
+        const subject =
+          session.subject ||
+          "その他";
+
+
+        if (
+          !student.subjects[subject]
+        ) {
+
+          student.subjects[subject] =
+            0;
+
+        }
+
+
+        student.subjects[subject] +=
+          minutes;
+
+      }
+    );
+
+
+    const students =
+      Object.values(
+        totals
+      )
+      .filter(
+        (student) =>
+          student.total > 0
+      )
+      .sort(
+        (a, b) =>
+          b.total -
+          a.total
+      );
+
+
+    let html =
+
+      '<div class="admin-label">' +
+      "👑 管理者モード：クラス全員の記録" +
+      "</div>" +
+
+      '<div class="history-title">' +
+      displayDate +
+      "</div>";
+
+
+    if (
+      students.length === 0
+    ) {
+
+      html +=
+        '<div class="empty">' +
+        "この日の学習記録はありません" +
+        "</div>";
+
+    } else {
+
+      students.forEach(
+        (student) => {
+
+          const subjects =
+            Object.entries(
+              student.subjects
+            )
+            .map(
+              ([subject, minutes]) =>
+                escapeHtml(subject) +
+                " " +
+                minutes +
+                "分"
+            )
+            .join(
+              " / "
+            );
+
+
+          html +=
+            '<div class="history-student">' +
+
+              '<div class="history-name">' +
+              escapeHtml(
+                student.name
+              ) +
+
+              '<div class="history-subject">' +
+              subjects +
+              "</div>" +
+
+              "</div>" +
+
+              '<div class="history-minutes">' +
+              student.total +
+              "分" +
+              "</div>" +
+
+            "</div>";
+
+        }
+      );
+
+    }
+
+
+    element.className =
+      "history-detail admin-history";
+
+
+    element.innerHTML =
+      html;
+
+
+  } else {
+
+    /* =========================
+       生徒
+       自分の記録だけ表示
+    ========================= */
+
+    const mySessions =
+      daySessions.filter(
+        (session) =>
+          session.studentId ===
+          user.uid
+      );
+
+
+    let total = 0;
+
+    const subjects = {};
+
+
+    mySessions.forEach(
+      (session) => {
+
+        const minutes =
+          Number(
+            session.minutes
+          ) || 0;
+
+
+        total +=
+          minutes;
+
+
+        const subject =
+          session.subject ||
+          "その他";
+
+
+        if (
+          !subjects[subject]
+        ) {
+
+          subjects[subject] =
+            0;
+
+        }
+
+
+        subjects[subject] +=
+          minutes;
+
+      }
+    );
+
+
+    let html =
+
+      '<div class="history-title">' +
+      displayDate +
+      "</div>";
+
+
+    if (
+      total === 0
+    ) {
+
+      html +=
+        '<div class="empty">' +
+        "この日の自分の学習記録はありません" +
+        "</div>";
+
+    } else {
+
+      html +=
+
+        '<div class="history-summary">' +
+        "<strong>合計 " +
+        total +
+        "分</strong>" +
+        "</div>";
+
+
+      Object.entries(
+        subjects
+      ).forEach(
+        ([subject, minutes]) => {
+
+          html +=
+            '<div class="history-student">' +
+
+              '<div class="history-name">' +
+              escapeHtml(subject) +
+              "</div>" +
+
+              '<div class="history-minutes">' +
+              minutes +
+              "分" +
+              "</div>" +
+
+            "</div>";
+
+        }
+      );
+
+    }
+
+
+    element.className =
+      "history-detail";
+
+
+    element.innerHTML =
+      html;
+
+  }
 
 }
 
@@ -2952,11 +3388,6 @@ function updateMvpRanking() {
     myCount +
     "回";
 
-
-  /*
-    MVPランキングも
-    上位3人＋自分だけ表示
-  */
 
   const displayRanking =
     ranking.slice(0, 3);
@@ -3195,6 +3626,21 @@ function listenToRankings(user) {
 
         renderCalendar();
 
+
+        if (
+          selectedMvpDateKey
+        ) {
+
+          showMvpDetail(
+            selectedMvpDateKey
+          );
+
+          showHistoryDetail(
+            selectedMvpDateKey
+          );
+
+        }
+
       },
 
       (error) => {
@@ -3284,6 +3730,10 @@ function listenToRankings(user) {
         ) {
 
           showMvpDetail(
+            selectedMvpDateKey
+          );
+
+          showHistoryDetail(
             selectedMvpDateKey
           );
 
@@ -3441,6 +3891,16 @@ onAuthStateChanged(
         "block";
 
 
+      if (isAdmin()) {
+
+        status.textContent =
+          "👑 " +
+          name +
+          " さんでログイン中（管理者）";
+
+      }
+
+
       try {
 
         await setDoc(
@@ -3574,7 +4034,13 @@ onAuthStateChanged(
       document.getElementById(
         "mvpDetail"
       ).innerHTML =
-        "日付をタップするとMVPが表示されます";
+        "日付をタップすると詳細が表示されます";
+
+
+      document.getElementById(
+        "historyDetail"
+      ).innerHTML =
+        "カレンダーの日付をタップすると、その日の勉強時間を確認できます。";
 
 
       document.getElementById(
