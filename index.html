@@ -589,8 +589,7 @@ import {
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithPopup,
   onAuthStateChanged
 }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -603,7 +602,7 @@ import {
 const firebaseConfig = {
 
   apiKey:
-    "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
+    "AIzaSyCJH9rm_ygt9xbuIDdDZuAXEgy_Rsdlxz4",
 
   authDomain:
     "studytime11111-9c9f1.firebaseapp.com",
@@ -673,19 +672,39 @@ let rankingSessionsUnsubscribe = null;
 window.loginWithGoogle =
   async function () {
 
+    const button =
+      document.getElementById(
+        "loginButton"
+      );
+
+    button.disabled = true;
+
+    button.textContent =
+      "ログイン中...";
+
+
     try {
 
-      await signInWithRedirect(
+      await signInWithPopup(
         auth,
         provider
       );
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Googleログインエラー:",
+        error
+      );
+
+      button.disabled = false;
+
+      button.textContent =
+        "Googleでログイン";
+
 
       alert(
-        "Googleログインに失敗しました。\n" +
+        "Googleログインに失敗しました。\n\n" +
         error.code +
         "\n" +
         error.message
@@ -949,6 +968,7 @@ function showRecords(snapshot) {
 
   let records = [];
 
+
   snapshot.forEach((item) => {
 
     const data =
@@ -1044,6 +1064,7 @@ function showRecords(snapshot) {
 
   });
 
+
   todayTotalElement.textContent =
     todayTotal +
     "分";
@@ -1067,6 +1088,7 @@ function showRecords(snapshot) {
 
   };
 
+
   records.forEach((record) => {
 
     if (
@@ -1081,14 +1103,17 @@ function showRecords(snapshot) {
 
   });
 
+
   const maxMinutes =
     Math.max(
       ...Object.values(subjects),
       1
     );
 
+
   chartElement.innerHTML =
     "";
+
 
   Object.entries(subjects)
     .forEach(
@@ -1102,6 +1127,7 @@ function showRecords(snapshot) {
         bar.className =
           "bar";
 
+
         const label =
           document.createElement(
             "div"
@@ -1109,6 +1135,7 @@ function showRecords(snapshot) {
 
         label.className =
           "bar-label";
+
 
         label.innerHTML =
           "<span>" +
@@ -1118,6 +1145,7 @@ function showRecords(snapshot) {
           minutes +
           "分</span>";
 
+
         const background =
           document.createElement(
             "div"
@@ -1125,6 +1153,7 @@ function showRecords(snapshot) {
 
         background.className =
           "bar-background";
+
 
         const fill =
           document.createElement(
@@ -1134,6 +1163,7 @@ function showRecords(snapshot) {
         fill.className =
           "bar-fill";
 
+
         fill.style.width =
           (
             minutes /
@@ -1141,6 +1171,7 @@ function showRecords(snapshot) {
             100
           ) +
           "%";
+
 
         background.appendChild(
           fill
@@ -1169,6 +1200,7 @@ function showRecords(snapshot) {
   recordsElement.innerHTML =
     "";
 
+
   if (
     records.length === 0
   ) {
@@ -1182,6 +1214,7 @@ function showRecords(snapshot) {
 
   }
 
+
   records.forEach((record) => {
 
     const recordElement =
@@ -1192,6 +1225,7 @@ function showRecords(snapshot) {
     recordElement.className =
       "record";
 
+
     const info =
       document.createElement(
         "div"
@@ -1200,8 +1234,10 @@ function showRecords(snapshot) {
     info.className =
       "record-info";
 
+
     let dateText =
       "日時不明";
+
 
     if (
       record.date &&
@@ -1218,6 +1254,7 @@ function showRecords(snapshot) {
 
     }
 
+
     info.innerHTML =
       "<strong>" +
       record.subject +
@@ -1227,6 +1264,7 @@ function showRecords(snapshot) {
       '<div class="record-date">' +
       dateText +
       "</div>";
+
 
     const deleteButton =
       document.createElement(
@@ -1239,11 +1277,13 @@ function showRecords(snapshot) {
     deleteButton.className =
       "delete";
 
+
     deleteButton.onclick =
       () =>
         deleteRecord(
           record.id
         );
+
 
     recordElement.appendChild(
       info
@@ -1285,6 +1325,7 @@ function listenToMyRecords(user) {
 
     );
 
+
   onSnapshot(
 
     recordsQuery,
@@ -1321,6 +1362,7 @@ function updateRankings() {
     document.getElementById(
       "rankingContent"
     );
+
 
   if (
     classStudents.length === 0
@@ -1480,6 +1522,7 @@ function updateRankings() {
 
     let html = "";
 
+
     html +=
       '<table class="ranking-table">';
 
@@ -1518,14 +1561,27 @@ function updateRankings() {
         let medal =
           "";
 
+
         if (rank === 1) {
-          medal = "🥇";
+
+          medal =
+            "🥇";
+
         } else if (rank === 2) {
-          medal = "🥈";
+
+          medal =
+            "🥈";
+
         } else if (rank === 3) {
-          medal = "🥉";
+
+          medal =
+            "🥉";
+
         } else {
-          medal = rank;
+
+          medal =
+            rank;
+
         }
 
 
@@ -2041,33 +2097,6 @@ onAuthStateChanged(
 
   }
 );
-
-
-/* =========================
-   リダイレクト後の確認
-========================= */
-
-try {
-
-  await getRedirectResult(
-    auth
-  );
-
-} catch (error) {
-
-  console.error(
-    "ログイン結果エラー:",
-    error
-  );
-
-  alert(
-    "Googleログインでエラーが発生しました。\n" +
-    error.code +
-    "\n" +
-    error.message
-  );
-
-}
 
 
 /* =========================
