@@ -161,11 +161,6 @@ button:disabled {
   color: #2e8b57;
 }
 
-
-/* =========================
-   タイマー
-========================= */
-
 .timer-box {
   text-align: center;
   background: #f0f4ff;
@@ -194,11 +189,6 @@ button:disabled {
 .stop-button {
   background: #e74c3c;
 }
-
-
-/* =========================
-   ランキング
-========================= */
 
 .ranking-card {
   background: linear-gradient(
@@ -282,7 +272,6 @@ button:disabled {
 }
 
 @media (max-width: 500px) {
-
   header h1 {
     font-size: 22px;
   }
@@ -321,19 +310,10 @@ button:disabled {
 
 <div class="container">
 
-
-  <!-- =========================
-       ログイン
-  ========================= -->
-
   <div class="card">
-
     <h2>🔐 ログイン</h2>
 
-    <button
-      id="loginButton"
-      onclick="loginWithGoogle()"
-    >
+    <button id="loginButton" onclick="loginWithGoogle()">
       Googleでログイン
     </button>
 
@@ -341,71 +321,44 @@ button:disabled {
       ログインしていません
     </p>
 
-    <p
-      id="onlineCount"
-      class="online"
-    >
+    <p id="onlineCount" class="online">
       🟢 現在ログイン中：0人
     </p>
-
   </div>
 
-
-  <!-- =========================
-       ランキング
-  ========================= -->
-
   <div class="card ranking-card">
-
     <h2 class="ranking-title">
       🏆 クラス学習ランキング
     </h2>
 
     <div id="rankingContent">
-
       <div class="ranking-loading">
         ログインするとランキングが表示されます
       </div>
-
     </div>
-
   </div>
 
-
-  <!-- =========================
-       リアルタイムタイマー
-  ========================= -->
-
   <div class="card">
-
     <h2>⏱️ リアルタイム勉強タイマー</h2>
 
     <label>科目</label>
 
     <select id="timerSubject">
-
       <option value="国語">国語</option>
       <option value="数学">数学</option>
       <option value="英語">英語</option>
       <option value="理科">理科</option>
       <option value="社会">社会</option>
       <option value="その他">その他</option>
-
     </select>
 
     <div class="timer-box">
 
-      <div
-        id="timerStatus"
-        class="timer-status"
-      >
+      <div id="timerStatus" class="timer-status">
         準備OK
       </div>
 
-      <div
-        id="timerDisplay"
-        class="timer-display"
-      >
+      <div id="timerDisplay" class="timer-display">
         00:00:00
       </div>
 
@@ -427,29 +380,20 @@ button:disabled {
       </button>
 
     </div>
-
   </div>
 
-
-  <!-- =========================
-       手入力記録
-  ========================= -->
-
   <div class="card">
-
     <h2>📝 勉強時間を記録</h2>
 
     <label>科目</label>
 
     <select id="subject">
-
       <option value="国語">国語</option>
       <option value="数学">数学</option>
       <option value="英語">英語</option>
       <option value="理科">理科</option>
       <option value="社会">社会</option>
       <option value="その他">その他</option>
-
     </select>
 
     <label>勉強時間（分）</label>
@@ -464,96 +408,54 @@ button:disabled {
     <button onclick="addRecord()">
       記録する
     </button>
-
   </div>
 
-
-  <!-- =========================
-       今日のまとめ
-  ========================= -->
-
   <div class="card">
-
     <h2>📊 今日のまとめ</h2>
 
     <div class="summary">
 
       <div class="summary-box">
-
         今日の時間
 
-        <div
-          class="summary-number"
-          id="todayTotal"
-        >
+        <div class="summary-number" id="todayTotal">
           0分
         </div>
-
       </div>
 
       <div class="summary-box">
-
         記録数
 
-        <div
-          class="summary-number"
-          id="recordCount"
-        >
+        <div class="summary-number" id="recordCount">
           0
         </div>
-
       </div>
 
     </div>
-
   </div>
 
-
-  <!-- =========================
-       科目別
-  ========================= -->
-
   <div class="card">
-
     <h2>📈 科目別</h2>
-
     <div id="subjectChart"></div>
-
   </div>
 
-
-  <!-- =========================
-       記録一覧
-  ========================= -->
-
   <div class="card">
-
     <h2>📅 記録一覧</h2>
 
     <div id="records">
-
       <div class="empty">
         ログインすると記録が表示されます
       </div>
-
     </div>
-
   </div>
 
-
-  <!-- =========================
-       削除
-  ========================= -->
-
   <div class="card">
-
     <button
       onclick="clearAll()"
       style="background:#777;"
     >
       すべての記録を削除
     </button>
-
   </div>
 
 </div>
@@ -561,14 +463,12 @@ button:disabled {
 
 <script type="module">
 
-
 /* =========================
    Firebase
 ========================= */
 
 import { initializeApp }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
 
 import {
   getFirestore,
@@ -583,16 +483,17 @@ import {
   onSnapshot,
   getDocs
 }
-  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 }
-  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
 /* =========================
@@ -603,6 +504,7 @@ const firebaseConfig = {
 
   apiKey:
     "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
+
   authDomain:
     "studytime11111-9c9f1.firebaseapp.com",
 
@@ -635,6 +537,27 @@ const provider =
 
 
 /* =========================
+   ログイン状態の保存設定
+========================= */
+
+try {
+
+  await setPersistence(
+    auth,
+    browserLocalPersistence
+  );
+
+} catch (error) {
+
+  console.error(
+    "ログイン保存設定エラー:",
+    error
+  );
+
+}
+
+
+/* =========================
    クラスID
 ========================= */
 
@@ -662,6 +585,8 @@ let classSessions = [];
 let rankingStudentsUnsubscribe = null;
 
 let rankingSessionsUnsubscribe = null;
+
+let myRecordsUnsubscribe = null;
 
 
 /* =========================
@@ -702,12 +627,38 @@ window.loginWithGoogle =
         "Googleでログイン";
 
 
-      alert(
-        "Googleログインに失敗しました。\n\n" +
-        error.code +
-        "\n" +
-        error.message
-      );
+      let message =
+        "Googleログインに失敗しました。\n\n";
+
+
+      if (
+        error.code ===
+        "auth/popup-blocked"
+      ) {
+
+        message +=
+          "ポップアップがブロックされています。\n" +
+          "ブラウザのポップアップ設定を確認してください。";
+
+      } else if (
+        error.code ===
+        "auth/popup-closed-by-user"
+      ) {
+
+        message +=
+          "ログイン画面が閉じられました。";
+
+      } else {
+
+        message +=
+          error.code +
+          "\n" +
+          error.message;
+
+      }
+
+
+      alert(message);
 
     }
 
@@ -740,23 +691,15 @@ function updateTimerDisplay() {
   const seconds =
     elapsed % 60;
 
-  const displayHours =
-    String(hours).padStart(2, "0");
-
-  const displayMinutes =
-    String(minutes).padStart(2, "0");
-
-  const displaySeconds =
-    String(seconds).padStart(2, "0");
-
   document.getElementById(
     "timerDisplay"
   ).textContent =
-    displayHours +
+
+    String(hours).padStart(2, "0") +
     ":" +
-    displayMinutes +
+    String(minutes).padStart(2, "0") +
     ":" +
-    displaySeconds;
+    String(seconds).padStart(2, "0");
 
 }
 
@@ -854,6 +797,7 @@ window.stopTimer =
     ).textContent =
       "保存中...";
 
+
     const minutes =
       Math.max(
         1,
@@ -862,10 +806,12 @@ window.stopTimer =
         )
       );
 
+
     const subject =
       document.getElementById(
         "timerSubject"
       ).value;
+
 
     try {
 
@@ -877,7 +823,6 @@ window.stopTimer =
         ),
 
         {
-
           studentId:
             user.uid,
 
@@ -889,15 +834,16 @@ window.stopTimer =
 
           date:
             serverTimestamp()
-
         }
 
       );
+
 
       document.getElementById(
         "timerDisplay"
       ).textContent =
         "00:00:00";
+
 
       document.getElementById(
         "timerStatus"
@@ -906,11 +852,10 @@ window.stopTimer =
         minutes +
         "分を記録しました";
 
+
     } catch (error) {
 
-      console.error(
-        error
-      );
+      console.error(error);
 
       alert(
         "タイマー記録を保存できませんでした。\n" +
@@ -925,6 +870,7 @@ window.stopTimer =
         "保存に失敗しました";
 
     }
+
 
     document.getElementById(
       "startTimerButton"
@@ -965,6 +911,7 @@ function showRecords(snapshot) {
       "subjectChart"
     );
 
+
   let records = [];
 
 
@@ -994,10 +941,6 @@ function showRecords(snapshot) {
   });
 
 
-  /* =========================
-     新しい順
-  ========================= */
-
   records.sort((a, b) => {
 
     const timeA =
@@ -1017,15 +960,12 @@ function showRecords(snapshot) {
   });
 
 
-  /* =========================
-     今日の合計
-  ========================= */
-
   const now =
     new Date();
 
   let todayTotal =
     0;
+
 
   records.forEach((record) => {
 
@@ -1036,8 +976,10 @@ function showRecords(snapshot) {
       return;
     }
 
+
     const date =
       record.date.toDate();
+
 
     if (
 
@@ -1065,16 +1007,11 @@ function showRecords(snapshot) {
 
 
   todayTotalElement.textContent =
-    todayTotal +
-    "分";
+    todayTotal + "分";
 
   recordCountElement.textContent =
     records.length;
 
-
-  /* =========================
-     科目別集計
-  ========================= */
 
   const subjects = {
 
@@ -1168,8 +1105,7 @@ function showRecords(snapshot) {
             minutes /
             maxMinutes *
             100
-          ) +
-          "%";
+          ) + "%";
 
 
         background.appendChild(
@@ -1191,10 +1127,6 @@ function showRecords(snapshot) {
       }
     );
 
-
-  /* =========================
-     記録一覧
-  ========================= */
 
   recordsElement.innerHTML =
     "";
@@ -1256,7 +1188,7 @@ function showRecords(snapshot) {
 
     info.innerHTML =
       "<strong>" +
-      record.subject +
+      escapeHtml(record.subject) +
       "</strong>　" +
       record.minutes +
       "分" +
@@ -1302,11 +1234,15 @@ function showRecords(snapshot) {
 
 
 /* =========================
-   自分の記録を
-   リアルタイム取得
+   自分の記録をリアルタイム取得
 ========================= */
 
 function listenToMyRecords(user) {
+
+  if (myRecordsUnsubscribe) {
+    myRecordsUnsubscribe();
+  }
+
 
   const recordsQuery =
     query(
@@ -1325,28 +1261,29 @@ function listenToMyRecords(user) {
     );
 
 
-  onSnapshot(
+  myRecordsUnsubscribe =
+    onSnapshot(
 
-    recordsQuery,
+      recordsQuery,
 
-    (snapshot) => {
+      (snapshot) => {
 
-      showRecords(
-        snapshot
-      );
+        showRecords(
+          snapshot
+        );
 
-    },
+      },
 
-    (error) => {
+      (error) => {
 
-      console.error(
-        "記録読み込みエラー:",
-        error
-      );
+        console.error(
+          "記録読み込みエラー:",
+          error
+        );
 
-    }
+      }
 
-  );
+    );
 
 }
 
@@ -1377,10 +1314,6 @@ function updateRankings() {
   }
 
 
-  /* =========================
-     今日の日付
-  ========================= */
-
   const now =
     new Date();
 
@@ -1393,10 +1326,6 @@ function updateRankings() {
   const todayDate =
     now.getDate();
 
-
-  /* =========================
-     学生ごとの集計
-  ========================= */
 
   const rankingData =
     classStudents.map(
@@ -1486,10 +1415,6 @@ function updateRankings() {
     );
 
 
-  /* =========================
-     今日ランキング
-  ========================= */
-
   const todayRanking =
     [...rankingData].sort(
       (a, b) =>
@@ -1497,10 +1422,6 @@ function updateRankings() {
         a.todayMinutes
     );
 
-
-  /* =========================
-     全期間ランキング
-  ========================= */
 
   const allTimeRanking =
     [...rankingData].sort(
@@ -1510,17 +1431,12 @@ function updateRankings() {
     );
 
 
-  /* =========================
-     ランキングHTML
-  ========================= */
-
   function createRankingTable(
     ranking,
     type
   ) {
 
     let html = "";
-
 
     html +=
       '<table class="ranking-table">';
@@ -1557,29 +1473,24 @@ function updateRankings() {
           index + 1;
 
 
-        let medal =
-          "";
+        let medal = "";
 
 
         if (rank === 1) {
 
-          medal =
-            "🥇";
+          medal = "🥇";
 
         } else if (rank === 2) {
 
-          medal =
-            "🥈";
+          medal = "🥈";
 
         } else if (rank === 3) {
 
-          medal =
-            "🥉";
+          medal = "🥉";
 
         } else {
 
-          medal =
-            rank;
+          medal = rank;
 
         }
 
@@ -1727,15 +1638,10 @@ function escapeHtml(text) {
 
 
 /* =========================
-   クラスランキングを
-   リアルタイム取得
+   クラスランキング
 ========================= */
 
 function listenToRankings(user) {
-
-  /* =========================
-     クラスメンバー
-  ========================= */
 
   const studentsQuery =
     query(
@@ -1822,10 +1728,6 @@ function listenToRankings(user) {
 
     );
 
-
-  /* =========================
-     勉強記録
-  ========================= */
 
   if (
     rankingSessionsUnsubscribe
@@ -1971,10 +1873,6 @@ onAuthStateChanged(
         "Googleユーザー";
 
 
-      /* =========================
-         名前表示
-      ========================= */
-
       status.textContent =
         "👤 " +
         name +
@@ -1988,10 +1886,6 @@ onAuthStateChanged(
       button.disabled =
         true;
 
-
-      /* =========================
-         students登録
-      ========================= */
 
       try {
 
@@ -2032,10 +1926,6 @@ onAuthStateChanged(
       }
 
 
-      /* =========================
-         onlineUsers登録
-      ========================= */
-
       try {
 
         await setDoc(
@@ -2075,22 +1965,25 @@ onAuthStateChanged(
       }
 
 
-      /* =========================
-         自分の記録
-      ========================= */
-
       listenToMyRecords(
         user
       );
 
 
-      /* =========================
-         クラスランキング
-      ========================= */
-
       listenToRankings(
         user
       );
+
+    } else {
+
+      status.textContent =
+        "ログインしていません";
+
+      button.textContent =
+        "Googleでログイン";
+
+      button.disabled =
+        false;
 
     }
 
@@ -2357,6 +2250,8 @@ window.clearAll =
 
       alert(
         "削除できませんでした。\n" +
+        error.code +
+        "\n" +
         error.message
       );
 
