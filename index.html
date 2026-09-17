@@ -546,6 +546,24 @@ const provider =
 
 
 /* =========================
+   許可するGoogleアカウント
+========================= */
+
+const ALLOWED_DOMAIN =
+  "gs.seito-fku.ed.jp";
+
+
+/*
+   Googleログイン画面で
+   学校ドメインを優先
+*/
+
+provider.setCustomParameters({
+  hd: ALLOWED_DOMAIN
+});
+
+
+/* =========================
    ログイン状態の保存設定
 ========================= */
 
@@ -618,10 +636,63 @@ window.loginWithGoogle =
 
     try {
 
-      await signInWithPopup(
-        auth,
-        provider
-      );
+      const result =
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
+
+      const user =
+        result.user;
+
+
+      /* =========================
+         学校ドメイン確認
+      ========================= */
+
+      if (!user.email) {
+
+        await signOut(auth);
+
+        throw new Error(
+          "Googleアカウントのメールアドレスを確認できませんでした。"
+        );
+
+      }
+
+
+      const email =
+        user.email.toLowerCase();
+
+
+      const allowedEmail =
+        email.endsWith(
+          "@" + ALLOWED_DOMAIN
+        );
+
+
+      if (!allowedEmail) {
+
+        await signOut(auth);
+
+        alert(
+          "このアプリは学校のGoogleアカウント専用です。\n\n" +
+          "@" +
+          ALLOWED_DOMAIN +
+          " のアカウントを使用してください。"
+        );
+
+        return;
+
+      }
+
+
+      /*
+         正しい学校アカウントなら
+         onAuthStateChanged が処理する
+      */
+
 
     } catch (error) {
 
@@ -657,7 +728,17 @@ window.loginWithGoogle =
         message +=
           "ログイン画面が閉じられました。";
 
-      } else {
+      } else if (
+        error.code ===
+        "auth/cancelled-popup-request"
+      ) {
+
+        message +=
+          "ログイン処理がキャンセルされました。";
+
+      } else if (
+        error.message
+      ) {
 
         message +=
           error.code +
@@ -667,7 +748,31 @@ window.loginWithGoogle =
       }
 
 
-      alert(message);
+      /*
+         自分で表示した学校ドメイン拒否
+         のエラーは二重表示しない
+      */
+
+      if (
+        error.message !==
+        "学校アカウントではありません。"
+      ) {
+
+        /*
+           missing initial state なども
+           ここで表示される
+        */
+
+        if (
+          error.code ||
+          error.message
+        ) {
+
+          alert(message);
+
+        }
+
+      }
 
     }
 
@@ -686,8 +791,6 @@ window.logout =
 
 
     try {
-
-      /* タイマーを停止 */
 
       if (timerInterval) {
 
@@ -728,8 +831,6 @@ window.logout =
         "none";
 
 
-      /* 自分の記録の監視を停止 */
-
       if (myRecordsUnsubscribe) {
 
         myRecordsUnsubscribe();
@@ -739,8 +840,6 @@ window.logout =
 
       }
 
-
-      /* ランキングの監視を停止 */
 
       if (rankingStudentsUnsubscribe) {
 
@@ -761,8 +860,6 @@ window.logout =
 
       }
 
-
-      /* オンラインユーザーから削除 */
 
       if (user) {
 
@@ -788,12 +885,8 @@ window.logout =
       }
 
 
-      /* Firebaseからログアウト */
-
       await signOut(auth);
 
-
-      /* 画面をログアウト状態に戻す */
 
       document.getElementById(
         "logoutButton"
@@ -2002,6 +2095,7 @@ function listenToRankings(user) {
             });
 
           }
+
         );
 
 
@@ -2093,6 +2187,45 @@ onAuthStateChanged(
 
 
     if (user) {
+
+      /*
+         念のためログイン状態変更時にも
+         学校ドメインを確認
+      */
+
+      const email =
+        user.email
+          ? user.email.toLowerCase()
+          : "";
+
+
+      if (
+        !email.endsWith(
+          "@" + ALLOWED_DOMAIN
+        )
+      ) {
+
+        try {
+
+          await signOut(auth);
+
+        } catch (error) {
+
+          console.error(error);
+
+        }
+
+        alert(
+          "このアプリは学校のGoogleアカウント専用です。\n\n" +
+          "@" +
+          ALLOWED_DOMAIN +
+          " のアカウントを使用してください。"
+        );
+
+        return;
+
+      }
+
 
       const name =
         user.displayName ||
