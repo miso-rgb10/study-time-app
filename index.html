@@ -317,6 +317,14 @@ button:disabled {
       Googleでログイン
     </button>
 
+    <button
+      id="logoutButton"
+      onclick="logout()"
+      style="display:none; background:#777;"
+    >
+      ログアウト
+    </button>
+
     <p id="loginStatus">
       ログインしていません
     </p>
@@ -489,6 +497,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signOut,
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence
@@ -659,6 +668,218 @@ window.loginWithGoogle =
 
 
       alert(message);
+
+    }
+
+  };
+
+
+/* =========================
+   ログアウト
+========================= */
+
+window.logout =
+  async function () {
+
+    const user =
+      auth.currentUser;
+
+
+    try {
+
+      /* タイマーを停止 */
+
+      if (timerInterval) {
+
+        clearInterval(
+          timerInterval
+        );
+
+        timerInterval =
+          null;
+
+      }
+
+      timerStartTime =
+        null;
+
+
+      document.getElementById(
+        "timerDisplay"
+      ).textContent =
+        "00:00:00";
+
+
+      document.getElementById(
+        "timerStatus"
+      ).textContent =
+        "準備OK";
+
+
+      document.getElementById(
+        "startTimerButton"
+      ).style.display =
+        "block";
+
+
+      document.getElementById(
+        "stopTimerButton"
+      ).style.display =
+        "none";
+
+
+      /* 自分の記録の監視を停止 */
+
+      if (myRecordsUnsubscribe) {
+
+        myRecordsUnsubscribe();
+
+        myRecordsUnsubscribe =
+          null;
+
+      }
+
+
+      /* ランキングの監視を停止 */
+
+      if (rankingStudentsUnsubscribe) {
+
+        rankingStudentsUnsubscribe();
+
+        rankingStudentsUnsubscribe =
+          null;
+
+      }
+
+
+      if (rankingSessionsUnsubscribe) {
+
+        rankingSessionsUnsubscribe();
+
+        rankingSessionsUnsubscribe =
+          null;
+
+      }
+
+
+      /* オンラインユーザーから削除 */
+
+      if (user) {
+
+        try {
+
+          await deleteDoc(
+            doc(
+              db,
+              "onlineUsers",
+              user.uid
+            )
+          );
+
+        } catch (error) {
+
+          console.error(
+            "オンライン情報削除エラー:",
+            error
+          );
+
+        }
+
+      }
+
+
+      /* Firebaseからログアウト */
+
+      await signOut(auth);
+
+
+      /* 画面をログアウト状態に戻す */
+
+      document.getElementById(
+        "logoutButton"
+      ).style.display =
+        "none";
+
+
+      document.getElementById(
+        "loginButton"
+      ).style.display =
+        "block";
+
+
+      document.getElementById(
+        "loginButton"
+      ).disabled =
+        false;
+
+
+      document.getElementById(
+        "loginButton"
+      ).textContent =
+        "Googleでログイン";
+
+
+      document.getElementById(
+        "loginStatus"
+      ).textContent =
+        "ログインしていません";
+
+
+      document.getElementById(
+        "records"
+      ).innerHTML =
+        '<div class="empty">' +
+        'ログインすると記録が表示されます' +
+        '</div>';
+
+
+      document.getElementById(
+        "todayTotal"
+      ).textContent =
+        "0分";
+
+
+      document.getElementById(
+        "recordCount"
+      ).textContent =
+        "0";
+
+
+      document.getElementById(
+        "subjectChart"
+      ).innerHTML =
+        "";
+
+
+      document.getElementById(
+        "rankingContent"
+      ).innerHTML =
+        '<div class="ranking-loading">' +
+        'ログインするとランキングが表示されます' +
+        '</div>';
+
+
+      classStudents =
+        [];
+
+      classSessions =
+        [];
+
+
+    } catch (error) {
+
+      console.error(
+        "ログアウトエラー:",
+        error
+      );
+
+
+      alert(
+        "ログアウトできませんでした。\n" +
+        error.code +
+        "\n" +
+        error.message
+      );
 
     }
 
@@ -1865,6 +2086,11 @@ onAuthStateChanged(
         "loginButton"
       );
 
+    const logoutButton =
+      document.getElementById(
+        "logoutButton"
+      );
+
 
     if (user) {
 
@@ -1885,6 +2111,14 @@ onAuthStateChanged(
 
       button.disabled =
         true;
+
+
+      button.style.display =
+        "block";
+
+
+      logoutButton.style.display =
+        "block";
 
 
       try {
@@ -1979,11 +2213,62 @@ onAuthStateChanged(
       status.textContent =
         "ログインしていません";
 
+
       button.textContent =
         "Googleでログイン";
 
+
       button.disabled =
         false;
+
+
+      button.style.display =
+        "block";
+
+
+      logoutButton.style.display =
+        "none";
+
+
+      document.getElementById(
+        "rankingContent"
+      ).innerHTML =
+        '<div class="ranking-loading">' +
+        'ログインするとランキングが表示されます' +
+        '</div>';
+
+
+      document.getElementById(
+        "records"
+      ).innerHTML =
+        '<div class="empty">' +
+        'ログインすると記録が表示されます' +
+        '</div>';
+
+
+      document.getElementById(
+        "todayTotal"
+      ).textContent =
+        "0分";
+
+
+      document.getElementById(
+        "recordCount"
+      ).textContent =
+        "0";
+
+
+      document.getElementById(
+        "subjectChart"
+      ).innerHTML =
+        "";
+
+
+      classStudents =
+        [];
+
+      classSessions =
+        [];
 
     }
 
