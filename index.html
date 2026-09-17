@@ -153,7 +153,14 @@ button:disabled {
   padding: 20px;
 }
 
+.online {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #2e8b57;
+}
+
 @media (max-width: 500px) {
+
   header h1 {
     font-size: 22px;
   }
@@ -165,6 +172,7 @@ button:disabled {
   .summary {
     grid-template-columns: 1fr 1fr;
   }
+
 }
 </style>
 </head>
@@ -180,18 +188,27 @@ button:disabled {
 
   <!-- ログイン -->
   <div class="card">
+
     <h2>🔐 ログイン</h2>
 
     <button id="loginButton" onclick="loginWithGoogle()">
       Googleでログイン
     </button>
 
-    <p id="loginStatus">ログインしていません</p>
+    <p id="loginStatus">
+      ログインしていません
+    </p>
+
+    <p id="onlineCount" class="online">
+      🟢 現在ログイン中：0人
+    </p>
+
   </div>
 
 
   <!-- 勉強時間を記録 -->
   <div class="card">
+
     <h2>📝 勉強時間を記録</h2>
 
     <label>科目</label>
@@ -217,48 +234,71 @@ button:disabled {
     <button onclick="addRecord()">
       記録する
     </button>
+
   </div>
 
 
   <!-- 今日のまとめ -->
   <div class="card">
+
     <h2>📊 今日のまとめ</h2>
 
     <div class="summary">
 
       <div class="summary-box">
+
         今日の時間
-        <div class="summary-number" id="todayTotal">
+
+        <div
+          class="summary-number"
+          id="todayTotal"
+        >
           0分
         </div>
+
       </div>
 
       <div class="summary-box">
+
         記録数
-        <div class="summary-number" id="recordCount">
+
+        <div
+          class="summary-number"
+          id="recordCount"
+        >
           0
         </div>
+
       </div>
 
     </div>
+
   </div>
 
 
   <!-- 科目別 -->
   <div class="card">
+
     <h2>📈 科目別</h2>
+
     <div id="subjectChart"></div>
+
   </div>
 
 
   <!-- 記録一覧 -->
   <div class="card">
+
     <h2>📅 記録一覧</h2>
+
     <div id="records">
+
       <div class="empty">
         ログインすると記録が表示されます
       </div>
+
     </div>
+
   </div>
 
 
@@ -279,6 +319,7 @@ button:disabled {
 
 <script type="module">
 
+
 /* =========================
    Firebase
 ========================= */
@@ -296,7 +337,8 @@ import {
   deleteDoc,
   query,
   where,
-  onSnapshot
+  onSnapshot,
+  getDocs
 }
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
@@ -315,54 +357,77 @@ import {
 ========================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
-  authDomain: "studytime11111-9c9f1.firebaseapp.com",
-  projectId: "studytime11111-9c9f1",
-  storageBucket: "studytime11111-9c9f1.firebasestorage.app",
-  messagingSenderId: "292063415300",
-  appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
+
+  apiKey:
+    "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
+
+  authDomain:
+    "studytime11111-9c9f1.firebaseapp.com",
+
+  projectId:
+    "studytime11111-9c9f1",
+
+  storageBucket:
+    "studytime11111-9c9f1.firebasestorage.app",
+
+  messagingSenderId:
+    "292063415300",
+
+  appId:
+    "1:292063415300:web:3cbf0aef215710ecfd3951"
+
 };
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const db =
+  getFirestore(app);
 
-const auth = getAuth(app);
+const auth =
+  getAuth(app);
 
-const provider = new GoogleAuthProvider();
+const provider =
+  new GoogleAuthProvider();
 
 
 /* =========================
    クラスID
 ========================= */
 
-const CLASS_ID = "z6bxH8sYFjcdfENFXn3K";
+const CLASS_ID =
+  "z6bxH8sYFjcdfENFXn3K";
 
 
 /* =========================
    Googleログイン
 ========================= */
 
-window.loginWithGoogle = async function () {
+window.loginWithGoogle =
+  async function () {
 
-  try {
+    try {
 
-    await signInWithRedirect(auth, provider);
+      await signInWithRedirect(
+        auth,
+        provider
+      );
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error(error);
+      console.error(error);
 
-    alert(
-      "Googleログインに失敗しました。\n" +
-      error.code + "\n" +
-      error.message
-    );
+      alert(
+        "Googleログインに失敗しました。\n" +
+        error.code +
+        "\n" +
+        error.message
+      );
 
-  }
+    }
 
-};
+  };
 
 
 /* =========================
@@ -386,21 +451,33 @@ function showRecords(snapshot) {
 
   let records = [];
 
+
   snapshot.forEach((item) => {
 
-    const data = item.data();
+    const data =
+      item.data();
 
     records.push({
+
       id: item.id,
-      subject: data.subject || "その他",
-      minutes: Number(data.minutes) || 0,
-      date: data.date
+
+      subject:
+        data.subject || "その他",
+
+      minutes:
+        Number(data.minutes) || 0,
+
+      date:
+        data.date
+
     });
 
   });
 
 
-  /* 新しい順 */
+  /* =========================
+     新しい順
+  ========================= */
 
   records.sort((a, b) => {
 
@@ -423,25 +500,48 @@ function showRecords(snapshot) {
      今日の合計
   ========================= */
 
-  const now = new Date();
+  const now =
+    new Date();
 
-  let todayTotal = 0;
+  let todayTotal =
+    0;
+
 
   records.forEach((record) => {
 
-    if (!record.date || !record.date.toDate) {
-      return;
-    }
-
-    const date = record.date.toDate();
-
     if (
-      date.getFullYear() === now.getFullYear() &&
-      date.getMonth() === now.getMonth() &&
-      date.getDate() === now.getDate()
+      !record.date ||
+      !record.date.toDate
     ) {
 
-      todayTotal += record.minutes;
+      return;
+
+    }
+
+
+    const date =
+      record.date.toDate();
+
+
+    if (
+
+      date.getFullYear() ===
+        now.getFullYear()
+
+      &&
+
+      date.getMonth() ===
+        now.getMonth()
+
+      &&
+
+      date.getDate() ===
+        now.getDate()
+
+    ) {
+
+      todayTotal +=
+        record.minutes;
 
     }
 
@@ -461,20 +561,31 @@ function showRecords(snapshot) {
   ========================= */
 
   const subjects = {
+
     "国語": 0,
+
     "数学": 0,
+
     "英語": 0,
+
     "理科": 0,
+
     "社会": 0,
+
     "その他": 0
+
   };
 
 
   records.forEach((record) => {
 
-    if (subjects[record.subject] !== undefined) {
+    if (
+      subjects[record.subject] !==
+      undefined
+    ) {
 
-      subjects[record.subject] += record.minutes;
+      subjects[record.subject] +=
+        record.minutes;
 
     }
 
@@ -482,76 +593,101 @@ function showRecords(snapshot) {
 
 
   const maxMinutes =
-    Math.max(...Object.values(subjects), 1);
+    Math.max(
+      ...Object.values(subjects),
+      1
+    );
 
 
-  chartElement.innerHTML = "";
+  chartElement.innerHTML =
+    "";
 
 
-  Object.entries(subjects).forEach(
-    ([subject, minutes]) => {
+  Object.entries(subjects)
+    .forEach(
+      ([subject, minutes]) => {
 
-      const bar =
-        document.createElement("div");
+        const bar =
+          document.createElement("div");
 
-      bar.className = "bar";
-
-
-      const label =
-        document.createElement("div");
-
-      label.className = "bar-label";
-
-      label.innerHTML =
-        "<span>" +
-        subject +
-        "</span>" +
-        "<span>" +
-        minutes +
-        "分</span>";
+        bar.className =
+          "bar";
 
 
-      const background =
-        document.createElement("div");
+        const label =
+          document.createElement("div");
 
-      background.className =
-        "bar-background";
-
-
-      const fill =
-        document.createElement("div");
-
-      fill.className =
-        "bar-fill";
+        label.className =
+          "bar-label";
 
 
-      fill.style.width =
-        (minutes / maxMinutes * 100) + "%";
+        label.innerHTML =
+          "<span>" +
+          subject +
+          "</span>" +
+          "<span>" +
+          minutes +
+          "分</span>";
 
 
-      background.appendChild(fill);
+        const background =
+          document.createElement("div");
 
-      bar.appendChild(label);
+        background.className =
+          "bar-background";
 
-      bar.appendChild(background);
 
-      chartElement.appendChild(bar);
+        const fill =
+          document.createElement("div");
 
-    }
-  );
+        fill.className =
+          "bar-fill";
+
+
+        fill.style.width =
+          (
+            minutes /
+            maxMinutes *
+            100
+          ) + "%";
+
+
+        background.appendChild(
+          fill
+        );
+
+        bar.appendChild(
+          label
+        );
+
+        bar.appendChild(
+          background
+        );
+
+        chartElement.appendChild(
+          bar
+        );
+
+      }
+    );
 
 
   /* =========================
      記録一覧
   ========================= */
 
-  recordsElement.innerHTML = "";
+  recordsElement.innerHTML =
+    "";
 
 
-  if (records.length === 0) {
+  if (
+    records.length === 0
+  ) {
 
     recordsElement.innerHTML =
-      '<div class="empty">まだ記録がありません</div>';
+      '<div class="empty">' +
+      'まだ記録がありません' +
+      '</div>';
 
     return;
 
@@ -574,17 +710,23 @@ function showRecords(snapshot) {
       "record-info";
 
 
-    let dateText = "日時不明";
+    let dateText =
+      "日時不明";
 
 
-    if (record.date && record.date.toDate) {
+    if (
+      record.date &&
+      record.date.toDate
+    ) {
 
       const date =
         record.date.toDate();
 
 
       dateText =
-        date.toLocaleString("ja-JP");
+        date.toLocaleString(
+          "ja-JP"
+        );
 
     }
 
@@ -603,22 +745,33 @@ function showRecords(snapshot) {
     const deleteButton =
       document.createElement("button");
 
+
     deleteButton.textContent =
       "削除";
+
 
     deleteButton.className =
       "delete";
 
 
     deleteButton.onclick =
-      () => deleteRecord(record.id);
+      () =>
+        deleteRecord(
+          record.id
+        );
 
 
-    recordElement.appendChild(info);
+    recordElement.appendChild(
+      info
+    );
 
-    recordElement.appendChild(deleteButton);
+    recordElement.appendChild(
+      deleteButton
+    );
 
-    recordsElement.appendChild(recordElement);
+    recordsElement.appendChild(
+      recordElement
+    );
 
   });
 
@@ -626,25 +779,41 @@ function showRecords(snapshot) {
 
 
 /* =========================
-   自分の記録をリアルタイム取得
+   自分の記録を
+   リアルタイム取得
 ========================= */
 
 function listenToMyRecords(user) {
 
   const recordsQuery =
     query(
-      collection(db, "studySessions"),
-      where("studentId", "==", user.uid)
+
+      collection(
+        db,
+        "studySessions"
+      ),
+
+      where(
+        "studentId",
+        "==",
+        user.uid
+      )
+
     );
 
 
   onSnapshot(
+
     recordsQuery,
+
     (snapshot) => {
 
-      showRecords(snapshot);
+      showRecords(
+        snapshot
+      );
 
     },
+
     (error) => {
 
       console.error(
@@ -653,79 +822,204 @@ function listenToMyRecords(user) {
       );
 
     }
+
   );
 
 }
 
 
 /* =========================
-   ログイン状態
+   オンライン人数を
+   リアルタイム取得
 ========================= */
 
-onAuthStateChanged(auth, async (user) => {
+function listenToOnlineUsers() {
 
-  const status =
-    document.getElementById("loginStatus");
+  onSnapshot(
 
-  const button =
-    document.getElementById("loginButton");
+    collection(
+      db,
+      "onlineUsers"
+    ),
 
+    (snapshot) => {
 
-  if (user) {
-
-    const name =
-      user.displayName || "Googleユーザー";
-
-
-    /* 名前を表示 */
-
-    status.textContent =
-      "👤 " + name + " さんでログイン中";
+      const count =
+        snapshot.size;
 
 
-    button.textContent =
-      "ログイン済み";
+      document.getElementById(
+        "onlineCount"
+      ).textContent =
+        "🟢 現在ログイン中：" +
+        count +
+        "人";
 
+    },
 
-    button.disabled = true;
-
-
-    /* =========================
-       studentsに自動登録
-    ========================= */
-
-    try {
-
-      await setDoc(
-        doc(db, "students", user.uid),
-        {
-          nickname: name,
-          classId: CLASS_ID
-        },
-        {
-          merge: true
-        }
-      );
-
-    } catch (error) {
+    (error) => {
 
       console.error(
-        "students登録エラー:",
+        "オンライン人数取得エラー:",
         error
       );
 
     }
 
+  );
 
-    /* =========================
-       自分の記録を読み込む
-    ========================= */
+}
 
-    listenToMyRecords(user);
+
+/* =========================
+   オンライン人数監視開始
+========================= */
+
+listenToOnlineUsers();
+
+
+/* =========================
+   ログイン状態
+========================= */
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+
+    const status =
+      document.getElementById(
+        "loginStatus"
+      );
+
+    const button =
+      document.getElementById(
+        "loginButton"
+      );
+
+
+    if (user) {
+
+      const name =
+        user.displayName ||
+        "Googleユーザー";
+
+
+      /* =========================
+         名前を表示
+      ========================= */
+
+      status.textContent =
+        "👤 " +
+        name +
+        " さんでログイン中";
+
+
+      button.textContent =
+        "ログイン済み";
+
+
+      button.disabled =
+        true;
+
+
+      /* =========================
+         studentsに自動登録
+      ========================= */
+
+      try {
+
+        await setDoc(
+
+          doc(
+            db,
+            "students",
+            user.uid
+          ),
+
+          {
+
+            nickname:
+              name,
+
+            classId:
+              CLASS_ID
+
+          },
+
+          {
+
+            merge:
+              true
+
+          }
+
+        );
+
+      } catch (error) {
+
+        console.error(
+          "students登録エラー:",
+          error
+        );
+
+      }
+
+
+      /* =========================
+         オンラインユーザー登録
+      ========================= */
+
+      try {
+
+        await setDoc(
+
+          doc(
+            db,
+            "onlineUsers",
+            user.uid
+          ),
+
+          {
+
+            nickname:
+              name,
+
+            lastActive:
+              serverTimestamp()
+
+          },
+
+          {
+
+            merge:
+              true
+
+          }
+
+        );
+
+      } catch (error) {
+
+        console.error(
+          "onlineUsers登録エラー:",
+          error
+        );
+
+      }
+
+
+      /* =========================
+         自分の記録を読み込む
+      ========================= */
+
+      listenToMyRecords(
+        user
+      );
+
+    }
 
   }
-
-});
+);
 
 
 /* =========================
@@ -734,7 +1028,9 @@ onAuthStateChanged(auth, async (user) => {
 
 try {
 
-  await getRedirectResult(auth);
+  await getRedirectResult(
+    auth
+  );
 
 } catch (error) {
 
@@ -745,7 +1041,8 @@ try {
 
   alert(
     "Googleログインでエラーが発生しました。\n" +
-    error.code + "\n" +
+    error.code +
+    "\n" +
     error.message
   );
 
@@ -756,88 +1053,119 @@ try {
    勉強時間を記録
 ========================= */
 
-window.addRecord = async function () {
+window.addRecord =
+  async function () {
 
-  const user = auth.currentUser;
-
-
-  if (!user) {
-
-    alert(
-      "先にGoogleログインしてください！"
-    );
-
-    return;
-
-  }
+    const user =
+      auth.currentUser;
 
 
-  const subject =
-    document.getElementById("subject").value;
+    if (!user) {
+
+      alert(
+        "先にGoogleログインしてください！"
+      );
+
+      return;
+
+    }
 
 
-  const minutes =
-    Number(
-      document.getElementById("minutes").value
-    );
+    const subject =
+      document.getElementById(
+        "subject"
+      ).value;
 
 
-  if (!minutes || minutes <= 0) {
-
-    alert(
-      "勉強時間を入力してください！"
-    );
-
-    return;
-
-  }
+    const minutes =
+      Number(
+        document.getElementById(
+          "minutes"
+        ).value
+      );
 
 
-  try {
+    if (
+      !minutes ||
+      minutes <= 0
+    ) {
 
-    await addDoc(
-      collection(db, "studySessions"),
-      {
-        studentId: user.uid,
-        subject: subject,
-        minutes: minutes,
-        date: serverTimestamp()
-      }
-    );
+      alert(
+        "勉強時間を入力してください！"
+      );
 
+      return;
 
-    document.getElementById(
-      "minutes"
-    ).value = "";
+    }
 
 
-    alert(
-      "Firebaseに保存しました！"
-    );
+    try {
+
+      await addDoc(
+
+        collection(
+          db,
+          "studySessions"
+        ),
+
+        {
+
+          studentId:
+            user.uid,
+
+          subject:
+            subject,
+
+          minutes:
+            minutes,
+
+          date:
+            serverTimestamp()
+
+        }
+
+      );
 
 
-  } catch (error) {
+      document.getElementById(
+        "minutes"
+      ).value =
+        "";
 
-    console.error(error);
 
-    alert(
-      "保存できませんでした。\n" +
-      error.code + "\n" +
-      error.message
-    );
+      alert(
+        "Firebaseに保存しました！"
+      );
 
-  }
 
-};
+    } catch (error) {
+
+      console.error(
+        error
+      );
+
+      alert(
+        "保存できませんでした。\n" +
+        error.code +
+        "\n" +
+        error.message
+      );
+
+    }
+
+  };
 
 
 /* =========================
    1件削除
 ========================= */
 
-async function deleteRecord(recordId) {
+async function deleteRecord(
+  recordId
+) {
 
-  const user = auth.currentUser;
+  const user =
+    auth.currentUser;
 
 
   if (!user) {
@@ -857,19 +1185,30 @@ async function deleteRecord(recordId) {
     );
 
 
-  if (!ok) return;
+  if (!ok) {
+
+    return;
+
+  }
 
 
   try {
 
     await deleteDoc(
-      doc(db, "studySessions", recordId)
-    );
 
+      doc(
+        db,
+        "studySessions",
+        recordId
+      )
+
+    );
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     alert(
       "削除できませんでした。\n" +
@@ -885,73 +1224,93 @@ async function deleteRecord(recordId) {
    すべて削除
 ========================= */
 
-window.clearAll = async function () {
+window.clearAll =
+  async function () {
 
-  const user = auth.currentUser;
-
-
-  if (!user) {
-
-    alert(
-      "先にGoogleログインしてください！"
-    );
-
-    return;
-
-  }
+    const user =
+      auth.currentUser;
 
 
-  const ok =
-    confirm(
-      "自分の記録をすべて削除しますか？"
-    );
+    if (!user) {
+
+      alert(
+        "先にGoogleログインしてください！"
+      );
+
+      return;
+
+    }
 
 
-  if (!ok) return;
-
-
-  try {
-
-    const recordsQuery =
-      query(
-        collection(db, "studySessions"),
-        where("studentId", "==", user.uid)
+    const ok =
+      confirm(
+        "自分の記録をすべて削除しますか？"
       );
 
 
-    const unsubscribe =
-      onSnapshot(
-        recordsQuery,
-        async (snapshot) => {
+    if (!ok) {
 
-          for (const item of snapshot.docs) {
+      return;
 
-            await deleteDoc(item.ref);
+    }
 
-          }
 
-          unsubscribe();
+    try {
 
-          alert(
-            "記録を削除しました！"
-          );
+      const recordsQuery =
+        query(
 
-        }
+          collection(
+            db,
+            "studySessions"
+          ),
+
+          where(
+            "studentId",
+            "==",
+            user.uid
+          )
+
+        );
+
+
+      const snapshot =
+        await getDocs(
+          recordsQuery
+        );
+
+
+      for (
+        const item
+        of snapshot.docs
+      ) {
+
+        await deleteDoc(
+          item.ref
+        );
+
+      }
+
+
+      alert(
+        "記録を削除しました！"
       );
 
 
-  } catch (error) {
+    } catch (error) {
 
-    console.error(error);
+      console.error(
+        error
+      );
 
-    alert(
-      "削除できませんでした。\n" +
-      error.message
-    );
+      alert(
+        "削除できませんでした。\n" +
+        error.message
+      );
 
-  }
+    }
 
-};
+  };
 
 </script>
 
