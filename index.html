@@ -351,6 +351,7 @@
       background: #f5f7fb;
       border-radius: 10px;
       min-height: 40px;
+      line-height: 1.8;
     }
 
     .admin-box {
@@ -744,22 +745,12 @@
   const CLASS_ID =
     "z6bxH8sYFjcdfENFXn3K";
 
-
   const ONLINE_TIMEOUT_MS =
     100 * 1000;
 
   const HEARTBEAT_MS =
     60 * 1000;
 
-
-  /*
-   * ★ タイマー保存用
-   *
-   * ブラウザを閉じても残る。
-   *
-   * ユーザーごとに別キーにすることで、
-   * 同じ端末を複数人が使っても混ざりにくくする。
-   */
   const TIMER_STORAGE_PREFIX =
     "studyTimeTimer_";
 
@@ -784,16 +775,13 @@
 
   let rankingMode = "today";
 
-
   let timerInterval = null;
 
   let timerStartTime = null;
 
   let timerSubject = null;
 
-
   let heartbeatInterval = null;
-
 
   let rankingStudentsUnsubscribe = null;
 
@@ -802,7 +790,6 @@
   let onlineUsersUnsubscribe = null;
 
   let myRecordsUnsubscribe = null;
-
 
   let calendarYear;
 
@@ -818,15 +805,12 @@
 
 
   /* =========================================================
-     タイマー保存用関数
+     タイマー保存
   ========================================================= */
 
   function getTimerStorageKey(uid) {
 
-    return (
-      TIMER_STORAGE_PREFIX +
-      uid
-    );
+    return TIMER_STORAGE_PREFIX + uid;
   }
 
 
@@ -840,7 +824,6 @@
       return;
     }
 
-
     try {
 
       localStorage.setItem(
@@ -848,11 +831,8 @@
           currentUser.uid
         ),
         JSON.stringify({
-          startTime:
-            timerStartTime,
-
-          subject:
-            timerSubject
+          startTime: timerStartTime,
+          subject: timerSubject
         })
       );
 
@@ -872,7 +852,6 @@
       return null;
     }
 
-
     try {
 
       const raw =
@@ -882,15 +861,12 @@
           )
         );
 
-
       if (!raw) {
         return null;
       }
 
-
       const data =
         JSON.parse(raw);
-
 
       if (
         !data ||
@@ -909,17 +885,12 @@
         return null;
       }
 
-
       return {
         startTime:
-          Number(
-            data.startTime
-          ),
+          Number(data.startTime),
 
         subject:
-          String(
-            data.subject
-          )
+          String(data.subject)
       };
 
     } catch (error) {
@@ -940,7 +911,6 @@
       return;
     }
 
-
     try {
 
       localStorage.removeItem(
@@ -960,7 +930,7 @@
 
 
   /* =========================================================
-     ログイン状態
+     ログイン
   ========================================================= */
 
   await setPersistence(
@@ -980,7 +950,6 @@
         provider.setCustomParameters({
           hd: ALLOWED_DOMAIN
         });
-
 
         await signInWithPopup(
           auth,
@@ -1006,17 +975,9 @@
         return;
       }
 
-
       try {
 
-        /*
-         * ログアウトした場合は、
-         * このユーザーのタイマーも終了扱い。
-         *
-         * 保存はしない。
-         */
         stopTimerWithoutSave();
-
 
         if (heartbeatInterval) {
 
@@ -1027,7 +988,6 @@
           heartbeatInterval = null;
         }
 
-
         await deleteDoc(
           doc(
             db,
@@ -1035,7 +995,6 @@
             currentUser.uid
           )
         ).catch(() => {});
-
 
         await signOut(auth);
 
@@ -1057,7 +1016,6 @@
 
       currentUser = user;
 
-
       if (!user) {
 
         resetLoggedOutUI();
@@ -1065,11 +1023,9 @@
         return;
       }
 
-
       const email =
         (user.email || "")
           .toLowerCase();
-
 
       if (
         !email.endsWith(
@@ -1082,12 +1038,10 @@
           "@gs.seito-fku.ed.jp のアカウントを使用してください。"
         );
 
-
         await signOut(auth);
 
         return;
       }
-
 
       document.getElementById(
         "loginStatus"
@@ -1099,18 +1053,15 @@
         ) +
         " さんでログイン中";
 
-
       document.getElementById(
         "loginButton"
       ).textContent =
         "ログイン済み";
 
-
       document.getElementById(
         "loginButton"
       ).disabled =
         true;
-
 
       document
         .getElementById(
@@ -1132,7 +1083,6 @@
           .classList.remove(
             "hidden"
           );
-
 
         setupAdminMonthSelect();
 
@@ -1183,22 +1133,13 @@
 
       listenToMyRecords();
 
+      await refreshAllTimeTotals(false);
 
-      await refreshAllTimeTotals(
-        false
-      );
-
+      setupCalendarDate();
 
       await loadCalendarMonth();
 
-
-      /*
-       * ★ ブラウザを閉じる前に
-       * タイマーを使っていた場合、
-       * ここで復元する。
-       */
       restoreTimer();
-
 
       updateAllUI();
     }
@@ -1212,18 +1153,15 @@
     ).textContent =
       "ログインしていません";
 
-
     document.getElementById(
       "loginButton"
     ).textContent =
       "Googleでログイン";
 
-
     document.getElementById(
       "loginButton"
     ).disabled =
       false;
-
 
     document
       .getElementById(
@@ -1233,105 +1171,68 @@
         "hidden"
       );
 
-
     document.getElementById(
       "onlineCount"
     ).textContent =
       "0人";
-
 
     document.getElementById(
       "studyingCount"
     ).textContent =
       "0人";
 
-
     document.getElementById(
       "rankingList"
     ).innerHTML =
       '<li class="loading">ログインすると表示されます</li>';
-
 
     document.getElementById(
       "records"
     ).innerHTML =
       '<div class="loading">ログインすると表示されます。</div>';
 
-
     document.getElementById(
       "todayTotal"
     ).textContent =
       "0分";
-
 
     document.getElementById(
       "recordCount"
     ).textContent =
       "0";
 
-
     document.getElementById(
       "subjectChart"
     ).innerHTML =
       '<div class="note">まだ記録がありません。</div>';
 
-
     classStudents = [];
-
     todaySessions = [];
-
     myRecords = [];
-
     onlineUsers = [];
-
     allTimeTotals = {};
-
     allTimeLoaded = false;
 
 
-    if (
-      rankingStudentsUnsubscribe
-    ) {
-
+    if (rankingStudentsUnsubscribe) {
       rankingStudentsUnsubscribe();
-
-      rankingStudentsUnsubscribe =
-        null;
+      rankingStudentsUnsubscribe = null;
     }
 
-
-    if (
-      todaySessionsUnsubscribe
-    ) {
-
+    if (todaySessionsUnsubscribe) {
       todaySessionsUnsubscribe();
-
-      todaySessionsUnsubscribe =
-        null;
+      todaySessionsUnsubscribe = null;
     }
 
-
-    if (
-      onlineUsersUnsubscribe
-    ) {
-
+    if (onlineUsersUnsubscribe) {
       onlineUsersUnsubscribe();
-
-      onlineUsersUnsubscribe =
-        null;
+      onlineUsersUnsubscribe = null;
     }
 
-
-    if (
-      myRecordsUnsubscribe
-    ) {
-
+    if (myRecordsUnsubscribe) {
       myRecordsUnsubscribe();
-
-      myRecordsUnsubscribe =
-        null;
+      myRecordsUnsubscribe = null;
     }
-
 
     if (heartbeatInterval) {
 
@@ -1341,7 +1242,6 @@
 
       heartbeatInterval = null;
     }
-
 
     stopTimerWithoutSave();
   }
@@ -1357,28 +1257,17 @@
       return;
     }
 
-
-    /*
-     * すでにタイマーが動いているなら何もしない。
-     */
     if (timerStartTime) {
       return;
     }
 
-
     const saved =
       loadTimerState();
-
 
     if (!saved) {
       return;
     }
 
-
-    /*
-     * 時刻が未来になっているなど、
-     * 明らかにおかしいデータなら破棄。
-     */
     if (
       saved.startTime >
       Date.now()
@@ -1389,63 +1278,45 @@
       return;
     }
 
-
     timerStartTime =
       saved.startTime;
 
-
     timerSubject =
       saved.subject;
-
 
     document.getElementById(
       "timerSubject"
     ).value =
       timerSubject;
 
-
     document.getElementById(
       "timerSubject"
     ).disabled =
       true;
-
 
     document.getElementById(
       "startTimerButton"
     ).disabled =
       true;
 
-
     document.getElementById(
       "stopTimerButton"
     ).disabled =
       false;
-
 
     document.getElementById(
       "timerStatus"
     ).textContent =
       "🔥 勉強中（復元しました）";
 
-
-    /*
-     * 1秒ごとに画面だけ更新。
-     *
-     * Firebaseには毎秒アクセスしない。
-     */
     timerInterval =
       setInterval(
         updateTimerDisplay,
         1000
       );
 
-
     updateTimerDisplay();
 
-
-    /*
-     * オンライン状態も現在のタイマーに合わせる。
-     */
     updateOnlineStatus();
   }
 
@@ -1456,13 +1327,9 @@
 
   function listenToStudents() {
 
-    if (
-      rankingStudentsUnsubscribe
-    ) {
-
+    if (rankingStudentsUnsubscribe) {
       rankingStudentsUnsubscribe();
     }
-
 
     const q =
       query(
@@ -1476,7 +1343,6 @@
           CLASS_ID
         )
       );
-
 
     rankingStudentsUnsubscribe =
       onSnapshot(
@@ -1492,25 +1358,16 @@
               })
             );
 
-
           updateRankings();
 
           updateAllUI();
 
-
-          /*
-           * ログイン直後に
-           * classStudentsがまだ空だった場合でも、
-           * 生徒一覧取得後に全期間合計を読み込む。
-           */
           if (
             !allTimeLoaded &&
             classStudents.length > 0
           ) {
 
-            await refreshAllTimeTotals(
-              false
-            );
+            await refreshAllTimeTotals(false);
           }
         },
 
@@ -1526,14 +1383,13 @@
 
 
   /* =========================================================
-     今日の学習記録
+     今日の範囲
   ========================================================= */
 
   function getTodayRange() {
 
     const now =
       new Date();
-
 
     const start =
       new Date(
@@ -1546,15 +1402,12 @@
         0
       );
 
-
     const end =
       new Date(start);
-
 
     end.setDate(
       end.getDate() + 1
     );
-
 
     return {
       start,
@@ -1563,22 +1416,21 @@
   }
 
 
+  /* =========================================================
+     今日の学習記録
+  ========================================================= */
+
   function listenToTodaySessions() {
 
-    if (
-      todaySessionsUnsubscribe
-    ) {
-
+    if (todaySessionsUnsubscribe) {
       todaySessionsUnsubscribe();
     }
-
 
     const {
       start,
       end
     } =
       getTodayRange();
-
 
     const q =
       query(
@@ -1600,12 +1452,11 @@
         )
       );
 
-
     todaySessionsUnsubscribe =
       onSnapshot(
         q,
 
-        async (snapshot) => {
+        (snapshot) => {
 
           todaySessions =
             snapshot.docs.map(
@@ -1615,22 +1466,11 @@
               })
             );
 
-
           updateTodaySummary();
 
           updateRankings();
 
           updateAllUI();
-
-
-          /*
-           * カレンダーを毎回丸ごと読み直すと
-           * 読み取り数が増えるので、
-           * ここでは自動更新しない。
-           *
-           * 今日のMVP表示は、
-           * 次回ページ更新・月移動時に更新される。
-           */
         },
 
         (error) => {
@@ -1650,18 +1490,13 @@
 
   function listenToMyRecords() {
 
-    if (
-      myRecordsUnsubscribe
-    ) {
-
+    if (myRecordsUnsubscribe) {
       myRecordsUnsubscribe();
     }
-
 
     if (!currentUser) {
       return;
     }
-
 
     const q =
       query(
@@ -1675,7 +1510,6 @@
           currentUser.uid
         )
       );
-
 
     myRecordsUnsubscribe =
       onSnapshot(
@@ -1697,7 +1531,6 @@
                   getMillis(a.date)
               );
 
-
           renderMyRecords();
         },
 
@@ -1713,18 +1546,14 @@
 
 
   /* =========================================================
-     オンライン状態
+     オンライン
   ========================================================= */
 
   function listenToOnlineUsers() {
 
-    if (
-      onlineUsersUnsubscribe
-    ) {
-
+    if (onlineUsersUnsubscribe) {
       onlineUsersUnsubscribe();
     }
-
 
     const q =
       query(
@@ -1739,7 +1568,6 @@
         )
       );
 
-
     onlineUsersUnsubscribe =
       onSnapshot(
         q,
@@ -1753,7 +1581,6 @@
                 ...item.data()
               })
             );
-
 
           updateOnlineCounts();
 
@@ -1774,12 +1601,10 @@
   function startHeartbeat() {
 
     if (heartbeatInterval) {
-
       clearInterval(
         heartbeatInterval
       );
     }
-
 
     heartbeatInterval =
       setInterval(
@@ -1794,7 +1619,6 @@
     if (!currentUser) {
       return;
     }
-
 
     try {
 
@@ -1846,7 +1670,6 @@
     const now =
       Date.now();
 
-
     return onlineUsers.filter(
       (item) => {
 
@@ -1855,11 +1678,9 @@
             item.lastActive
           );
 
-
         if (!lastActive) {
           return false;
         }
-
 
         return (
           now -
@@ -1886,17 +1707,14 @@
     const active =
       getActiveOnlineUsers();
 
-
     const studying =
       getStudyingOnlineUsers();
-
 
     document.getElementById(
       "onlineCount"
     ).textContent =
       active.length +
       "人";
-
 
     document.getElementById(
       "studyingCount"
@@ -1918,22 +1736,18 @@
             studentId
         );
 
-
     if (!user) {
       return 0;
     }
-
 
     const start =
       Number(
         user.activeStart
       );
 
-
     if (!start) {
       return 0;
     }
-
 
     const elapsed =
       Math.max(
@@ -1941,7 +1755,6 @@
         Date.now() -
         start
       );
-
 
     return Math.floor(
       elapsed / 60000
@@ -1961,28 +1774,22 @@
       return;
     }
 
-
     if (
       allTimeLoaded &&
       !force
     ) {
-
       return;
     }
-
 
     if (
       classStudents.length === 0
     ) {
-
       return;
     }
-
 
     try {
 
       const result = {};
-
 
       await Promise.all(
         classStudents.map(
@@ -2004,7 +1811,6 @@
                   )
                 );
 
-
               const aggregate =
                 await getAggregateFromServer(
                   q,
@@ -2013,7 +1819,6 @@
                       sum("minutes")
                   }
                 );
-
 
               result[
                 student.id
@@ -2033,7 +1838,6 @@
                 error
               );
 
-
               result[
                 student.id
               ] =
@@ -2043,14 +1847,11 @@
         )
       );
 
-
       allTimeTotals =
         result;
 
-
       allTimeLoaded =
         true;
-
 
       updateRankings();
 
@@ -2074,18 +1875,15 @@
       rankingMode =
         mode;
 
-
       const todayButton =
         document.getElementById(
           "todayRankingButton"
         );
 
-
       const allButton =
         document.getElementById(
           "allRankingButton"
         );
-
 
       if (
         mode === "today"
@@ -2096,7 +1894,6 @@
 
         allButton.className =
           "secondary";
-
 
         document.getElementById(
           "rankingDescription"
@@ -2111,13 +1908,11 @@
         allButton.className =
           "";
 
-
         document.getElementById(
           "rankingDescription"
         ).textContent =
           "全期間の学習時間";
       }
-
 
       updateRankings();
     };
@@ -2130,11 +1925,9 @@
         "rankingList"
       );
 
-
     if (!currentUser) {
       return;
     }
-
 
     if (
       classStudents.length === 0
@@ -2146,17 +1939,14 @@
       return;
     }
 
-
     const studyingUsers =
       getStudyingOnlineUsers();
-
 
     const ranking =
       classStudents.map(
         (student) => {
 
           let minutes = 0;
-
 
           if (
             rankingMode === "today"
@@ -2192,19 +1982,13 @@
               );
           }
 
-
-          /*
-           * 現在タイマー中の時間を加算。
-           */
           const activeMinutes =
             getActiveMinutes(
               student.id
             );
 
-
           minutes +=
             activeMinutes;
-
 
           const isStudying =
             studyingUsers.some(
@@ -2212,7 +1996,6 @@
                 item.id ===
                 student.id
             );
-
 
           return {
             ...student,
@@ -2222,13 +2005,11 @@
         }
       );
 
-
     ranking.sort(
       (a, b) =>
         b.minutes -
         a.minutes
     );
-
 
     const myIndex =
       ranking.findIndex(
@@ -2237,13 +2018,11 @@
           currentUser.uid
       );
 
-
     let displayRanking =
       ranking.slice(
         0,
         3
       );
-
 
     if (
       myIndex >= 3
@@ -2253,16 +2032,13 @@
         separator: true
       });
 
-
       displayRanking.push(
         ranking[myIndex]
       );
     }
 
-
     list.innerHTML =
       "";
-
 
     displayRanking.forEach(
       (item) => {
@@ -2276,27 +2052,21 @@
               "li"
             );
 
-
           li.style.textAlign =
             "center";
-
 
           li.style.color =
             "#888";
 
-
           li.textContent =
             "・ ・ ・";
-
 
           list.appendChild(
             li
           );
 
-
           return;
         }
-
 
         const actualRank =
           ranking.findIndex(
@@ -2305,16 +2075,13 @@
               item.id
           ) + 1;
 
-
         const li =
           document.createElement(
             "li"
           );
 
-
         li.className =
           "ranking-item";
-
 
         if (
           item.id ===
@@ -2326,9 +2093,7 @@
           );
         }
 
-
         let medal = "";
-
 
         if (
           actualRank === 1
@@ -2352,19 +2117,16 @@
             "🥉";
         }
 
-
         const fire =
           item.isStudying
             ? " 🔥"
             : "";
-
 
         const self =
           item.id ===
           currentUser.uid
             ? "（自分）"
             : "";
-
 
         li.innerHTML = `
           <div class="rank-number">
@@ -2387,13 +2149,11 @@
           </div>
         `;
 
-
         list.appendChild(
           li
         );
       }
     );
-
 
     if (
       displayRanking.length === 0
@@ -2415,14 +2175,12 @@
       return;
     }
 
-
     const records =
       todaySessions.filter(
         item =>
           item.studentId ===
           currentUser.uid
       );
-
 
     let total =
       records.reduce(
@@ -2438,13 +2196,11 @@
         0
       );
 
-
     if (timerStartTime) {
 
       total +=
         getCurrentTimerMinutes();
     }
-
 
     document.getElementById(
       "todayTotal"
@@ -2452,7 +2208,6 @@
       formatMinutes(
         total
       );
-
 
     document.getElementById(
       "recordCount"
@@ -2471,14 +2226,12 @@
       return;
     }
 
-
     const records =
       todaySessions.filter(
         item =>
           item.studentId ===
           currentUser.uid
       );
-
 
     const subjects = [
       "国語",
@@ -2489,9 +2242,7 @@
       "その他"
     ];
 
-
     const totals = {};
-
 
     subjects.forEach(
       subject => {
@@ -2500,14 +2251,12 @@
       }
     );
 
-
     records.forEach(
       record => {
 
         const subject =
           record.subject ||
           "その他";
-
 
         if (
           totals[subject] ===
@@ -2518,7 +2267,6 @@
             0;
         }
 
-
         totals[subject] +=
           Number(
             record.minutes ||
@@ -2526,7 +2274,6 @@
           );
       }
     );
-
 
     const max =
       Math.max(
@@ -2536,23 +2283,19 @@
         1
       );
 
-
     const chart =
       document.getElementById(
         "subjectChart"
       );
 
-
     chart.innerHTML =
       "";
-
 
     subjects.forEach(
       subject => {
 
         const minutes =
           totals[subject];
-
 
         const percent =
           minutes === 0
@@ -2565,16 +2308,13 @@
                 ) * 100
               );
 
-
         const row =
           document.createElement(
             "div"
           );
 
-
         row.className =
           "subject-row";
-
 
         row.innerHTML = `
           <div class="subject-header">
@@ -2595,7 +2335,6 @@
           </div>
         `;
 
-
         chart.appendChild(
           row
         );
@@ -2615,7 +2354,6 @@
         "records"
       );
 
-
     if (
       myRecords.length === 0
     ) {
@@ -2626,10 +2364,8 @@
       return;
     }
 
-
     container.innerHTML =
       "";
-
 
     myRecords.forEach(
       record => {
@@ -2639,16 +2375,13 @@
             "div"
           );
 
-
         item.className =
           "record-item";
-
 
         const dateText =
           formatDateTime(
             record.date
           );
-
 
         item.innerHTML = `
           <div class="record-top">
@@ -2685,7 +2418,6 @@
           </div>
         `;
 
-
         item
           .querySelector(
             "[data-delete-id]"
@@ -2697,7 +2429,6 @@
                 record.id
               )
           );
-
 
         container.appendChild(
           item
@@ -2723,12 +2454,10 @@
         return;
       }
 
-
       const subject =
         document.getElementById(
           "subject"
         ).value;
-
 
       const minutes =
         Number(
@@ -2736,7 +2465,6 @@
             "minutes"
           ).value
         );
-
 
       if (
         !Number.isFinite(
@@ -2752,7 +2480,6 @@
         return;
       }
 
-
       if (
         minutes > 1440
       ) {
@@ -2763,7 +2490,6 @@
 
         return;
       }
-
 
       try {
 
@@ -2792,24 +2518,17 @@
           }
         );
 
-
         document.getElementById(
           "minutes"
         ).value =
           "";
 
-
-        /*
-         * 全期間合計を更新。
-         */
         allTimeLoaded =
           false;
-
 
         await refreshAllTimeTotals(
           true
         );
-
 
         alert(
           "学習時間を記録しました！"
@@ -2838,17 +2557,14 @@
         return;
       }
 
-
       const ok =
         confirm(
           "この記録を削除しますか？"
         );
 
-
       if (!ok) {
         return;
       }
-
 
       try {
 
@@ -2860,10 +2576,8 @@
           )
         );
 
-
         allTimeLoaded =
           false;
-
 
         await refreshAllTimeTotals(
           true
@@ -2892,17 +2606,14 @@
         return;
       }
 
-
       const ok =
         confirm(
           "自分の学習記録をすべて削除しますか？"
         );
 
-
       if (!ok) {
         return;
       }
-
 
       try {
 
@@ -2919,10 +2630,8 @@
             )
           );
 
-
         const snapshot =
           await getDocs(q);
-
 
         for (
           const item
@@ -2938,15 +2647,12 @@
           );
         }
 
-
         allTimeLoaded =
           false;
-
 
         await refreshAllTimeTotals(
           true
         );
-
 
         alert(
           "すべての記録を削除しました。"
@@ -2966,7 +2672,6 @@
 
   /* =========================================================
      タイマー
-     ★ ブラウザを閉じても復元可能
   ========================================================= */
 
   window.startTimer =
@@ -2981,61 +2686,47 @@
         return;
       }
 
-
       if (timerStartTime) {
         return;
       }
-
 
       timerSubject =
         document.getElementById(
           "timerSubject"
         ).value;
 
-
       timerStartTime =
         Date.now();
 
-
-      /*
-       * ★ 開始時刻をブラウザに保存。
-       */
       saveTimerState();
-
 
       document.getElementById(
         "startTimerButton"
       ).disabled =
         true;
 
-
       document.getElementById(
         "stopTimerButton"
       ).disabled =
         false;
-
 
       document.getElementById(
         "timerSubject"
       ).disabled =
         true;
 
-
       document.getElementById(
         "timerStatus"
       ).textContent =
         "🔥 勉強中";
 
-
       await updateOnlineStatus();
-
 
       timerInterval =
         setInterval(
           updateTimerDisplay,
           1000
         );
-
 
       updateTimerDisplay();
     };
@@ -3048,14 +2739,11 @@
         return;
       }
 
-
       const start =
         timerStartTime;
 
-
       const subject =
         timerSubject;
-
 
       const elapsedSeconds =
         Math.max(
@@ -3068,7 +2756,6 @@
           )
         );
 
-
       const minutes =
         Math.max(
           1,
@@ -3078,18 +2765,11 @@
           )
         );
 
-
-      /*
-       * 先にタイマーを停止し、
-       * ブラウザ保存データも削除。
-       */
       stopTimerWithoutSave();
-
 
       if (!currentUser) {
         return;
       }
-
 
       try {
 
@@ -3116,15 +2796,14 @@
           }
         );
 
-
         allTimeLoaded =
           false;
-
 
         await refreshAllTimeTotals(
           true
         );
 
+        await updateOnlineStatus();
 
         document.getElementById(
           "timerStatus"
@@ -3155,45 +2834,33 @@
         null;
     }
 
-
-    /*
-     * ★ ブラウザに保存していた
-     * タイマー情報も削除。
-     */
     clearTimerState();
-
 
     timerStartTime =
       null;
 
-
     timerSubject =
       null;
-
 
     document.getElementById(
       "startTimerButton"
     ).disabled =
       false;
 
-
     document.getElementById(
       "stopTimerButton"
     ).disabled =
       true;
-
 
     document.getElementById(
       "timerSubject"
     ).disabled =
       false;
 
-
     document.getElementById(
       "timerDisplay"
     ).textContent =
       "00:00:00";
-
 
     if (currentUser) {
 
@@ -3211,7 +2878,6 @@
       return;
     }
 
-
     const elapsed =
       Math.max(
         0,
@@ -3223,12 +2889,10 @@
         )
       );
 
-
     const hours =
       Math.floor(
         elapsed / 3600
       );
-
 
     const minutes =
       Math.floor(
@@ -3238,16 +2902,13 @@
         ) / 60
       );
 
-
     const seconds =
       elapsed % 60;
-
 
     document.getElementById(
       "timerDisplay"
     ).textContent =
       `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-
 
     updateTodaySummary();
 
@@ -3260,7 +2921,6 @@
     if (!timerStartTime) {
       return 0;
     }
-
 
     return Math.floor(
       (
@@ -3280,10 +2940,8 @@
     const now =
       new Date();
 
-
     calendarYear =
       now.getFullYear();
-
 
     calendarMonth =
       now.getMonth();
@@ -3295,7 +2953,6 @@
 
       calendarMonth +=
         diff;
-
 
       if (
         calendarMonth < 0
@@ -3316,6 +2973,8 @@
         calendarYear++;
       }
 
+      calendarMonthLoadedKey =
+        "";
 
       await loadCalendarMonth();
     };
@@ -3329,10 +2988,8 @@
       return;
     }
 
-
     const key =
       `${calendarYear}-${calendarMonth}`;
-
 
     if (
       calendarMonthLoadedKey ===
@@ -3345,7 +3002,6 @@
       return;
     }
 
-
     const start =
       new Date(
         calendarYear,
@@ -3357,7 +3013,6 @@
         0
       );
 
-
     const end =
       new Date(
         calendarYear,
@@ -3368,7 +3023,6 @@
         0,
         0
       );
-
 
     try {
 
@@ -3392,10 +3046,8 @@
           )
         );
 
-
       const snapshot =
         await getDocs(q);
-
 
       calendarMonthSessions =
         snapshot.docs.map(
@@ -3405,10 +3057,8 @@
           })
         );
 
-
       calendarMonthLoadedKey =
         key;
-
 
       renderCalendar();
 
@@ -3429,20 +3079,16 @@
         "calendar"
       );
 
-
     const title =
       document.getElementById(
         "calendarTitle"
       );
 
-
     title.textContent =
       `${calendarYear}年${calendarMonth + 1}月`;
 
-
     calendar.innerHTML =
       "";
-
 
     const weekdays = [
       "日",
@@ -3454,7 +3100,6 @@
       "土"
     ];
 
-
     weekdays.forEach(
       day => {
 
@@ -3463,21 +3108,17 @@
             "div"
           );
 
-
         div.className =
           "calendar-weekday";
 
-
         div.textContent =
           day;
-
 
         calendar.appendChild(
           div
         );
       }
     );
-
 
     const firstDay =
       new Date(
@@ -3486,14 +3127,12 @@
         1
       ).getDay();
 
-
     const daysInMonth =
       new Date(
         calendarYear,
         calendarMonth + 1,
         0
       ).getDate();
-
 
     for (
       let i = 0;
@@ -3506,16 +3145,13 @@
           "div"
         );
 
-
       div.className =
         "calendar-day empty";
-
 
       calendar.appendChild(
         div
       );
     }
-
 
     for (
       let day = 1;
@@ -3528,10 +3164,8 @@
           "div"
         );
 
-
       div.className =
         "calendar-day";
-
 
       const date =
         new Date(
@@ -3540,16 +3174,13 @@
           day
         );
 
-
       const dateKey =
         makeDateKey(
           date
         );
 
-
       const now =
         new Date();
-
 
       if (
         now.getFullYear() ===
@@ -3565,12 +3196,10 @@
         );
       }
 
-
       const mvp =
         calculateDailyMvp(
           dateKey
         );
-
 
       if (
         mvp.length > 0
@@ -3580,7 +3209,6 @@
           "mvp"
         );
       }
-
 
       div.innerHTML = `
         <div class="day-number">
@@ -3594,7 +3222,6 @@
         }
       `;
 
-
       div.addEventListener(
         "click",
         () =>
@@ -3602,7 +3229,6 @@
             dateKey
           )
       );
-
 
       calendar.appendChild(
         div
@@ -3617,7 +3243,6 @@
 
     const totals = {};
 
-
     calendarMonthSessions.forEach(
       session => {
 
@@ -3626,23 +3251,19 @@
             session.date
           );
 
-
         if (!millis) {
           return;
         }
-
 
         const date =
           new Date(
             millis
           );
 
-
         const key =
           makeDateKey(
             date
           );
-
 
         if (
           key !== dateKey
@@ -3650,10 +3271,8 @@
           return;
         }
 
-
         const studentId =
           session.studentId;
-
 
         totals[studentId] =
           (
@@ -3667,12 +3286,10 @@
       }
     );
 
-
     const values =
       Object.values(
         totals
       );
-
 
     if (
       values.length === 0
@@ -3681,12 +3298,10 @@
       return [];
     }
 
-
     const max =
       Math.max(
         ...values
       );
-
 
     if (
       max <= 0
@@ -3694,7 +3309,6 @@
 
       return [];
     }
-
 
     return Object.entries(
       totals
@@ -3713,6 +3327,17 @@
   }
 
 
+  /* =========================================================
+     ★ MVPカレンダー詳細
+     
+     表示するのは
+     ・自分の時間
+     ・MVPの名前と時間
+     
+     のみ。
+     他の生徒の記録は表示しない。
+  ========================================================= */
+
   async function showHistoryDetail(
     dateKey
   ) {
@@ -3720,18 +3345,15 @@
     selectedHistoryDate =
       dateKey;
 
-
     const detail =
       document.getElementById(
         "historyDetail"
       );
 
-
     const mvps =
       calculateDailyMvp(
         dateKey
       );
-
 
     const dateSessions =
       calendarMonthSessions.filter(
@@ -3742,11 +3364,9 @@
               session.date
             );
 
-
           if (!millis) {
             return false;
           }
-
 
           return (
             makeDateKey(
@@ -3760,13 +3380,48 @@
       );
 
 
+    /*
+     * その日の自分の合計時間
+     */
+    let myMinutes =
+      0;
+
+    if (currentUser) {
+
+      myMinutes =
+        dateSessions
+          .filter(
+            session =>
+              session.studentId ===
+              currentUser.uid
+          )
+          .reduce(
+            (
+              total,
+              session
+            ) =>
+              total +
+              Number(
+                session.minutes ||
+                0
+              ),
+            0
+          );
+    }
+
+
+    /*
+     * 記録がまったくない日
+     */
     if (
-      dateSessions.length ===
-      0
+      dateSessions.length === 0
     ) {
 
-      detail.innerHTML =
-        `<strong>${dateKey}</strong><br>この日の記録はありません。`;
+      detail.innerHTML = `
+        <strong>${dateKey}</strong><br><br>
+        👤 自分：0分<br>
+        🏆 MVP：なし
+      `;
 
       return;
     }
@@ -3776,113 +3431,56 @@
       `<strong>${dateKey}</strong><br><br>`;
 
 
+    /*
+     * 自分の記録
+     */
+    html +=
+      `👤 自分：${formatMinutes(
+        myMinutes
+      )}<br>`;
+
+
+    /*
+     * MVP
+     */
     if (
       mvps.length > 0
     ) {
 
-      const mvpNames =
-        mvps.map(
-          mvp => {
-
-            const student =
-              classStudents.find(
-                item =>
-                  item.id ===
-                  mvp.studentId
-              );
+      html +=
+        `<br>🏆 <strong>MVP</strong><br>`;
 
 
-            return (
-              student?.nickname ||
-              "名前未設定"
+      mvps.forEach(
+        mvp => {
+
+          const student =
+            classStudents.find(
+              item =>
+                item.id ===
+                mvp.studentId
             );
-          }
-        );
 
 
-      html +=
-        `🏆 MVP：${mvpNames
-          .map(
-            escapeHtml
-          )
-          .join("、")}<br>`;
+          const name =
+            student?.nickname ||
+            "名前未設定";
 
-
-      html +=
-        `🏆 学習時間：${formatMinutes(
-          mvps[0].minutes
-        )}<br><br>`;
-    }
-
-
-    html +=
-      "この日の記録：<br>";
-
-
-    const grouped = {};
-
-
-    dateSessions.forEach(
-      session => {
-
-        const student =
-          classStudents.find(
-            item =>
-              item.id ===
-              session.studentId
-          );
-
-
-        const name =
-          student?.nickname ||
-          "名前未設定";
-
-
-        if (
-          !grouped[
-            session.studentId
-          ]
-        ) {
-
-          grouped[
-            session.studentId
-          ] = {
-            name,
-            minutes: 0
-          };
-        }
-
-
-        grouped[
-          session.studentId
-        ].minutes +=
-          Number(
-            session.minutes ||
-            0
-          );
-      }
-    );
-
-
-    Object.values(
-      grouped
-    )
-      .sort(
-        (a, b) =>
-          b.minutes -
-          a.minutes
-      )
-      .forEach(
-        item => {
 
           html +=
-            `・${escapeHtml(
-              item.name
+            `🏆 ${escapeHtml(
+              name
             )}：${formatMinutes(
-              item.minutes
+              mvp.minutes
             )}<br>`;
         }
       );
+
+    } else {
+
+      html +=
+        `<br>🏆 MVP：なし`;
+    }
 
 
     detail.innerHTML =
@@ -3906,16 +3504,13 @@
         return;
       }
 
-
       const container =
         document.getElementById(
           "mvpRankingList"
         );
 
-
       container.innerHTML =
         '<div class="loading">MVPデータを計算中...</div>';
-
 
       try {
 
@@ -3927,9 +3522,7 @@
             )
           );
 
-
         const dailyTotals = {};
-
 
         snapshot.docs.forEach(
           item => {
@@ -3937,33 +3530,27 @@
             const data =
               item.data();
 
-
             const millis =
               getMillis(
                 data.date
               );
 
-
             if (!millis) {
               return;
             }
-
 
             const date =
               new Date(
                 millis
               );
 
-
             const dateKey =
               makeDateKey(
                 date
               );
 
-
             const studentId =
               data.studentId;
-
 
             if (
               !dailyTotals[
@@ -3975,7 +3562,6 @@
                 dateKey
               ] = {};
             }
-
 
             dailyTotals[
               dateKey
@@ -3993,9 +3579,7 @@
           }
         );
 
-
         const mvpCounts = {};
-
 
         Object.values(
           dailyTotals
@@ -4007,21 +3591,17 @@
                 day
               );
 
-
             if (
               values.length ===
               0
             ) {
-
               return;
             }
-
 
             const max =
               Math.max(
                 ...values
               );
-
 
             Object.entries(
               day
@@ -4053,7 +3633,6 @@
           }
         );
 
-
         const ranking =
           classStudents
             .map(
@@ -4072,7 +3651,6 @@
                 a.mvpCount
             );
 
-
         const myIndex =
           ranking.findIndex(
             item =>
@@ -4080,13 +3658,11 @@
               currentUser.uid
           );
 
-
         let display =
           ranking.slice(
             0,
             3
           );
-
 
         if (
           myIndex >= 3
@@ -4096,16 +3672,13 @@
             separator: true
           });
 
-
           display.push(
             ranking[myIndex]
           );
         }
 
-
         container.innerHTML =
           "";
-
 
         display.forEach(
           item => {
@@ -4119,27 +3692,21 @@
                   "div"
                 );
 
-
               div.style.textAlign =
                 "center";
-
 
               div.style.color =
                 "#888";
 
-
               div.textContent =
                 "・ ・ ・";
-
 
               container.appendChild(
                 div
               );
 
-
               return;
             }
-
 
             const rank =
               ranking.findIndex(
@@ -4148,16 +3715,13 @@
                   item.id
               ) + 1;
 
-
             const div =
               document.createElement(
                 "div"
               );
 
-
             div.className =
               "ranking-item";
-
 
             if (
               item.id ===
@@ -4168,7 +3732,6 @@
                 "self"
               );
             }
-
 
             div.innerHTML = `
               <div class="rank-number">
@@ -4193,13 +3756,11 @@
               </div>
             `;
 
-
             container.appendChild(
               div
             );
           }
         );
-
 
         if (
           ranking.length ===
@@ -4236,14 +3797,11 @@
         "adminMonthSelect"
       );
 
-
     select.innerHTML =
       "";
 
-
     const now =
       new Date();
-
 
     for (
       let i = 0;
@@ -4258,26 +3816,21 @@
           1
         );
 
-
       const option =
         document.createElement(
           "option"
         );
 
-
       option.value =
         `${date.getFullYear()}-${date.getMonth()}`;
 
-
       option.textContent =
         `${date.getFullYear()}年${date.getMonth() + 1}月`;
-
 
       select.appendChild(
         option
       );
     }
-
 
     loadAdminMonth();
   }
@@ -4291,21 +3844,17 @@
         currentUser.uid !==
           ADMIN_UID
       ) {
-
         return;
       }
-
 
       const value =
         document.getElementById(
           "adminMonthSelect"
         ).value;
 
-
       if (!value) {
         return;
       }
-
 
       const [
         yearString,
@@ -4313,42 +3862,34 @@
       ] =
         value.split("-");
 
-
       const year =
         Number(
           yearString
         );
-
 
       const month =
         Number(
           monthString
         );
 
-
       const key =
         `${year}-${month}`;
-
 
       const totalElement =
         document.getElementById(
           "adminMonthTotal"
         );
 
-
       const recordsElement =
         document.getElementById(
           "adminMonthRecords"
         );
 
-
       totalElement.textContent =
         "読み込み中...";
 
-
       recordsElement.innerHTML =
         "";
-
 
       try {
 
@@ -4363,7 +3904,6 @@
             0
           );
 
-
         const end =
           new Date(
             year,
@@ -4374,7 +3914,6 @@
             0,
             0
           );
-
 
         const q =
           query(
@@ -4396,10 +3935,8 @@
             )
           );
 
-
         const snapshot =
           await getDocs(q);
-
 
         const records =
           snapshot.docs.map(
@@ -4409,14 +3946,11 @@
             })
           );
 
-
         let total =
           0;
 
-
         const studentTotals =
           {};
-
 
         records.forEach(
           record => {
@@ -4427,10 +3961,8 @@
                 0
               );
 
-
             total +=
               minutes;
-
 
             studentTotals[
               record.studentId
@@ -4444,10 +3976,8 @@
           }
         );
 
-
         totalElement.textContent =
           `📚 ${year}年${month + 1}月の合計：${formatMinutes(total)}`;
-
 
         const sorted =
           Object.entries(
@@ -4468,7 +3998,6 @@
                       studentId
                   );
 
-
                 return {
                   name:
                     student?.nickname ||
@@ -4484,7 +4013,6 @@
                 a.minutes
             );
 
-
         if (
           sorted.length ===
           0
@@ -4496,10 +4024,8 @@
           return;
         }
 
-
         recordsElement.innerHTML =
           "";
-
 
         sorted.forEach(
           (
@@ -4512,10 +4038,8 @@
                 "div"
               );
 
-
             div.className =
               "ranking-item";
-
 
             div.innerHTML = `
               <div class="rank-number">
@@ -4535,13 +4059,11 @@
               </div>
             `;
 
-
             recordsElement.appendChild(
               div
             );
           }
         );
-
 
         adminMonthLoadedKey =
           key;
@@ -4552,7 +4074,6 @@
 
         totalElement.textContent =
           "読み込みに失敗しました。";
-
 
         recordsElement.innerHTML =
           `<div class="error">
@@ -4592,7 +4113,6 @@
       return 0;
     }
 
-
     if (
       typeof value.toMillis ===
       "function"
@@ -4600,7 +4120,6 @@
 
       return value.toMillis();
     }
-
 
     if (
       typeof value.seconds ===
@@ -4619,7 +4138,6 @@
       );
     }
 
-
     if (
       typeof value ===
       "number"
@@ -4628,7 +4146,6 @@
       return value;
     }
 
-
     if (
       value instanceof Date
     ) {
@@ -4636,11 +4153,17 @@
       return value.getTime();
     }
 
-
     return 0;
   }
 
 
+  /*
+   * ★ すべて分表記
+   *
+   * 60分 → 60分
+   * 90分 → 90分
+   * 120分 → 120分
+   */
   function formatMinutes(
     minutes
   ) {
@@ -4655,26 +4178,7 @@
         )
       );
 
-
-    const hours =
-      Math.floor(
-        minutes / 60
-      );
-
-
-    const mins =
-      minutes % 60;
-
-
-    if (
-      hours > 0
-    ) {
-
-      return `${hours}時間${mins}分`;
-    }
-
-
-    return `${mins}分`;
+    return `${minutes}分`;
   }
 
 
@@ -4687,17 +4191,14 @@
         value
       );
 
-
     if (!millis) {
       return "日時取得中...";
     }
-
 
     const date =
       new Date(
         millis
       );
-
 
     return date.toLocaleString(
       "ja-JP",
