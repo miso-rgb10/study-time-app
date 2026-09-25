@@ -369,6 +369,76 @@
       margin: 0;
     }
 
+    /* 管理者：生徒ごとの表示 */
+    .admin-student {
+      background: white;
+      border: 1px solid #ead9ae;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .admin-student-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+    }
+
+    .admin-student-name {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .admin-student-total {
+      color: #315dcc;
+      white-space: nowrap;
+    }
+
+    .admin-record-count {
+      color: #777;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .admin-record-list {
+      margin-top: 8px;
+      border-top: 1px solid #eee;
+    }
+
+    .admin-record {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+
+    .admin-record:last-child {
+      border-bottom: none;
+    }
+
+    .admin-record-date {
+      color: #666;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .admin-record-subject {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .admin-record-minutes {
+      font-weight: bold;
+      color: #315dcc;
+      white-space: nowrap;
+    }
+
     .loading {
       color: #777;
       text-align: center;
@@ -410,6 +480,15 @@
 
       .calendar-day {
         min-height: 48px;
+      }
+
+      .admin-record {
+        flex-wrap: wrap;
+      }
+
+      .admin-record-date {
+        width: 100%;
+        flex-basis: 100%;
       }
     }
   </style>
@@ -1361,6 +1440,30 @@
           updateRankings();
 
           updateAllUI();
+
+          /*
+           * 管理者の場合、生徒名が読み込まれた後に
+           * 管理者画面も再表示する
+           */
+          if (
+            currentUser &&
+            currentUser.uid === ADMIN_UID
+          ) {
+
+            const adminCard =
+              document.getElementById(
+                "adminCard"
+              );
+
+            if (
+              !adminCard.classList.contains(
+                "hidden"
+              )
+            ) {
+
+              loadAdminMonth();
+            }
+          }
 
           if (
             !allTimeLoaded &&
@@ -3329,13 +3432,6 @@
 
   /* =========================================================
      ★ MVPカレンダー詳細
-     
-     表示するのは
-     ・自分の時間
-     ・MVPの名前と時間
-     
-     のみ。
-     他の生徒の記録は表示しない。
   ========================================================= */
 
   async function showHistoryDetail(
@@ -3380,9 +3476,6 @@
       );
 
 
-    /*
-     * その日の自分の合計時間
-     */
     let myMinutes =
       0;
 
@@ -3410,9 +3503,6 @@
     }
 
 
-    /*
-     * 記録がまったくない日
-     */
     if (
       dateSessions.length === 0
     ) {
@@ -3431,18 +3521,12 @@
       `<strong>${dateKey}</strong><br><br>`;
 
 
-    /*
-     * 自分の記録
-     */
     html +=
       `👤 自分：${formatMinutes(
         myMinutes
       )}<br>`;
 
 
-    /*
-     * MVP
-     */
     if (
       mvps.length > 0
     ) {
@@ -3836,6 +3920,22 @@
   }
 
 
+  /*
+   * 管理者用月別記録
+   *
+   * 選択した月について
+   *
+   * ・月全体の合計
+   * ・記録がある生徒全員
+   * ・生徒ごとの月間合計
+   * ・生徒ごとの記録件数
+   * ・個別の日時
+   * ・教科
+   * ・学習時間
+   *
+   * を表示する。
+   */
+
   window.loadAdminMonth =
     async function() {
 
@@ -3847,10 +3947,13 @@
         return;
       }
 
-      const value =
+      const select =
         document.getElementById(
           "adminMonthSelect"
-        ).value;
+        );
+
+      const value =
+        select.value;
 
       if (!value) {
         return;
@@ -3889,7 +3992,8 @@
         "読み込み中...";
 
       recordsElement.innerHTML =
-        "";
+        '<div class="loading">記録を読み込んでいます...</div>';
+
 
       try {
 
@@ -3915,6 +4019,7 @@
             0
           );
 
+
         const q =
           query(
             collection(
@@ -3935,59 +4040,96 @@
             )
           );
 
+
         const snapshot =
           await getDocs(q);
 
+
+        /*
+         * 全記録
+         */
         const records =
-          snapshot.docs.map(
-            item => ({
-              id: item.id,
-              ...item.data()
-            })
-          );
+          snapshot.docs
+            .map(
+              item => ({
+                id: item.id,
+                ...item.data()
+              })
+            )
+            .sort(
+              (a, b) =>
+                getMillis(b.date) -
+                getMillis(a.date)
+            );
 
-        let total =
-          0;
 
-        const studentTotals =
-          {};
-
-        records.forEach(
-          record => {
-
-            const minutes =
+        /*
+         * 月全体の合計
+         */
+        const total =
+          records.reduce(
+            (
+              sumValue,
+              record
+            ) =>
+              sumValue +
               Number(
                 record.minutes ||
                 0
-              );
+              ),
+            0
+          );
 
-            total +=
-              minutes;
-
-            studentTotals[
-              record.studentId
-            ] =
-              (
-                studentTotals[
-                  record.studentId
-                ] || 0
-              ) +
-              minutes;
-          }
-        );
 
         totalElement.textContent =
           `📚 ${year}年${month + 1}月の合計：${formatMinutes(total)}`;
 
-        const sorted =
+
+        /*
+         * 生徒ごとに記録をまとめる
+         */
+        const studentRecords =
+          {};
+
+
+        records.forEach(
+          record => {
+
+            const studentId =
+              record.studentId;
+
+            if (
+              !studentRecords[
+                studentId
+              ]
+            ) {
+
+              studentRecords[
+                studentId
+              ] = [];
+            }
+
+            studentRecords[
+              studentId
+            ].push(
+              record
+            );
+          }
+        );
+
+
+        /*
+         * 記録がある生徒だけ作成
+         */
+        const studentsWithRecords =
           Object.entries(
-            studentTotals
+            studentRecords
           )
             .map(
               (
                 [
                   studentId,
-                  minutes
+                  studentRecordList
                 ]
               ) => {
 
@@ -3998,79 +4140,270 @@
                       studentId
                   );
 
+
+                const minutes =
+                  studentRecordList.reduce(
+                    (
+                      sumValue,
+                      record
+                    ) =>
+                      sumValue +
+                      Number(
+                        record.minutes ||
+                        0
+                      ),
+                    0
+                  );
+
+
                 return {
+
+                  studentId,
+
                   name:
                     student?.nickname ||
                     "名前未設定",
 
-                  minutes
+                  minutes,
+
+                  records:
+                    studentRecordList
                 };
               }
             )
             .sort(
-              (a, b) =>
-                b.minutes -
-                a.minutes
+              (a, b) => {
+
+                /*
+                 * 月間合計が多い順
+                 */
+                if (
+                  b.minutes !==
+                  a.minutes
+                ) {
+
+                  return (
+                    b.minutes -
+                    a.minutes
+                  );
+                }
+
+                /*
+                 * 合計が同じ場合は
+                 * 名前順
+                 */
+                return a.name.localeCompare(
+                  b.name,
+                  "ja"
+                );
+              }
             );
 
+
+        /*
+         * 記録がない場合
+         */
         if (
-          sorted.length ===
+          studentsWithRecords.length ===
           0
         ) {
 
           recordsElement.innerHTML =
             '<div class="note">この月の記録はありません。</div>';
 
+          adminMonthLoadedKey =
+            key;
+
           return;
         }
 
+
+        /*
+         * 表示エリアを空にする
+         */
         recordsElement.innerHTML =
           "";
 
-        sorted.forEach(
+
+        /*
+         * 生徒ごとのカードを作成
+         */
+        studentsWithRecords.forEach(
           (
-            item,
+            student,
             index
           ) => {
 
-            const div =
+            const studentBox =
               document.createElement(
                 "div"
               );
 
-            div.className =
-              "ranking-item";
+            studentBox.className =
+              "admin-student";
 
-            div.innerHTML = `
-              <div class="rank-number">
-                ${index + 1}位
-              </div>
 
-              <div class="rank-name">
+            /*
+             * 生徒名＋月間合計
+             */
+            const header =
+              document.createElement(
+                "div"
+              );
+
+            header.className =
+              "admin-student-header";
+
+            header.innerHTML = `
+
+              <div class="admin-student-name">
+                ${index + 1}位　
                 ${escapeHtml(
-                  item.name
+                  student.name
                 )}
               </div>
 
-              <div class="rank-minutes">
+              <div class="admin-student-total">
                 ${formatMinutes(
-                  item.minutes
+                  student.minutes
                 )}
               </div>
+
             `;
 
+            studentBox.appendChild(
+              header
+            );
+
+
+            /*
+             * 記録件数
+             */
+            const count =
+              document.createElement(
+                "div"
+              );
+
+            count.className =
+              "admin-record-count";
+
+            count.textContent =
+              `記録 ${student.records.length}件`;
+
+            studentBox.appendChild(
+              count
+            );
+
+
+            /*
+             * 個別記録一覧
+             */
+            const recordList =
+              document.createElement(
+                "div"
+              );
+
+            recordList.className =
+              "admin-record-list";
+
+
+            student.records.forEach(
+              record => {
+
+                const recordDiv =
+                  document.createElement(
+                    "div"
+                  );
+
+                recordDiv.className =
+                  "admin-record";
+
+
+                const dateDiv =
+                  document.createElement(
+                    "div"
+                  );
+
+                dateDiv.className =
+                  "admin-record-date";
+
+                dateDiv.textContent =
+                  formatDateTime(
+                    record.date
+                  );
+
+
+                const subjectDiv =
+                  document.createElement(
+                    "div"
+                  );
+
+                subjectDiv.className =
+                  "admin-record-subject";
+
+                subjectDiv.textContent =
+                  record.subject ||
+                  "その他";
+
+
+                const minutesDiv =
+                  document.createElement(
+                    "div"
+                  );
+
+                minutesDiv.className =
+                  "admin-record-minutes";
+
+                minutesDiv.textContent =
+                  formatMinutes(
+                    Number(
+                      record.minutes ||
+                      0
+                    )
+                  );
+
+
+                recordDiv.appendChild(
+                  dateDiv
+                );
+
+                recordDiv.appendChild(
+                  subjectDiv
+                );
+
+                recordDiv.appendChild(
+                  minutesDiv
+                );
+
+                recordList.appendChild(
+                  recordDiv
+                );
+              }
+            );
+
+
+            studentBox.appendChild(
+              recordList
+            );
+
+
             recordsElement.appendChild(
-              div
+              studentBox
             );
           }
         );
 
+
         adminMonthLoadedKey =
           key;
 
+
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "admin month:",
+          error
+        );
 
         totalElement.textContent =
           "読み込みに失敗しました。";
@@ -4158,11 +4491,7 @@
 
 
   /*
-   * ★ すべて分表記
-   *
-   * 60分 → 60分
-   * 90分 → 90分
-   * 120分 → 120分
+   * すべて分表記
    */
   function formatMinutes(
     minutes
