@@ -354,6 +354,35 @@
       line-height: 1.8;
     }
 
+    .history-student {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 4px;
+      border-bottom: 1px solid #e5e8ed;
+    }
+
+    .history-student:last-child {
+      border-bottom: none;
+    }
+
+    .history-student-name {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .history-student-minutes {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .history-mvp {
+      background: #fff4c7;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
     .admin-box {
       background: #fff7e6;
       border: 1px solid #f0d18a;
@@ -369,7 +398,7 @@
       margin: 0;
     }
 
-    /* 管理者：生徒ごとの表示 */
+    /* 管理者：生徒ごとの月間合計 */
     .admin-student {
       background: white;
       border: 1px solid #ead9ae;
@@ -393,48 +422,6 @@
     }
 
     .admin-student-total {
-      color: #315dcc;
-      white-space: nowrap;
-    }
-
-    .admin-record-count {
-      color: #777;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .admin-record-list {
-      margin-top: 8px;
-      border-top: 1px solid #eee;
-    }
-
-    .admin-record {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 13px;
-    }
-
-    .admin-record:last-child {
-      border-bottom: none;
-    }
-
-    .admin-record-date {
-      color: #666;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .admin-record-subject {
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .admin-record-minutes {
-      font-weight: bold;
       color: #315dcc;
       white-space: nowrap;
     }
@@ -480,15 +467,6 @@
 
       .calendar-day {
         min-height: 48px;
-      }
-
-      .admin-record {
-        flex-wrap: wrap;
-      }
-
-      .admin-record-date {
-        width: 100%;
-        flex-basis: 100%;
       }
     }
   </style>
@@ -879,8 +857,6 @@
   let calendarMonthLoadedKey = "";
 
   let selectedHistoryDate = null;
-
-  let adminMonthLoadedKey = "";
 
 
   /* =========================================================
@@ -1441,10 +1417,6 @@
 
           updateAllUI();
 
-          /*
-           * 管理者の場合、生徒名が読み込まれた後に
-           * 管理者画面も再表示する
-           */
           if (
             currentUser &&
             currentUser.uid === ADMIN_UID
@@ -1471,6 +1443,17 @@
           ) {
 
             await refreshAllTimeTotals(false);
+          }
+
+          /*
+           * 生徒一覧が更新されたら、
+           * 現在表示中のMVP詳細も更新
+           */
+          if (selectedHistoryDate) {
+
+            showHistoryDetail(
+              selectedHistoryDate
+            );
           }
         },
 
@@ -3079,6 +3062,9 @@
       calendarMonthLoadedKey =
         "";
 
+      selectedHistoryDate =
+        null;
+
       await loadCalendarMonth();
     };
 
@@ -3377,6 +3363,10 @@
         const studentId =
           session.studentId;
 
+        if (!studentId) {
+          return;
+        }
+
         totals[studentId] =
           (
             totals[studentId] ||
@@ -3432,7 +3422,83 @@
 
   /* =========================================================
      ★ MVPカレンダー詳細
+     ★ クラス全員の合計時間を表示
   ========================================================= */
+
+  function getDailyStudentTotals(
+    dateKey
+  ) {
+
+    const totals = {};
+
+    /*
+     * クラス全員を最初に0分で登録
+     */
+    classStudents.forEach(
+      student => {
+
+        totals[
+          student.id
+        ] = 0;
+      }
+    );
+
+    /*
+     * その日の記録を加算
+     */
+    calendarMonthSessions.forEach(
+      session => {
+
+        const millis =
+          getMillis(
+            session.date
+          );
+
+        if (!millis) {
+          return;
+        }
+
+        const sessionDate =
+          new Date(
+            millis
+          );
+
+        const key =
+          makeDateKey(
+            sessionDate
+          );
+
+        if (
+          key !== dateKey
+        ) {
+          return;
+        }
+
+        const studentId =
+          session.studentId;
+
+        if (!studentId) {
+          return;
+        }
+
+        if (
+          totals[studentId] ===
+          undefined
+        ) {
+          totals[studentId] = 0;
+        }
+
+        totals[studentId] +=
+          Number(
+            session.minutes ||
+            0
+          );
+      }
+    );
+
+    return totals;
+  }
+
 
   async function showHistoryDetail(
     dateKey
@@ -3446,124 +3512,248 @@
         "historyDetail"
       );
 
-    const mvps =
-      calculateDailyMvp(
+    /*
+     * Firebaseから新しく読み込まず、
+     * すでに取得している月データを使用する。
+     */
+    const totals =
+      getDailyStudentTotals(
         dateKey
       );
 
-    const dateSessions =
-      calendarMonthSessions.filter(
-        session => {
-
-          const millis =
-            getMillis(
-              session.date
-            );
-
-          if (!millis) {
-            return false;
-          }
-
-          return (
-            makeDateKey(
-              new Date(
-                millis
-              )
-            ) ===
-            dateKey
-          );
-        }
+    /*
+     * その日の最高時間
+     */
+    const values =
+      Object.values(
+        totals
       );
 
-
-    let myMinutes =
-      0;
-
-    if (currentUser) {
-
-      myMinutes =
-        dateSessions
-          .filter(
-            session =>
-              session.studentId ===
-              currentUser.uid
+    const maxMinutes =
+      values.length > 0
+        ? Math.max(
+            ...values
           )
-          .reduce(
-            (
-              total,
-              session
-            ) =>
-              total +
+        : 0;
+
+    /*
+     * MVP
+     */
+    const mvpIds =
+      maxMinutes > 0
+        ? Object.entries(
+            totals
+          )
+            .filter(
+              ([, minutes]) =>
+                minutes ===
+                maxMinutes
+            )
+            .map(
+              ([studentId]) =>
+                studentId
+            )
+        : [];
+
+
+    /*
+     * 生徒を学習時間の多い順に並べる
+     */
+    const studentsForDay =
+      classStudents
+        .map(
+          student => ({
+            ...student,
+
+            minutes:
               Number(
-                session.minutes ||
-                0
+                totals[
+                  student.id
+                ] || 0
               ),
-            0
-          );
-    }
+
+            isMvp:
+              mvpIds.includes(
+                student.id
+              )
+          })
+        )
+        .sort(
+          (a, b) => {
+
+            if (
+              b.minutes !==
+              a.minutes
+            ) {
+
+              return (
+                b.minutes -
+                a.minutes
+              );
+            }
+
+            return (
+              a.nickname ||
+              ""
+            ).localeCompare(
+              b.nickname ||
+              "",
+              "ja"
+            );
+          }
+        );
 
 
-    if (
-      dateSessions.length === 0
-    ) {
-
-      detail.innerHTML = `
-        <strong>${dateKey}</strong><br><br>
-        👤 自分：0分<br>
-        🏆 MVP：なし
-      `;
-
-      return;
-    }
+    /*
+     * 自分の時間
+     */
+    const myMinutes =
+      currentUser
+        ? Number(
+            totals[
+              currentUser.uid
+            ] || 0
+          )
+        : 0;
 
 
     let html =
       `<strong>${dateKey}</strong><br><br>`;
-
 
     html +=
       `👤 自分：${formatMinutes(
         myMinutes
       )}<br>`;
 
-
     if (
-      mvps.length > 0
+      mvpIds.length > 0
     ) {
 
       html +=
-        `<br>🏆 <strong>MVP</strong><br>`;
+        `<br>🏆 <strong>MVP</strong>：`;
 
+      const mvpNames =
+        studentsForDay
+          .filter(
+            student =>
+              student.isMvp
+          )
+          .map(
+            student =>
+              escapeHtml(
+                student.nickname ||
+                "名前未設定"
+              )
+          );
 
-      mvps.forEach(
-        mvp => {
+      html +=
+        mvpNames.join(
+          "、"
+        );
 
-          const student =
-            classStudents.find(
-              item =>
-                item.id ===
-                mvp.studentId
-            );
-
-
-          const name =
-            student?.nickname ||
-            "名前未設定";
-
-
-          html +=
-            `🏆 ${escapeHtml(
-              name
-            )}：${formatMinutes(
-              mvp.minutes
-            )}<br>`;
-        }
-      );
+      html +=
+        `（${formatMinutes(
+          maxMinutes
+        )}）<br>`;
 
     } else {
 
       html +=
-        `<br>🏆 MVP：なし`;
+        `<br>🏆 <strong>MVP</strong>：なし<br>`;
+    }
+
+
+    html +=
+      `<br><strong>📊 クラス全員の学習時間</strong>`;
+
+    /*
+     * 全員の時間を表示
+     */
+    if (
+      studentsForDay.length ===
+      0
+    ) {
+
+      html +=
+        `<div class="note" style="margin-top:8px;">
+          生徒情報を読み込んでいます。
+        </div>`;
+
+    } else {
+
+      html +=
+        `<div style="margin-top:8px;">`;
+
+      studentsForDay.forEach(
+        (
+          student,
+          index
+        ) => {
+
+          const isSelf =
+            currentUser &&
+            student.id ===
+            currentUser.uid;
+
+          const classes =
+            [
+              "history-student",
+              student.isMvp
+                ? "history-mvp"
+                : ""
+            ]
+              .filter(
+                Boolean
+              )
+              .join(
+                " "
+              );
+
+          const medal =
+            student.isMvp
+              ? "🏆 "
+              : "";
+
+          const self =
+            isSelf
+              ? "（自分）"
+              : "";
+
+          html += `
+            <div class="${classes}">
+
+              <div
+                style="
+                  width:28px;
+                  text-align:center;
+                  font-weight:bold;
+                "
+              >
+                ${index + 1}
+              </div>
+
+              <div class="history-student-name">
+                ${medal}
+                ${escapeHtml(
+                  student.nickname ||
+                  "名前未設定"
+                )}
+                ${self}
+              </div>
+
+              <div class="history-student-minutes">
+                ${formatMinutes(
+                  student.minutes
+                )}
+              </div>
+
+            </div>
+          `;
+        }
+      );
+
+      html +=
+        `</div>`;
     }
 
 
@@ -3921,19 +4111,15 @@
 
 
   /*
-   * 管理者用月別記録
+   * 管理者用月別集計
    *
    * 選択した月について
    *
    * ・月全体の合計
-   * ・記録がある生徒全員
+   * ・記録がある生徒
    * ・生徒ごとの月間合計
-   * ・生徒ごとの記録件数
-   * ・個別の日時
-   * ・教科
-   * ・学習時間
    *
-   * を表示する。
+   * のみを表示する。
    */
 
   window.loadAdminMonth =
@@ -4010,9 +4196,6 @@
           0
         );
 
-      /*
-       * 選択した月の記録だけ取得
-       */
       const q =
         query(
           collection(
@@ -4036,14 +4219,8 @@
       const snapshot =
         await getDocs(q);
 
-      /*
-       * 月全体の合計
-       */
       let monthTotal = 0;
 
-      /*
-       * 生徒ごとの合計
-       */
       const studentTotals = {};
 
       snapshot.docs.forEach(
@@ -4082,15 +4259,9 @@
         }
       );
 
-      /*
-       * 月全体の合計を表示
-       */
       totalElement.textContent =
         `📚 ${year}年${month + 1}月の合計：${formatMinutes(monthTotal)}`;
 
-      /*
-       * 記録がない場合
-       */
       if (
         Object.keys(
           studentTotals
@@ -4103,9 +4274,6 @@
         return;
       }
 
-      /*
-       * 生徒名と合計時間をまとめる
-       */
       const studentsWithTotals =
         Object.entries(
           studentTotals
@@ -4137,9 +4305,6 @@
         .sort(
           (a, b) => {
 
-            /*
-             * 月間合計の多い順
-             */
             if (
               b.minutes !==
               a.minutes
@@ -4151,9 +4316,6 @@
               );
             }
 
-            /*
-             * 同じ時間なら名前順
-             */
             return a.name.localeCompare(
               b.name,
               "ja"
@@ -4161,9 +4323,6 @@
           }
         );
 
-      /*
-       * 表示を作成
-       */
       recordsElement.innerHTML =
         "";
 
@@ -4225,6 +4384,7 @@
         </div>`;
     }
   };
+
 
   /* =========================================================
      UI更新
@@ -4298,9 +4458,6 @@
   }
 
 
-  /*
-   * すべて分表記
-   */
   function formatMinutes(
     minutes
   ) {
