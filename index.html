@@ -146,7 +146,8 @@
     }
 
     select,
-    input[type="number"] {
+    input[type="number"],
+    input[type="month"] {
       width: 100%;
       padding: 11px;
       border: 1px solid #d6dbe5;
@@ -223,6 +224,7 @@
 
     .record-main {
       min-width: 0;
+      flex: 1;
     }
 
     .record-subject {
@@ -494,7 +496,6 @@
 
 <main>
 
-  <!-- ログイン -->
   <section>
     <h2>🔐 ログイン</h2>
 
@@ -518,13 +519,13 @@
 
     <div class="online-box">
       <div id="onlineCount">🟢 現在ログイン中：0人</div>
+
       <div id="studyingCount" class="studying-count">
         🔥 今！0人が勉強中
       </div>
     </div>
   </section>
 
-  <!-- 手動記録 -->
   <section id="recordSection" class="hidden">
     <h2>✏️ 学習時間を記録</h2>
 
@@ -553,17 +554,20 @@
     </button>
   </section>
 
-  <!-- タイマー -->
   <section id="timerSection" class="hidden timer">
     <h2>⏱️ 学習タイマー</h2>
 
-    <select id="timerSubject" style="width:100%; margin-bottom:10px;">
+    <select
+      id="timerSubject"
+      style="width:100%; margin-bottom:10px;">
+
       <option value="国語">国語</option>
       <option value="数学">数学</option>
       <option value="英語">英語</option>
       <option value="理科">理科</option>
       <option value="社会">社会</option>
       <option value="その他">その他</option>
+
     </select>
 
     <div id="timerDisplay">00:00:00</div>
@@ -573,6 +577,7 @@
     </div>
 
     <div class="button-row">
+
       <button
         id="startTimerButton"
         class="primary"
@@ -587,14 +592,16 @@
         disabled>
         ■ ストップ
       </button>
+
     </div>
   </section>
 
-  <!-- 今日の集計 -->
   <section id="summarySection" class="hidden">
+
     <h2>📊 今日の学習</h2>
 
     <div class="summary">
+
       <div class="summary-card">
         <div class="label">今日の合計</div>
         <div id="todayTotal" class="value">0分</div>
@@ -604,20 +611,26 @@
         <div class="label">記録数</div>
         <div id="recordCount" class="value">0</div>
       </div>
+
     </div>
   </section>
 
-  <!-- 教科別 -->
   <section id="chartSection" class="hidden">
+
     <h2>📈 教科別</h2>
+
     <div id="subjectChart"></div>
+
   </section>
 
-  <!-- 自分の記録 -->
   <section id="recordsSection" class="hidden">
+
     <h2>📝 自分の記録</h2>
 
-    <div class="button-row" style="margin-bottom:10px;">
+    <div
+      class="button-row"
+      style="margin-bottom:10px;">
+
       <button
         class="secondary"
         onclick="refreshMyRecords()">
@@ -629,18 +642,25 @@
         onclick="clearAll()">
         🗑️ 全削除
       </button>
+
     </div>
 
     <div id="records">
-      <div class="empty">記録はありません</div>
+
+      <div class="empty">
+        記録はありません
+      </div>
+
     </div>
+
   </section>
 
-  <!-- ランキング -->
   <section id="rankingSection" class="hidden">
+
     <h2>🏆 クラスランキング</h2>
 
     <div class="ranking-controls">
+
       <button
         id="todayRankingButton"
         class="primary"
@@ -654,6 +674,7 @@
         onclick="setRankingMode('all')">
         累計
       </button>
+
     </div>
 
     <button
@@ -663,15 +684,16 @@
     </button>
 
     <div class="ranking-note">
-      読み取り回数を減らすため、ランキングは自動更新ではなく
-      「ランキングを更新」を押したときに取得します。
+      読み取り回数を減らすため、
+      ランキングはボタンを押したときだけ取得します。
     </div>
 
     <div id="ranking"></div>
+
   </section>
 
-  <!-- MVP -->
   <section id="mvpSection" class="hidden">
+
     <h2>🏆 MVP</h2>
 
     <div id="mvpSummary" class="mvp-summary">
@@ -681,20 +703,29 @@
     <h3>📅 学習カレンダー</h3>
 
     <div class="calendar-header">
-      <button class="secondary" onclick="changeCalendarMonth(-1)">
+
+      <button
+        class="secondary"
+        onclick="changeCalendarMonth(-1)">
         ◀
       </button>
 
-      <div id="calendarTitle" class="calendar-title">
+      <div
+        id="calendarTitle"
+        class="calendar-title">
         ----年--月
       </div>
 
-      <button class="secondary" onclick="changeCalendarMonth(1)">
+      <button
+        class="secondary"
+        onclick="changeCalendarMonth(1)">
         ▶
       </button>
+
     </div>
 
     <div class="calendar">
+
       <div class="calendar-weekday">日</div>
       <div class="calendar-weekday">月</div>
       <div class="calendar-weekday">火</div>
@@ -702,11 +733,18 @@
       <div class="calendar-weekday">木</div>
       <div class="calendar-weekday">金</div>
       <div class="calendar-weekday">土</div>
+
     </div>
 
-    <div id="calendarGrid" class="calendar"></div>
+    <div
+      id="calendarGrid"
+      class="calendar">
+    </div>
 
-    <div id="calendarDetail" class="calendar-detail hidden"></div>
+    <div
+      id="calendarDetail"
+      class="calendar-detail hidden">
+    </div>
 
     <h3>🏆 累計MVP回数</h3>
 
@@ -717,16 +755,19 @@
     </button>
 
     <div id="mvpRanking"></div>
+
   </section>
 
-  <!-- 管理者 -->
   <section id="adminSection" class="hidden">
+
     <h2>👨‍🏫 管理者ページ</h2>
 
     <div class="admin-box">
+
       <h3>月別学習時間</h3>
 
       <div class="form-row">
+
         <input
           id="adminMonth"
           type="month">
@@ -736,6 +777,7 @@
           onclick="loadAdminMonth(true)">
           表示
         </button>
+
       </div>
 
       <div class="ranking-note">
@@ -743,11 +785,15 @@
       </div>
 
       <div id="adminResults">
+
         <div class="empty">
           月を選択してください。
         </div>
+
       </div>
+
     </div>
+
   </section>
 
   <div class="footer-note">
@@ -758,224 +804,273 @@
 
 <script type="module">
 
-  /* =========================================================
-     Firebase
-  ========================================================= */
+/* =========================================================
+   Firebase
+========================================================= */
 
-  import {
-    initializeApp
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    serverTimestamp,
-    doc,
-    setDoc,
-    getDoc,
-    getDocs,
-    deleteDoc,
-    query,
-    where,
-    orderBy,
-    onSnapshot,
-    Timestamp,
-    writeBatch,
-    getAggregateFromServer,
-    sum
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  query,
+  where,
+  onSnapshot,
+  Timestamp,
+  writeBatch,
+  getAggregateFromServer,
+  sum
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-  import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 
-  /* =========================================================
-     Firebase設定
-  ========================================================= */
+/* =========================================================
+   Firebase設定
+========================================================= */
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
-    authDomain: "studytime11111-9c9f1.firebaseapp.com",
-    projectId: "studytime11111-9c9f1",
-    storageBucket: "studytime11111-9c9f1.firebasestorage.app",
-    messagingSenderId: "292063415300",
-    appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyCJH9rm_ygt9xbuIDdZDuAXEgy_Rsdlxz4",
+  authDomain: "studytime11111-9c9f1.firebaseapp.com",
+  projectId: "studytime11111-9c9f1",
+  storageBucket: "studytime11111-9c9f1.firebasestorage.app",
+  messagingSenderId: "292063415300",
+  appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
+};
 
-  const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-  const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider();
 
-  const ALLOWED_DOMAIN = "gs.seito-fku.ed.jp";
+const ALLOWED_DOMAIN = "gs.seito-fku.ed.jp";
 
-  provider.setCustomParameters({
-    hd: ALLOWED_DOMAIN
-  });
+provider.setCustomParameters({
+  hd: ALLOWED_DOMAIN
+});
 
-  const CLASS_ID = "z6bxH8sYFjcdfENFXn3K";
+const CLASS_ID =
+  "z6bxH8sYFjcdfENFXn3K";
 
-  const ADMIN_UID = "QhPJqo4HoMTBhybxZB8YAftxaTJ3";
-
-
-  /* =========================================================
-     状態
-  ========================================================= */
-
-  let currentUser = null;
-
-  let classStudents = [];
-  let myRecords = [];
-  let onlineUsers = [];
-
-  let rankingMode = "today";
-
-  let rankingLoaded = false;
-  let rankingLoading = false;
-
-  let allTimeTotals = {};
-  let allTimeLoaded = false;
-
-  let timerInterval = null;
-  let timerStartTime = null;
-  let timerSubject = "";
-  let heartbeatInterval = null;
-
-  let myRecordsUnsubscribe = null;
-  let onlineUsersUnsubscribe = null;
-
-  let calendarYear;
-  let calendarMonth;
-
-  let calendarMonthSessions = [];
-  let calendarMonthLoadedKey = "";
-
-  let mvpAllTimeCache = null;
-  let mvpAllTimeLoaded = false;
-
-  let adminMonthCache = {};
+const ADMIN_UID =
+  "QhPJqo4HoMTBhybxZB8YAftxaTJ3";
 
 
-  /* =========================================================
-     DOM
-  ========================================================= */
+/* =========================================================
+   状態
+========================================================= */
 
-  const $ = (id) => document.getElementById(id);
+let currentUser = null;
+
+let classStudents = [];
+let myRecords = [];
+let onlineUsers = [];
+
+let rankingMode = "today";
+let rankingLoading = false;
+
+let timerInterval = null;
+let timerStartTime = null;
+let timerSubject = "";
+
+let heartbeatInterval = null;
+
+let myRecordsUnsubscribe = null;
+let onlineUsersUnsubscribe = null;
+
+let calendarYear;
+let calendarMonth;
+
+let calendarMonthSessions = [];
+let calendarMonthLoadedKey = "";
+
+let mvpAllTimeCache = null;
+let mvpAllTimeLoaded = false;
+
+let adminMonthCache = {};
 
 
-  /* =========================================================
-     Googleログイン
-  ========================================================= */
+/* =========================================================
+   定数
+========================================================= */
 
-  window.loginWithGoogle = async function() {
+const ONLINE_TIMEOUT_MS =
+  100 * 1000;
 
-    try {
+const TIMER_STORAGE_PREFIX =
+  "studyTimeTimer_";
 
-      $("loginButton").disabled = true;
-      $("loginButton").textContent = "ログイン中...";
 
-      await setPersistence(auth, browserLocalPersistence);
+/* =========================================================
+   DOM
+========================================================= */
 
-      const result = await signInWithPopup(auth, provider);
+const $ = (id) =>
+  document.getElementById(id);
 
-      const user = result.user;
 
-      if (!user.email) {
-        await signOut(auth);
+/* =========================================================
+   Googleログイン
+========================================================= */
 
-        alert("メールアドレスを取得できませんでした。");
+window.loginWithGoogle = async function() {
 
-        return;
-      }
+  try {
 
-      const email = user.email.toLowerCase();
+    $("loginButton").disabled = true;
+    $("loginButton").textContent =
+      "ログイン中...";
 
-      if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
+    await setPersistence(
+      auth,
+      browserLocalPersistence
+    );
 
-        await signOut(auth);
-
-        alert(
-          "このアプリは学校のGoogleアカウント専用です。\n\n" +
-          "@" + ALLOWED_DOMAIN +
-          " のアカウントを使用してください。"
-        );
-
-        return;
-      }
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        "ログインに失敗しました。\n\n" +
-        (error?.message || error)
+    const result =
+      await signInWithPopup(
+        auth,
+        provider
       );
 
-    } finally {
+    const user =
+      result.user;
 
-      if (!currentUser) {
-        $("loginButton").disabled = false;
-        $("loginButton").textContent = "Googleでログイン";
-      }
-    }
-  };
-
-
-  /* =========================================================
-     ログアウト
-  ========================================================= */
-
-  window.logout = async function() {
-
-    if (!currentUser) return;
-
-    try {
-
-      const uid = currentUser.uid;
-
-      stopTimerWithoutSave();
-
-      if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
-        heartbeatInterval = null;
-      }
-
-      try {
-        await deleteDoc(doc(db, "onlineUsers", uid));
-      } catch (e) {
-        console.warn("onlineUsers削除失敗", e);
-      }
+    if (!user.email) {
 
       await signOut(auth);
 
-    } catch (error) {
+      alert(
+        "メールアドレスを取得できませんでした。"
+      );
 
-      console.error(error);
+      return;
+    }
+
+    const email =
+      user.email.toLowerCase();
+
+    if (
+      !email.endsWith(
+        "@" + ALLOWED_DOMAIN
+      )
+    ) {
+
+      await signOut(auth);
 
       alert(
-        "ログアウトに失敗しました。\n\n" +
-        (error?.message || error)
+        "このアプリは学校のGoogleアカウント専用です。\n\n" +
+        "@" +
+        ALLOWED_DOMAIN +
+        " のアカウントを使用してください。"
+      );
+
+      return;
+    }
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "ログインに失敗しました。\n\n" +
+      (error?.message || error)
+    );
+
+  } finally {
+
+    if (!currentUser) {
+
+      $("loginButton").disabled =
+        false;
+
+      $("loginButton").textContent =
+        "Googleでログイン";
+    }
+  }
+};
+
+
+/* =========================================================
+   ログアウト
+========================================================= */
+
+window.logout = async function() {
+
+  if (!currentUser) return;
+
+  try {
+
+    const uid =
+      currentUser.uid;
+
+    stopTimerWithoutSave();
+
+    if (heartbeatInterval) {
+
+      clearInterval(
+        heartbeatInterval
+      );
+
+      heartbeatInterval = null;
+    }
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "onlineUsers",
+          uid
+        )
+      );
+
+    } catch (e) {
+
+      console.warn(
+        "onlineUsers削除失敗",
+        e
       );
     }
-  };
+
+    await signOut(auth);
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "ログアウトに失敗しました。\n\n" +
+      (error?.message || error)
+    );
+  }
+};
 
 
-  /* =========================================================
-     認証状態
-  ========================================================= */
+/* =========================================================
+   認証状態
+========================================================= */
 
-  onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(
+  auth,
+  async (user) => {
 
     if (!user) {
 
@@ -984,9 +1079,14 @@
       return;
     }
 
-    const email = (user.email || "").toLowerCase();
+    const email =
+      (user.email || "").toLowerCase();
 
-    if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
+    if (
+      !email.endsWith(
+        "@" + ALLOWED_DOMAIN
+      )
+    ) {
 
       try {
         await signOut(auth);
@@ -1002,31 +1102,58 @@
     $("loginStatus").textContent =
       `👤 ${user.displayName || "Googleユーザー"} さんでログイン中`;
 
-    $("loginButton").textContent = "ログイン済み";
-    $("loginButton").disabled = true;
+    $("loginButton").textContent =
+      "ログイン済み";
 
-    $("logoutButton").classList.remove("hidden");
+    $("loginButton").disabled =
+      true;
+
+    $("logoutButton")
+      .classList
+      .remove("hidden");
 
     showLoggedInSections();
 
     try {
 
-      /* ---------------------------------------------
-         生徒情報
-         常時監視せず、ログイン時に1回だけ取得
-      --------------------------------------------- */
+      /*
+       生徒情報
+      */
 
       await setDoc(
-        doc(db, "students", user.uid),
+        doc(
+          db,
+          "students",
+          user.uid
+        ),
         {
-          nickname: user.displayName || "Googleユーザー",
-          classId: CLASS_ID,
-          email: user.email || ""
+          nickname:
+            user.displayName ||
+            "Googleユーザー",
+
+          classId:
+            CLASS_ID,
+
+          email:
+            user.email || ""
+
         },
-        { merge: true }
+        {
+          merge: true
+        }
       );
 
+
+      /*
+       生徒一覧
+       */
+
       await loadStudentsOnce();
+
+
+      /*
+       オンライン状態
+       */
 
       await updateOnlineStatus(false);
 
@@ -1034,31 +1161,66 @@
 
       listenToOnlineUsers();
 
+
+      /*
+       自分の記録
+       */
+
       listenToMyRecords();
+
+
+      /*
+       カレンダー
+       */
 
       setupCalendarDate();
 
       await loadCalendarMonth(false);
 
+
+      /*
+       タイマー復元
+       */
+
       restoreTimer();
 
       updateAllUI();
 
-      if (user.uid === ADMIN_UID) {
 
-        $("adminSection").classList.remove("hidden");
+      /*
+       管理者
+       */
 
-        const now = new Date();
+      if (
+        user.uid === ADMIN_UID
+      ) {
+
+        $("adminSection")
+          .classList
+          .remove("hidden");
+
+        const now =
+          new Date();
 
         $("adminMonth").value =
-          `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+          `${now.getFullYear()}-${String(
+            now.getMonth() + 1
+          ).padStart(2, "0")}`;
       }
+
+
+      /*
+       MVP
+       */
 
       await refreshMvpSummary();
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "ログイン後初期化エラー",
+        error
+      );
 
       alert(
         "データの読み込み中にエラーが発生しました。\n\n" +
@@ -1066,181 +1228,305 @@
       );
     }
 
-  });
+  }
+);
 
 
-  /* =========================================================
-     ログアウトUI
-  ========================================================= */
+/* =========================================================
+   ログアウトUI
+========================================================= */
 
-  function resetLoggedOutUI() {
+function resetLoggedOutUI() {
 
-    currentUser = null;
+  currentUser = null;
 
-    classStudents = [];
-    myRecords = [];
-    onlineUsers = [];
+  classStudents = [];
+  myRecords = [];
+  onlineUsers = [];
 
-    allTimeTotals = {};
-    allTimeLoaded = false;
+  rankingLoading = false;
 
-    rankingLoaded = false;
+  mvpAllTimeCache = null;
+  mvpAllTimeLoaded = false;
 
-    mvpAllTimeCache = null;
-    mvpAllTimeLoaded = false;
+  calendarMonthSessions = [];
+  calendarMonthLoadedKey = "";
 
-    calendarMonthSessions = [];
-    calendarMonthLoadedKey = "";
+  adminMonthCache = {};
 
-    adminMonthCache = {};
 
-    if (myRecordsUnsubscribe) {
-      myRecordsUnsubscribe();
-      myRecordsUnsubscribe = null;
-    }
+  if (myRecordsUnsubscribe) {
 
-    if (onlineUsersUnsubscribe) {
-      onlineUsersUnsubscribe();
-      onlineUsersUnsubscribe = null;
-    }
-
-    if (heartbeatInterval) {
-      clearInterval(heartbeatInterval);
-      heartbeatInterval = null;
-    }
-
-    stopTimerWithoutSave();
-
-    $("loginStatus").textContent = "ログインしていません";
-
-    $("loginButton").classList.remove("hidden");
-    $("loginButton").disabled = false;
-    $("loginButton").textContent = "Googleでログイン";
-
-    $("logoutButton").classList.add("hidden");
-
-    $("recordSection").classList.add("hidden");
-    $("timerSection").classList.add("hidden");
-    $("summarySection").classList.add("hidden");
-    $("chartSection").classList.add("hidden");
-    $("recordsSection").classList.add("hidden");
-    $("rankingSection").classList.add("hidden");
-    $("mvpSection").classList.add("hidden");
-    $("adminSection").classList.add("hidden");
-
-    $("onlineCount").textContent =
-      "🟢 現在ログイン中：0人";
-
-    $("studyingCount").textContent =
-      "🔥 今！0人が勉強中";
-
-    $("todayTotal").textContent = "0分";
-    $("recordCount").textContent = "0";
-
-    $("records").innerHTML =
-      '<div class="empty">ログインしてください。</div>';
-
-    $("ranking").innerHTML = "";
-
-    $("subjectChart").innerHTML = "";
-
-    $("mvpSummary").textContent =
-      "ログインしてください。";
-
-    $("calendarGrid").innerHTML = "";
-
-    $("calendarDetail").classList.add("hidden");
-
-    $("mvpRanking").innerHTML = "";
-
-    $("adminResults").innerHTML =
-      '<div class="empty">ログインしてください。</div>';
+    myRecordsUnsubscribe();
+    myRecordsUnsubscribe = null;
   }
 
 
-  /* =========================================================
-     ログイン後表示
-  ========================================================= */
+  if (onlineUsersUnsubscribe) {
 
-  function showLoggedInSections() {
-
-    $("recordSection").classList.remove("hidden");
-    $("timerSection").classList.remove("hidden");
-    $("summarySection").classList.remove("hidden");
-    $("chartSection").classList.remove("hidden");
-    $("recordsSection").classList.remove("hidden");
-    $("rankingSection").classList.remove("hidden");
-    $("mvpSection").classList.remove("hidden");
+    onlineUsersUnsubscribe();
+    onlineUsersUnsubscribe = null;
   }
 
 
-  /* =========================================================
-     生徒一覧
-     重要：onSnapshotを使わない
-  ========================================================= */
+  if (heartbeatInterval) {
 
-  async function loadStudentsOnce() {
+    clearInterval(
+      heartbeatInterval
+    );
 
-    const snapshot = await getDocs(
+    heartbeatInterval = null;
+  }
+
+
+  stopTimerWithoutSave();
+
+
+  $("loginStatus").textContent =
+    "ログインしていません";
+
+  $("loginButton")
+    .classList
+    .remove("hidden");
+
+  $("loginButton").disabled =
+    false;
+
+  $("loginButton").textContent =
+    "Googleでログイン";
+
+  $("logoutButton")
+    .classList
+    .add("hidden");
+
+
+  $("recordSection")
+    .classList
+    .add("hidden");
+
+  $("timerSection")
+    .classList
+    .add("hidden");
+
+  $("summarySection")
+    .classList
+    .add("hidden");
+
+  $("chartSection")
+    .classList
+    .add("hidden");
+
+  $("recordsSection")
+    .classList
+    .add("hidden");
+
+  $("rankingSection")
+    .classList
+    .add("hidden");
+
+  $("mvpSection")
+    .classList
+    .add("hidden");
+
+  $("adminSection")
+    .classList
+    .add("hidden");
+
+
+  $("onlineCount").textContent =
+    "🟢 現在ログイン中：0人";
+
+  $("studyingCount").textContent =
+    "🔥 今！0人が勉強中";
+
+  $("todayTotal").textContent =
+    "0分";
+
+  $("recordCount").textContent =
+    "0";
+
+  $("records").innerHTML =
+    '<div class="empty">ログインしてください。</div>';
+
+  $("ranking").innerHTML =
+    "";
+
+  $("subjectChart").innerHTML =
+    "";
+
+  $("mvpSummary").textContent =
+    "ログインしてください。";
+
+  $("calendarGrid").innerHTML =
+    "";
+
+  $("calendarDetail")
+    .classList
+    .add("hidden");
+
+  $("mvpRanking").innerHTML =
+    "";
+
+  $("adminResults").innerHTML =
+    '<div class="empty">ログインしてください。</div>';
+}
+
+
+/* =========================================================
+   ログイン後表示
+========================================================= */
+
+function showLoggedInSections() {
+
+  $("recordSection")
+    .classList
+    .remove("hidden");
+
+  $("timerSection")
+    .classList
+    .remove("hidden");
+
+  $("summarySection")
+    .classList
+    .remove("hidden");
+
+  $("chartSection")
+    .classList
+    .remove("hidden");
+
+  $("recordsSection")
+    .classList
+    .remove("hidden");
+
+  $("rankingSection")
+    .classList
+    .remove("hidden");
+
+  $("mvpSection")
+    .classList
+    .remove("hidden");
+}
+
+
+/* =========================================================
+   生徒一覧
+   classIdだけで検索
+========================================================= */
+
+async function loadStudentsOnce() {
+
+  const snapshot =
+    await getDocs(
       query(
-        collection(db, "students"),
-        where("classId", "==", CLASS_ID)
+        collection(
+          db,
+          "students"
+        ),
+        where(
+          "classId",
+          "==",
+          CLASS_ID
+        )
       )
     );
 
-    classStudents = [];
+  classStudents = [];
 
-    snapshot.forEach((docSnap) => {
+  snapshot.forEach(
+    (docSnap) => {
 
-      const data = docSnap.data();
+      const data =
+        docSnap.data();
 
       classStudents.push({
-        uid: docSnap.id,
-        nickname: data.nickname || "名前未設定",
-        classId: data.classId || CLASS_ID
+
+        uid:
+          docSnap.id,
+
+        nickname:
+          data.nickname ||
+          "名前未設定",
+
+        classId:
+          data.classId ||
+          CLASS_ID
+
       });
+    }
+  );
 
-    });
+  classStudents.sort(
+    (a, b) =>
+      a.nickname.localeCompare(
+        b.nickname,
+        "ja"
+      )
+  );
+}
 
-    classStudents.sort((a, b) =>
-      a.nickname.localeCompare(b.nickname, "ja")
-    );
+
+/* =========================================================
+   自分の記録
+   studentIdだけで取得
+   orderByを使わないので複合インデックス不要
+========================================================= */
+
+function listenToMyRecords() {
+
+  if (!currentUser) return;
+
+  if (myRecordsUnsubscribe) {
+    myRecordsUnsubscribe();
   }
 
-
-  /* =========================================================
-     自分の記録
-     これは自分のデータだけなのでリアルタイム維持
-  ========================================================= */
-
-  function listenToMyRecords() {
-
-    if (!currentUser) return;
-
-    if (myRecordsUnsubscribe) {
-      myRecordsUnsubscribe();
-    }
-
-    const q = query(
-      collection(db, "studySessions"),
-      where("studentId", "==", currentUser.uid),
-      orderBy("date", "desc")
+  const q =
+    query(
+      collection(
+        db,
+        "studySessions"
+      ),
+      where(
+        "studentId",
+        "==",
+        currentUser.uid
+      )
     );
 
-    myRecordsUnsubscribe = onSnapshot(
+  myRecordsUnsubscribe =
+    onSnapshot(
       q,
       (snapshot) => {
 
         myRecords = [];
 
-        snapshot.forEach((docSnap) => {
+        snapshot.forEach(
+          (docSnap) => {
 
-          myRecords.push({
-            id: docSnap.id,
-            ...docSnap.data()
-          });
+            const data =
+              docSnap.data();
 
-        });
+            /*
+             現在のクラスだけ表示
+            */
+
+            if (
+              data.classId &&
+              data.classId !== CLASS_ID
+            ) {
+              return;
+            }
+
+            myRecords.push({
+
+              id:
+                docSnap.id,
+
+              ...data
+            });
+          }
+        );
+
+        sortRecords();
 
         updateMySummary();
 
@@ -1250,393 +1536,532 @@
       },
       (error) => {
 
-        console.error("自分の記録監視エラー", error);
+        console.error(
+          "自分の記録監視エラー",
+          error
+        );
 
         /*
-          orderByのインデックスがない場合などに
-          画面を完全に壊さない
+         リアルタイム監視が失敗しても
+         手動取得で復旧を試す
         */
 
         loadMyRecordsFallback();
       }
     );
+}
+
+
+/* =========================================================
+   記録を日付順に並べる
+========================================================= */
+
+function sortRecords() {
+
+  myRecords.sort(
+    (a, b) => {
+
+      const aTime =
+        a.date?.toMillis?.() || 0;
+
+      const bTime =
+        b.date?.toMillis?.() || 0;
+
+      return bTime - aTime;
+    }
+  );
+}
+
+
+/* =========================================================
+   自分の記録を手動取得
+========================================================= */
+
+async function refreshMyRecords() {
+
+  if (!currentUser) return;
+
+  try {
+
+    await loadMyRecordsOnce();
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "記録の更新に失敗しました。\n\n" +
+      (error?.message || error)
+    );
   }
+}
 
 
-  /* =========================================================
-     自分の記録を手動取得
-  ========================================================= */
+async function loadMyRecordsOnce() {
 
-  async function refreshMyRecords() {
+  if (!currentUser) return;
 
-    if (!currentUser) return;
-
-    try {
-
-      const snapshot = await getDocs(
-        query(
-          collection(db, "studySessions"),
-          where("studentId", "==", currentUser.uid)
+  const snapshot =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "studySessions"
+        ),
+        where(
+          "studentId",
+          "==",
+          currentUser.uid
         )
-      );
-
-      myRecords = [];
-
-      snapshot.forEach((docSnap) => {
-
-        myRecords.push({
-          id: docSnap.id,
-          ...docSnap.data()
-        });
-
-      });
-
-      myRecords.sort((a, b) => {
-
-        const aTime = a.date?.toMillis?.() || 0;
-        const bTime = b.date?.toMillis?.() || 0;
-
-        return bTime - aTime;
-      });
-
-      updateMySummary();
-      updateSubjectChart();
-      renderMyRecords();
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert(
-        "記録の更新に失敗しました。\n\n" +
-        (error?.message || error)
-      );
-    }
-  }
-
-
-  async function loadMyRecordsFallback() {
-
-    if (!currentUser) return;
-
-    try {
-
-      const snapshot = await getDocs(
-        query(
-          collection(db, "studySessions"),
-          where("studentId", "==", currentUser.uid)
-        )
-      );
-
-      myRecords = [];
-
-      snapshot.forEach((docSnap) => {
-
-        myRecords.push({
-          id: docSnap.id,
-          ...docSnap.data()
-        });
-
-      });
-
-      myRecords.sort((a, b) => {
-
-        const aTime = a.date?.toMillis?.() || 0;
-        const bTime = b.date?.toMillis?.() || 0;
-
-        return bTime - aTime;
-      });
-
-      updateMySummary();
-      updateSubjectChart();
-      renderMyRecords();
-
-    } catch (error) {
-
-      console.error(error);
-    }
-  }
-
-
-  /* =========================================================
-     オンラインユーザー
-     ここはリアルタイム人数のため維持
-  ========================================================= */
-
-  function listenToOnlineUsers() {
-
-    if (!currentUser) return;
-
-    if (onlineUsersUnsubscribe) {
-      onlineUsersUnsubscribe();
-    }
-
-    const q = query(
-      collection(db, "onlineUsers"),
-      where("classId", "==", CLASS_ID)
+      )
     );
 
-    onlineUsersUnsubscribe = onSnapshot(
+  myRecords = [];
+
+  snapshot.forEach(
+    (docSnap) => {
+
+      const data =
+        docSnap.data();
+
+      if (
+        data.classId &&
+        data.classId !== CLASS_ID
+      ) {
+        return;
+      }
+
+      myRecords.push({
+
+        id:
+          docSnap.id,
+
+        ...data
+      });
+    }
+  );
+
+  sortRecords();
+
+  updateMySummary();
+
+  updateSubjectChart();
+
+  renderMyRecords();
+}
+
+
+async function loadMyRecordsFallback() {
+
+  try {
+
+    await loadMyRecordsOnce();
+
+  } catch (error) {
+
+    console.error(
+      "自分の記録再取得失敗",
+      error
+    );
+  }
+}
+
+
+/* =========================================================
+   オンラインユーザー
+========================================================= */
+
+function listenToOnlineUsers() {
+
+  if (!currentUser) return;
+
+  if (onlineUsersUnsubscribe) {
+    onlineUsersUnsubscribe();
+  }
+
+  const q =
+    query(
+      collection(
+        db,
+        "onlineUsers"
+      ),
+      where(
+        "classId",
+        "==",
+        CLASS_ID
+      )
+    );
+
+  onlineUsersUnsubscribe =
+    onSnapshot(
       q,
       (snapshot) => {
 
-        const now = Date.now();
+        const now =
+          Date.now();
 
         onlineUsers = [];
 
-        snapshot.forEach((docSnap) => {
+        snapshot.forEach(
+          (docSnap) => {
 
-          const data = docSnap.data();
+            const data =
+              docSnap.data();
 
-          const lastActive =
-            data.lastActive?.toMillis?.() || 0;
+            const lastActive =
+              data.lastActive
+                ?.toMillis?.() || 0;
 
-          if (
-            lastActive &&
-            now - lastActive <= ONLINE_TIMEOUT_MS
-          ) {
+            if (
+              lastActive &&
+              now - lastActive <=
+                ONLINE_TIMEOUT_MS
+            ) {
 
-            onlineUsers.push({
-              uid: docSnap.id,
-              ...data
-            });
+              onlineUsers.push({
+
+                uid:
+                  docSnap.id,
+
+                ...data
+              });
+            }
           }
-        });
+        );
 
         updateOnlineUI();
       },
       (error) => {
 
-        console.error("オンライン監視エラー", error);
+        console.error(
+          "オンライン監視エラー",
+          error
+        );
       }
+    );
+}
+
+
+/* =========================================================
+   オンライン状態
+========================================================= */
+
+async function updateOnlineStatus(
+  studying
+) {
+
+  if (!currentUser) return;
+
+  try {
+
+    const timerData =
+      studying && timerStartTime
+        ? {
+
+            activeStart:
+              Timestamp.fromMillis(
+                timerStartTime
+              ),
+
+            activeSubject:
+              timerSubject || ""
+          }
+        : {
+
+            activeStart:
+              null,
+
+            activeSubject:
+              ""
+          };
+
+    await setDoc(
+      doc(
+        db,
+        "onlineUsers",
+        currentUser.uid
+      ),
+      {
+
+        nickname:
+          currentUser.displayName ||
+          "Googleユーザー",
+
+        classId:
+          CLASS_ID,
+
+        lastActive:
+          serverTimestamp(),
+
+        studying:
+          !!studying,
+
+        ...timerData
+
+      },
+      {
+        merge: true
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      "オンライン状態更新エラー",
+      error
+    );
+  }
+}
+
+
+/* =========================================================
+   ハートビート
+========================================================= */
+
+function startHeartbeat() {
+
+  if (heartbeatInterval) {
+
+    clearInterval(
+      heartbeatInterval
     );
   }
 
+  heartbeatInterval =
+    setInterval(
+      () => {
 
-  const ONLINE_TIMEOUT_MS = 100 * 1000;
+        if (!currentUser) return;
 
+        updateOnlineStatus(
+          !!timerStartTime
+        );
 
-  /* =========================================================
-     オンライン状態
-  ========================================================= */
-
-  async function updateOnlineStatus(studying) {
-
-    if (!currentUser) return;
-
-    try {
-
-      const timerData =
-        studying && timerStartTime
-          ? {
-              activeStart: Timestamp.fromMillis(timerStartTime),
-              activeSubject: timerSubject || ""
-            }
-          : {
-              activeStart: null,
-              activeSubject: ""
-            };
-
-      await setDoc(
-        doc(db, "onlineUsers", currentUser.uid),
-        {
-          nickname:
-            currentUser.displayName || "Googleユーザー",
-
-          classId: CLASS_ID,
-
-          lastActive: serverTimestamp(),
-
-          studying: !!studying,
-
-          ...timerData
-        },
-        { merge: true }
-      );
-
-    } catch (error) {
-
-      console.error("オンライン状態更新エラー", error);
-    }
-  }
+      },
+      60 * 1000
+    );
+}
 
 
-  /* =========================================================
-     ハートビート
-  ========================================================= */
+/* =========================================================
+   オンラインUI
+========================================================= */
 
-  function startHeartbeat() {
+function updateOnlineUI() {
 
-    if (heartbeatInterval) {
-      clearInterval(heartbeatInterval);
-    }
+  const now =
+    Date.now();
 
-    heartbeatInterval = setInterval(() => {
-
-      if (!currentUser) return;
-
-      updateOnlineStatus(
-        !!timerStartTime
-      );
-
-    }, 60 * 1000);
-  }
-
-
-  /* =========================================================
-     オンラインUI
-  ========================================================= */
-
-  function updateOnlineUI() {
-
-    const now = Date.now();
-
-    const activeUsers =
-      onlineUsers.filter((u) => {
+  const activeUsers =
+    onlineUsers.filter(
+      (u) => {
 
         const lastActive =
-          u.lastActive?.toMillis?.() || 0;
+          u.lastActive
+            ?.toMillis?.() || 0;
 
         return (
           lastActive &&
-          now - lastActive <= ONLINE_TIMEOUT_MS
+          now - lastActive <=
+            ONLINE_TIMEOUT_MS
         );
-      });
+      }
+    );
 
-    const studyingUsers =
-      activeUsers.filter((u) => u.studying);
+  const studyingUsers =
+    activeUsers.filter(
+      (u) => u.studying
+    );
 
-    $("onlineCount").textContent =
-      `🟢 現在ログイン中：${activeUsers.length}人`;
+  $("onlineCount").textContent =
+    `🟢 現在ログイン中：${activeUsers.length}人`;
 
-    $("studyingCount").textContent =
-      `🔥 今！${studyingUsers.length}人が勉強中`;
-  }
+  $("studyingCount").textContent =
+    `🔥 今！${studyingUsers.length}人が勉強中`;
+}
 
 
-  /* =========================================================
-     今日の集計
-  ========================================================= */
+/* =========================================================
+   今日判定
+========================================================= */
 
-  function isToday(timestamp) {
+function isToday(timestamp) {
 
-    if (!timestamp) return false;
+  if (!timestamp) return false;
 
-    const date = timestamp.toDate
+  const date =
+    timestamp.toDate
       ? timestamp.toDate()
       : new Date(timestamp);
 
-    const now = new Date();
+  const now =
+    new Date();
 
-    return (
-      date.getFullYear() === now.getFullYear() &&
-      date.getMonth() === now.getMonth() &&
-      date.getDate() === now.getDate()
+  return (
+
+    date.getFullYear() ===
+      now.getFullYear() &&
+
+    date.getMonth() ===
+      now.getMonth() &&
+
+    date.getDate() ===
+      now.getDate()
+
+  );
+}
+
+
+/* =========================================================
+   今日の集計
+========================================================= */
+
+function updateMySummary() {
+
+  const todayRecords =
+    myRecords.filter(
+      (record) =>
+        isToday(record.date)
     );
-  }
+
+  const total =
+    todayRecords.reduce(
+      (sum, record) =>
+        sum +
+        Number(
+          record.minutes || 0
+        ),
+      0
+    );
+
+  $("todayTotal").textContent =
+    `${total}分`;
+
+  $("recordCount").textContent =
+    `${todayRecords.length}`;
+}
 
 
-  function updateMySummary() {
+/* =========================================================
+   教科別
+========================================================= */
 
-    const todayRecords =
-      myRecords.filter((record) => isToday(record.date));
+function updateSubjectChart() {
 
-    const total =
-      todayRecords.reduce(
-        (sum, record) =>
-          sum + Number(record.minutes || 0),
-        0
-      );
+  const totals = {
 
-    $("todayTotal").textContent =
-      `${total}分`;
+    国語: 0,
+    数学: 0,
+    英語: 0,
+    理科: 0,
+    社会: 0,
+    その他: 0
 
-    $("recordCount").textContent =
-      `${todayRecords.length}`;
-  }
+  };
 
-
-  /* =========================================================
-     教科別
-  ========================================================= */
-
-  function updateSubjectChart() {
-
-    const totals = {
-      国語: 0,
-      数学: 0,
-      英語: 0,
-      理科: 0,
-      社会: 0,
-      その他: 0
-    };
-
-    myRecords
-      .filter((record) => isToday(record.date))
-      .forEach((record) => {
+  myRecords
+    .filter(
+      (record) =>
+        isToday(record.date)
+    )
+    .forEach(
+      (record) => {
 
         const subject =
-          record.subject || "その他";
+          record.subject ||
+          "その他";
 
-        if (!(subject in totals)) {
-          totals.その他 += Number(record.minutes || 0);
+        if (
+          !(subject in totals)
+        ) {
+
+          totals.その他 +=
+            Number(
+              record.minutes || 0
+            );
+
         } else {
-          totals[subject] += Number(record.minutes || 0);
+
+          totals[subject] +=
+            Number(
+              record.minutes || 0
+            );
         }
-      });
+      }
+    );
 
-    const max =
-      Math.max(...Object.values(totals), 1);
+  const max =
+    Math.max(
+      ...Object.values(totals),
+      1
+    );
 
-    $("subjectChart").innerHTML =
-      Object.entries(totals)
-        .map(([subject, minutes]) => {
+  $("subjectChart").innerHTML =
+    Object.entries(totals)
+      .map(
+        ([subject, minutes]) => {
 
           const width =
             minutes === 0
               ? 0
               : Math.max(
                   3,
-                  (minutes / max) * 100
+                  (minutes / max) *
+                    100
                 );
 
           return `
+
             <div class="subject-row">
+
               <div class="subject-header">
-                <span>${escapeHtml(subject)}</span>
-                <strong>${minutes}分</strong>
+
+                <span>
+                  ${escapeHtml(subject)}
+                </span>
+
+                <strong>
+                  ${minutes}分
+                </strong>
+
               </div>
 
               <div class="bar-background">
+
                 <div
                   class="bar"
                   style="width:${width}%;">
                 </div>
+
               </div>
+
             </div>
+
           `;
-        })
-        .join("");
-  }
+        }
+      )
+      .join("");
+}
 
 
-  /* =========================================================
-     自分の記録表示
-  ========================================================= */
+/* =========================================================
+   自分の記録表示
+========================================================= */
 
-  function renderMyRecords() {
+function renderMyRecords() {
 
-    if (!myRecords.length) {
-
-      $("records").innerHTML =
-        '<div class="empty">まだ記録がありません。</div>';
-
-      return;
-    }
+  if (!myRecords.length) {
 
     $("records").innerHTML =
-      myRecords
-        .map((record) => {
+      '<div class="empty">まだ記録がありません。</div>';
+
+    return;
+  }
+
+  $("records").innerHTML =
+    myRecords
+      .map(
+        (record) => {
 
           const date =
             record.date?.toDate
@@ -1649,12 +2074,16 @@
               : "日時不明";
 
           return `
+
             <div class="record-item">
 
               <div class="record-main">
 
                 <div class="record-subject">
-                  ${escapeHtml(record.subject || "その他")}
+                  ${escapeHtml(
+                    record.subject ||
+                    "その他"
+                  )}
                 </div>
 
                 <div class="record-date">
@@ -1664,7 +2093,9 @@
               </div>
 
               <div class="record-minutes">
-                ${Number(record.minutes || 0)}分
+                ${Number(
+                  record.minutes || 0
+                )}分
               </div>
 
               <button
@@ -1674,20 +2105,27 @@
               </button>
 
             </div>
+
           `;
-        })
-        .join("");
-  }
+        }
+      )
+      .join("");
+}
 
 
-  /* =========================================================
-     記録追加
-  ========================================================= */
+/* =========================================================
+   記録追加
+========================================================= */
 
-  window.addRecord = async function() {
+window.addRecord =
+  async function() {
 
     if (!currentUser) {
-      alert("先にGoogleでログインしてください。");
+
+      alert(
+        "先にGoogleでログインしてください。"
+      );
+
       return;
     }
 
@@ -1695,11 +2133,18 @@
       $("subject").value;
 
     const minutes =
-      Number($("minutes").value);
+      Number(
+        $("minutes").value
+      );
 
-    if (!minutes || minutes <= 0) {
+    if (
+      !minutes ||
+      minutes <= 0
+    ) {
 
-      alert("学習時間を1分以上入力してください。");
+      alert(
+        "学習時間を1分以上入力してください。"
+      );
 
       return;
     }
@@ -1707,28 +2152,34 @@
     try {
 
       await addDoc(
-        collection(db, "studySessions"),
+        collection(
+          db,
+          "studySessions"
+        ),
         {
-          studentId: currentUser.uid,
-          classId: CLASS_ID,
+
+          studentId:
+            currentUser.uid,
+
+          classId:
+            CLASS_ID,
+
           subject,
+
           minutes,
-          date: serverTimestamp()
+
+          date:
+            serverTimestamp()
+
         }
       );
 
-      $("minutes").value = "";
+      $("minutes").value =
+        "";
 
-      /*
-        重要：
-        ここで全員分の累計を再計算しない。
-        読み取り回数削減のためランキングは手動更新。
-      */
-
-      rankingLoaded = false;
-      allTimeLoaded = false;
-
-      alert("学習時間を記録しました！");
+      alert(
+        "学習時間を記録しました！"
+      );
 
     } catch (error) {
 
@@ -1742,40 +2193,52 @@
   };
 
 
-  /* =========================================================
-     記録削除
-  ========================================================= */
+/* =========================================================
+   記録削除
+========================================================= */
 
-  window.deleteRecord = async function(id) {
+window.deleteRecord =
+  async function(id) {
 
     if (!currentUser) return;
 
     const target =
-      myRecords.find((record) => record.id === id);
+      myRecords.find(
+        (record) =>
+          record.id === id
+      );
 
     if (!target) return;
 
     if (
-      target.studentId !== currentUser.uid
+      target.studentId !==
+      currentUser.uid
     ) {
 
-      alert("自分の記録だけ削除できます。");
+      alert(
+        "自分の記録だけ削除できます。"
+      );
 
       return;
     }
 
-    if (!confirm("この記録を削除しますか？")) {
+    if (
+      !confirm(
+        "この記録を削除しますか？"
+      )
+    ) {
       return;
     }
 
     try {
 
       await deleteDoc(
-        doc(db, "studySessions", id)
+        doc(
+          db,
+          "studySessions",
+          id
+        )
       );
-
-      rankingLoaded = false;
-      allTimeLoaded = false;
 
     } catch (error) {
 
@@ -1789,17 +2252,20 @@
   };
 
 
-  /* =========================================================
-     全削除
-  ========================================================= */
+/* =========================================================
+   全削除
+========================================================= */
 
-  window.clearAll = async function() {
+window.clearAll =
+  async function() {
 
     if (!currentUser) return;
 
     if (!myRecords.length) {
 
-      alert("削除する記録がありません。");
+      alert(
+        "削除する記録がありません。"
+      );
 
       return;
     }
@@ -1814,22 +2280,27 @@
 
     try {
 
-      const batch = writeBatch(db);
+      const batch =
+        writeBatch(db);
 
-      myRecords.forEach((record) => {
+      myRecords.forEach(
+        (record) => {
 
-        batch.delete(
-          doc(db, "studySessions", record.id)
-        );
-
-      });
+          batch.delete(
+            doc(
+              db,
+              "studySessions",
+              record.id
+            )
+          );
+        }
+      );
 
       await batch.commit();
 
-      rankingLoaded = false;
-      allTimeLoaded = false;
-
-      alert("すべての記録を削除しました。");
+      alert(
+        "すべての記録を削除しました。"
+      );
 
     } catch (error) {
 
@@ -1843,118 +2314,161 @@
   };
 
 
-  /* =========================================================
-     タイマー
-  ========================================================= */
+/* =========================================================
+   タイマー保存
+========================================================= */
 
-  const TIMER_STORAGE_PREFIX =
-    "studyTimeTimer_";
+function timerStorageKey() {
+
+  if (!currentUser) return null;
+
+  return (
+    TIMER_STORAGE_PREFIX +
+    currentUser.uid
+  );
+}
 
 
-  function timerStorageKey() {
+function saveTimerState() {
 
-    if (!currentUser) return null;
+  const key =
+    timerStorageKey();
 
-    return TIMER_STORAGE_PREFIX + currentUser.uid;
+  if (
+    !key ||
+    !timerStartTime
+  ) {
+    return;
   }
 
+  localStorage.setItem(
+    key,
+    JSON.stringify({
 
-  function saveTimerState() {
+      startTime:
+        timerStartTime,
 
-    const key = timerStorageKey();
+      subject:
+        timerSubject
 
-    if (!key || !timerStartTime) return;
+    })
+  );
+}
 
-    localStorage.setItem(
-      key,
-      JSON.stringify({
-        startTime: timerStartTime,
-        subject: timerSubject
-      })
-    );
+
+function loadTimerState() {
+
+  const key =
+    timerStorageKey();
+
+  if (!key) return null;
+
+  const value =
+    localStorage.getItem(key);
+
+  if (!value) return null;
+
+  try {
+
+    return JSON.parse(value);
+
+  } catch (e) {
+
+    return null;
   }
+}
 
 
-  function loadTimerState() {
+function clearTimerState() {
 
-    const key = timerStorageKey();
+  const key =
+    timerStorageKey();
 
-    if (!key) return null;
+  if (!key) return;
 
-    const value =
-      localStorage.getItem(key);
-
-    if (!value) return null;
-
-    try {
-      return JSON.parse(value);
-    } catch (e) {
-      return null;
-    }
-  }
+  localStorage.removeItem(key);
+}
 
 
-  function clearTimerState() {
+/* =========================================================
+   タイマー表示
+========================================================= */
 
-    const key = timerStorageKey();
+function formatTimer(seconds) {
 
-    if (!key) return;
-
-    localStorage.removeItem(key);
-  }
-
-
-  function formatTimer(seconds) {
-
-    seconds = Math.max(
+  seconds =
+    Math.max(
       0,
       Math.floor(seconds)
     );
 
-    const hours =
-      Math.floor(seconds / 3600);
-
-    const minutes =
-      Math.floor((seconds % 3600) / 60);
-
-    const secs =
-      seconds % 60;
-
-    return (
-      String(hours).padStart(2, "0") +
-      ":" +
-      String(minutes).padStart(2, "0") +
-      ":" +
-      String(secs).padStart(2, "0")
+  const hours =
+    Math.floor(
+      seconds / 3600
     );
-  }
+
+  const minutes =
+    Math.floor(
+      (seconds % 3600) / 60
+    );
+
+  const secs =
+    seconds % 60;
+
+  return (
+
+    String(hours)
+      .padStart(2, "0") +
+
+    ":" +
+
+    String(minutes)
+      .padStart(2, "0") +
+
+    ":" +
+
+    String(secs)
+      .padStart(2, "0")
+
+  );
+}
 
 
-  function updateTimerDisplay() {
+function updateTimerDisplay() {
 
-    if (!timerStartTime) {
-
-      $("timerDisplay").textContent =
-        "00:00:00";
-
-      return;
-    }
-
-    const elapsed =
-      Math.floor(
-        (Date.now() - timerStartTime) / 1000
-      );
+  if (!timerStartTime) {
 
     $("timerDisplay").textContent =
-      formatTimer(elapsed);
+      "00:00:00";
+
+    return;
   }
 
+  const elapsed =
+    Math.floor(
+      (
+        Date.now() -
+        timerStartTime
+      ) / 1000
+    );
 
-  window.startTimer = async function() {
+  $("timerDisplay").textContent =
+    formatTimer(elapsed);
+}
+
+
+/* =========================================================
+   タイマースタート
+========================================================= */
+
+window.startTimer =
+  async function() {
 
     if (!currentUser) {
 
-      alert("先にログインしてください。");
+      alert(
+        "先にログインしてください。"
+      );
 
       return;
     }
@@ -1964,14 +2478,19 @@
     timerSubject =
       $("timerSubject").value;
 
-    timerStartTime = Date.now();
+    timerStartTime =
+      Date.now();
 
     saveTimerState();
 
-    $("timerSubject").disabled = true;
+    $("timerSubject").disabled =
+      true;
 
-    $("startTimerButton").disabled = true;
-    $("stopTimerButton").disabled = false;
+    $("startTimerButton").disabled =
+      true;
+
+    $("stopTimerButton").disabled =
+      false;
 
     $("timerStatus").textContent =
       `「${timerSubject}」を勉強中です`;
@@ -1979,13 +2498,21 @@
     updateTimerDisplay();
 
     timerInterval =
-      setInterval(updateTimerDisplay, 1000);
+      setInterval(
+        updateTimerDisplay,
+        1000
+      );
 
     await updateOnlineStatus(true);
   };
 
 
-  window.stopTimer = async function() {
+/* =========================================================
+   タイマーストップ
+========================================================= */
+
+window.stopTimer =
+  async function() {
 
     if (!currentUser) return;
 
@@ -2001,40 +2528,52 @@
       Math.max(
         1,
         Math.floor(
-          (Date.now() - startTime) / 1000
+          (
+            Date.now() -
+            startTime
+          ) / 1000
         )
       );
 
     const minutes =
       Math.max(
         1,
-        Math.round(elapsedSeconds / 60)
+        Math.round(
+          elapsedSeconds / 60
+        )
       );
-
-    /*
-      重要：
-      Firestore保存成功までは
-      localStorageを消さない。
-      保存失敗時にタイマーが消えるのを防止。
-    */
 
     try {
 
+      /*
+       保存成功するまで
+       localStorageを消さない
+      */
+
       await addDoc(
-        collection(db, "studySessions"),
+        collection(
+          db,
+          "studySessions"
+        ),
         {
-          studentId: currentUser.uid,
-          classId: CLASS_ID,
+
+          studentId:
+            currentUser.uid,
+
+          classId:
+            CLASS_ID,
+
           subject,
+
           minutes,
-          date: serverTimestamp()
+
+          date:
+            serverTimestamp()
+
         }
       );
 
       stopTimerWithoutSave();
-
-      rankingLoaded = false;
-      allTimeLoaded = false;
 
       $("timerStatus").textContent =
         `${minutes}分の学習を記録しました！`;
@@ -2054,97 +2593,132 @@
   };
 
 
-  function stopTimerWithoutSave() {
+function stopTimerWithoutSave() {
 
-    if (timerInterval) {
+  if (timerInterval) {
 
-      clearInterval(timerInterval);
+    clearInterval(
+      timerInterval
+    );
 
-      timerInterval = null;
-    }
+    timerInterval = null;
+  }
 
-    timerStartTime = null;
-    timerSubject = "";
+  timerStartTime = null;
+  timerSubject = "";
+
+  clearTimerState();
+
+  $("timerSubject").disabled =
+    false;
+
+  $("startTimerButton").disabled =
+    false;
+
+  $("stopTimerButton").disabled =
+    true;
+
+  $("timerDisplay").textContent =
+    "00:00:00";
+
+  if (currentUser) {
+
+    $("timerStatus").textContent =
+      "タイマー停止中";
+
+    updateOnlineStatus(false);
+  }
+}
+
+
+/* =========================================================
+   タイマー復元
+========================================================= */
+
+function restoreTimer() {
+
+  if (!currentUser) return;
+
+  const saved =
+    loadTimerState();
+
+  if (
+    !saved ||
+    !saved.startTime
+  ) {
+    return;
+  }
+
+  const startTime =
+    Number(
+      saved.startTime
+    );
+
+  const subject =
+    saved.subject ||
+    "その他";
+
+  if (
+    !Number.isFinite(
+      startTime
+    ) ||
+    startTime <= 0
+  ) {
 
     clearTimerState();
 
-    $("timerSubject").disabled = false;
-
-    $("startTimerButton").disabled = false;
-    $("stopTimerButton").disabled = true;
-
-    $("timerDisplay").textContent =
-      "00:00:00";
-
-    if (currentUser) {
-
-      $("timerStatus").textContent =
-        "タイマー停止中";
-
-      updateOnlineStatus(false);
-    }
+    return;
   }
 
+  timerStartTime =
+    startTime;
 
-  function restoreTimer() {
+  timerSubject =
+    subject;
 
-    if (!currentUser) return;
+  $("timerSubject").value =
+    subject;
 
-    const saved =
-      loadTimerState();
+  $("timerSubject").disabled =
+    true;
 
-    if (!saved || !saved.startTime) {
-      return;
-    }
+  $("startTimerButton").disabled =
+    true;
 
-    const startTime =
-      Number(saved.startTime);
+  $("stopTimerButton").disabled =
+    false;
 
-    const subject =
-      saved.subject || "その他";
+  $("timerStatus").textContent =
+    `「${subject}」を勉強中です`;
 
-    if (
-      !Number.isFinite(startTime) ||
-      startTime <= 0
-    ) {
-      clearTimerState();
-      return;
-    }
+  updateTimerDisplay();
 
-    timerStartTime = startTime;
-    timerSubject = subject;
+  if (timerInterval) {
 
-    $("timerSubject").value =
-      subject;
-
-    $("timerSubject").disabled = true;
-
-    $("startTimerButton").disabled = true;
-    $("stopTimerButton").disabled = false;
-
-    $("timerStatus").textContent =
-      `「${subject}」を勉強中です`;
-
-    updateTimerDisplay();
-
-    if (timerInterval) {
-      clearInterval(timerInterval);
-    }
-
-    timerInterval =
-      setInterval(updateTimerDisplay, 1000);
-
-    updateOnlineStatus(true);
+    clearInterval(
+      timerInterval
+    );
   }
 
+  timerInterval =
+    setInterval(
+      updateTimerDisplay,
+      1000
+    );
 
-  /* =========================================================
-     ランキング
-  ========================================================= */
+  updateOnlineStatus(true);
+}
 
-  window.setRankingMode = async function(mode) {
 
-    rankingMode = mode;
+/* =========================================================
+   ランキングモード
+========================================================= */
+
+window.setRankingMode =
+  async function(mode) {
+
+    rankingMode =
+      mode;
 
     $("todayRankingButton").className =
       mode === "today"
@@ -2156,17 +2730,17 @@
         ? "primary"
         : "secondary";
 
-    /*
-      モード切替時に自動読み込みしない。
-      読み取り削減のため、更新ボタンを押したときだけ取得。
-    */
-
     $("ranking").innerHTML =
       '<div class="empty">「ランキングを更新」を押してください。</div>';
   };
 
 
-  window.refreshRanking = async function() {
+/* =========================================================
+   ランキング更新
+========================================================= */
+
+window.refreshRanking =
+  async function() {
 
     if (!currentUser) return;
 
@@ -2181,55 +2755,72 @@
 
       await loadStudentsOnce();
 
-      if (rankingMode === "today") {
+      if (
+        rankingMode === "today"
+      ) {
 
         await loadTodayRanking();
 
       } else {
 
         await loadAllTimeRanking();
-
       }
-
-      rankingLoaded = true;
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "ランキング読み込みエラー",
+        error
+      );
 
       $("ranking").innerHTML =
         `<div class="empty">
           読み込みに失敗しました。<br>
-          ${escapeHtml(error?.message || String(error))}
+          ${escapeHtml(
+            error?.message ||
+            String(error)
+          )}
         </div>`;
 
     } finally {
 
-      rankingLoading = false;
+      rankingLoading =
+        false;
     }
   };
 
 
-  /* =========================================================
-     今日のランキング
-     1回のクエリで今日の記録を取得
-  ========================================================= */
+/* =========================================================
+   今日のランキング
+   日付だけで取得
+   classIdはJavaScript側で確認
+========================================================= */
 
-  async function loadTodayRanking() {
+async function loadTodayRanking() {
 
-    const start =
-      new Date();
+  const start =
+    new Date();
 
-    start.setHours(0, 0, 0, 0);
+  start.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
-    const end =
-      new Date(start);
+  const end =
+    new Date(start);
 
-    end.setDate(end.getDate() + 1);
+  end.setDate(
+    end.getDate() + 1
+  );
 
-    const q = query(
-      collection(db, "studySessions"),
-      where("classId", "==", CLASS_ID),
+  const q =
+    query(
+      collection(
+        db,
+        "studySessions"
+      ),
       where(
         "date",
         ">=",
@@ -2242,88 +2833,129 @@
       )
     );
 
-    const snapshot =
-      await getDocs(q);
+  const snapshot =
+    await getDocs(q);
 
-    const totals = {};
+  const totals = {};
 
-    classStudents.forEach((student) => {
-      totals[student.uid] = 0;
-    });
+  classStudents.forEach(
+    (student) => {
 
-    snapshot.forEach((docSnap) => {
+      totals[student.uid] =
+        0;
+    }
+  );
+
+  snapshot.forEach(
+    (docSnap) => {
 
       const data =
         docSnap.data();
 
+      if (
+        data.classId &&
+        data.classId !== CLASS_ID
+      ) {
+        return;
+      }
+
       const uid =
         data.studentId;
 
-      if (!(uid in totals)) {
+      if (
+        !(uid in totals)
+      ) {
         return;
       }
 
       totals[uid] +=
-        Number(data.minutes || 0);
-    });
-
-    const ranking =
-      classStudents
-        .map((student) => ({
-          uid: student.uid,
-          nickname: student.nickname,
-          minutes: totals[student.uid] || 0
-        }))
-        .sort((a, b) =>
-          b.minutes - a.minutes ||
-          a.nickname.localeCompare(b.nickname, "ja")
+        Number(
+          data.minutes || 0
         );
+    }
+  );
 
-    renderRanking(ranking);
-  }
+  const ranking =
+    classStudents
+      .map(
+        (student) => ({
+
+          uid:
+            student.uid,
+
+          nickname:
+            student.nickname,
+
+          minutes:
+            totals[student.uid] ||
+            0
+
+        })
+      )
+      .sort(
+        (a, b) =>
+          b.minutes - a.minutes ||
+          a.nickname.localeCompare(
+            b.nickname,
+            "ja"
+          )
+      );
+
+  renderRanking(ranking);
+}
 
 
-  /* =========================================================
-     累計ランキング
-     全記録を読むのではなく、生徒ごとの集計クエリを
-     「ランキング更新時だけ」実行
-  ========================================================= */
+/* =========================================================
+   累計ランキング
+   studentIdだけで集計
+========================================================= */
 
-  async function loadAllTimeRanking() {
+async function loadAllTimeRanking() {
 
-    const totals = {};
+  const totals = {};
 
-    classStudents.forEach((student) => {
-      totals[student.uid] = 0;
-    });
+  classStudents.forEach(
+    (student) => {
 
-    /*
-      記録追加・削除のたびには実行しない。
-      ユーザーがランキング更新を押したときだけ実行する。
-    */
+      totals[student.uid] =
+        0;
+    }
+  );
 
-    await Promise.all(
-      classStudents.map(async (student) => {
+  await Promise.all(
+
+    classStudents.map(
+      async (student) => {
 
         try {
 
-          const q = query(
-            collection(db, "studySessions"),
-            where("classId", "==", CLASS_ID),
-            where("studentId", "==", student.uid)
-          );
+          const q =
+            query(
+              collection(
+                db,
+                "studySessions"
+              ),
+              where(
+                "studentId",
+                "==",
+                student.uid
+              )
+            );
 
           const aggregate =
             await getAggregateFromServer(
               q,
               {
-                totalMinutes: sum("minutes")
+                totalMinutes:
+                  sum("minutes")
               }
             );
 
           totals[student.uid] =
             Number(
-              aggregate.data().totalMinutes || 0
+              aggregate
+                .data()
+                .totalMinutes || 0
             );
 
         } catch (error) {
@@ -2334,93 +2966,114 @@
             error
           );
 
-          totals[student.uid] = 0;
+          totals[student.uid] =
+            0;
         }
-      })
-    );
+      }
+    )
+  );
 
-    allTimeTotals = totals;
-    allTimeLoaded = true;
+  const ranking =
+    classStudents
+      .map(
+        (student) => ({
 
-    const ranking =
-      classStudents
-        .map((student) => ({
-          uid: student.uid,
-          nickname: student.nickname,
-          minutes: totals[student.uid] || 0
-        }))
-        .sort((a, b) =>
+          uid:
+            student.uid,
+
+          nickname:
+            student.nickname,
+
+          minutes:
+            totals[student.uid] ||
+            0
+
+        })
+      )
+      .sort(
+        (a, b) =>
           b.minutes - a.minutes ||
-          a.nickname.localeCompare(b.nickname, "ja")
-        );
-
-    renderRanking(ranking);
-  }
-
-
-  /* =========================================================
-     ランキング表示
-  ========================================================= */
-
-  function renderRanking(ranking) {
-
-    if (!ranking.length) {
-
-      $("ranking").innerHTML =
-        '<div class="empty">生徒がいません。</div>';
-
-      return;
-    }
-
-    const positive =
-      ranking.filter((item) => item.minutes > 0);
-
-    if (!positive.length) {
-
-      $("ranking").innerHTML =
-        '<div class="empty">まだ学習記録がありません。</div>';
-
-      return;
-    }
-
-    const ownIndex =
-      ranking.findIndex(
-        (item) =>
-          item.uid === currentUser?.uid
+          a.nickname.localeCompare(
+            b.nickname,
+            "ja"
+          )
       );
 
-    const displayIndexes = [];
+  renderRanking(ranking);
+}
 
-    for (
-      let i = 0;
-      i < Math.min(3, ranking.length);
-      i++
-    ) {
-      if (ranking[i].minutes > 0) {
-        displayIndexes.push(i);
-      }
-    }
 
-    if (
-      ownIndex >= 3 &&
-      ownIndex >= 0 &&
-      ranking[ownIndex].minutes > 0
-    ) {
+/* =========================================================
+   ランキング表示
+========================================================= */
 
-      if (
-        displayIndexes[displayIndexes.length - 1] !==
-        ownIndex
-      ) {
-        displayIndexes.push(-1);
-        displayIndexes.push(ownIndex);
-      }
-    }
+function renderRanking(ranking) {
+
+  if (!ranking.length) {
 
     $("ranking").innerHTML =
-      displayIndexes
-        .map((index) => {
+      '<div class="empty">生徒がいません。</div>';
+
+    return;
+  }
+
+  const positive =
+    ranking.filter(
+      (item) =>
+        item.minutes > 0
+    );
+
+  if (!positive.length) {
+
+    $("ranking").innerHTML =
+      '<div class="empty">まだ学習記録がありません。</div>';
+
+    return;
+  }
+
+  const ownIndex =
+    ranking.findIndex(
+      (item) =>
+        item.uid ===
+        currentUser?.uid
+    );
+
+  const displayIndexes = [];
+
+  for (
+    let i = 0;
+    i <
+      Math.min(
+        3,
+        ranking.length
+      );
+    i++
+  ) {
+
+    if (
+      ranking[i].minutes > 0
+    ) {
+      displayIndexes.push(i);
+    }
+  }
+
+  if (
+    ownIndex >= 3 &&
+    ownIndex >= 0 &&
+    ranking[ownIndex].minutes > 0
+  ) {
+
+    displayIndexes.push(-1);
+    displayIndexes.push(ownIndex);
+  }
+
+  $("ranking").innerHTML =
+    displayIndexes
+      .map(
+        (index) => {
 
           if (index === -1) {
+
             return `
               <div style="
                 text-align:center;
@@ -2436,71 +3089,100 @@
             ranking[index];
 
           const isMe =
-            item.uid === currentUser?.uid;
+            item.uid ===
+            currentUser?.uid;
 
           return `
-            <div class="ranking-item ${isMe ? "my-rank" : ""}">
 
-              <div class="rank-number ${
-                index < 3
-                  ? "top-rank"
+            <div
+              class="ranking-item ${
+                isMe
+                  ? "my-rank"
                   : ""
               }">
+
+              <div
+                class="rank-number ${
+                  index < 3
+                    ? "top-rank"
+                    : ""
+                }">
+
                 ${index + 1}位
+
               </div>
 
               <div class="rank-name">
-                ${escapeHtml(item.nickname)}
-                ${isMe ? "（自分）" : ""}
+
+                ${escapeHtml(
+                  item.nickname
+                )}
+
+                ${
+                  isMe
+                    ? "（自分）"
+                    : ""
+                }
+
               </div>
 
               <div class="rank-minutes">
+
                 ${item.minutes}分
+
               </div>
 
             </div>
+
           `;
-        })
-        .join("");
-  }
+        }
+      )
+      .join("");
+}
 
 
-  /* =========================================================
-     カレンダー
-  ========================================================= */
+/* =========================================================
+   カレンダー
+========================================================= */
 
-  function setupCalendarDate() {
+function setupCalendarDate() {
 
-    const now =
-      new Date();
+  const now =
+    new Date();
 
-    calendarYear =
-      now.getFullYear();
+  calendarYear =
+    now.getFullYear();
 
-    calendarMonth =
-      now.getMonth();
+  calendarMonth =
+    now.getMonth();
 
-    renderCalendarTitle();
-  }
-
-
-  function renderCalendarTitle() {
-
-    $("calendarTitle").textContent =
-      `${calendarYear}年${calendarMonth + 1}月`;
-  }
+  renderCalendarTitle();
+}
 
 
-  window.changeCalendarMonth = async function(diff) {
+function renderCalendarTitle() {
 
-    calendarMonth += diff;
+  $("calendarTitle").textContent =
+    `${calendarYear}年${calendarMonth + 1}月`;
+}
 
-    if (calendarMonth < 0) {
+
+window.changeCalendarMonth =
+  async function(diff) {
+
+    calendarMonth +=
+      diff;
+
+    if (
+      calendarMonth < 0
+    ) {
 
       calendarMonth = 11;
       calendarYear--;
 
-    } else if (calendarMonth > 11) {
+    } else if (
+      calendarMonth > 11
+    ) {
 
       calendarMonth = 0;
       calendarYear++;
@@ -2512,95 +3194,138 @@
   };
 
 
-  async function loadCalendarMonth(force) {
+/* =========================================================
+   カレンダー読み込み
+   日付だけで取得
+========================================================= */
 
-    if (!currentUser) return;
+async function loadCalendarMonth(
+  force
+) {
 
-    const key =
-      `${calendarYear}-${calendarMonth}`;
+  if (!currentUser) return;
 
-    if (
-      !force &&
-      calendarMonthLoadedKey === key
-    ) {
-      renderCalendar();
-      return;
-    }
+  const key =
+    `${calendarYear}-${calendarMonth}`;
 
-    const start =
-      new Date(
-        calendarYear,
-        calendarMonth,
-        1,
-        0,
-        0,
-        0,
-        0
-      );
+  if (
+    !force &&
+    calendarMonthLoadedKey === key
+  ) {
 
-    const end =
-      new Date(
-        calendarYear,
-        calendarMonth + 1,
-        1,
-        0,
-        0,
-        0,
-        0
-      );
+    renderCalendar();
 
-    const q = query(
-      collection(db, "studySessions"),
-      where("classId", "==", CLASS_ID),
-      where(
-        "date",
-        ">=",
-        Timestamp.fromDate(start)
-      ),
-      where(
-        "date",
-        "<",
-        Timestamp.fromDate(end)
-      )
-    );
-
-    try {
-
-      const snapshot =
-        await getDocs(q);
-
-      calendarMonthSessions = [];
-
-      snapshot.forEach((docSnap) => {
-
-        calendarMonthSessions.push({
-          id: docSnap.id,
-          ...docSnap.data()
-        });
-
-      });
-
-      calendarMonthLoadedKey = key;
-
-      renderCalendar();
-
-    } catch (error) {
-
-      console.error(error);
-
-      $("calendarGrid").innerHTML =
-        `<div class="empty">
-          カレンダーの読み込みに失敗しました。
-        </div>`;
-    }
+    return;
   }
 
+  const start =
+    new Date(
+      calendarYear,
+      calendarMonth,
+      1,
+      0,
+      0,
+      0,
+      0
+    );
 
-  function getDailyTotals() {
+  const end =
+    new Date(
+      calendarYear,
+      calendarMonth + 1,
+      1,
+      0,
+      0,
+      0,
+      0
+    );
 
-    const totals = {};
+  try {
 
-    calendarMonthSessions.forEach((session) => {
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "studySessions"
+          ),
+          where(
+            "date",
+            ">=",
+            Timestamp.fromDate(
+              start
+            )
+          ),
+          where(
+            "date",
+            "<",
+            Timestamp.fromDate(
+              end
+            )
+          )
+        )
+      );
+
+    calendarMonthSessions = [];
+
+    snapshot.forEach(
+      (docSnap) => {
+
+        const data =
+          docSnap.data();
+
+        if (
+          data.classId &&
+          data.classId !== CLASS_ID
+        ) {
+          return;
+        }
+
+        calendarMonthSessions.push({
+
+          id:
+            docSnap.id,
+
+          ...data
+
+        });
+      }
+    );
+
+    calendarMonthLoadedKey =
+      key;
+
+    renderCalendar();
+
+  } catch (error) {
+
+    console.error(
+      "カレンダー読み込みエラー",
+      error
+    );
+
+    $("calendarGrid").innerHTML =
+      `<div class="empty">
+        カレンダーの読み込みに失敗しました。<br>
+        ${escapeHtml(
+          error?.message ||
+          String(error)
+        )}
+      </div>`;
+  }
+}
+
+
+/* =========================================================
+   日別合計
+========================================================= */
+
+function getDailyTotals() {
+
+  const totals = {};
+
+  calendarMonthSessions.forEach(
+    (session) => {
 
       const date =
         session.date?.toDate?.();
@@ -2618,269 +3343,375 @@
       }
 
       totals[day][uid] =
-        (totals[day][uid] || 0) +
-        Number(session.minutes || 0);
-    });
-
-    return totals;
-  }
-
-
-  function getDailyMvp(day) {
-
-    const daily =
-      getDailyTotals()[day] || {};
-
-    const entries =
-      Object.entries(daily);
-
-    if (!entries.length) {
-      return {
-        winners: [],
-        minutes: 0
-      };
+        (
+          totals[day][uid] ||
+          0
+        ) +
+        Number(
+          session.minutes || 0
+        );
     }
+  );
 
-    const max =
-      Math.max(
-        ...entries.map(([, minutes]) => minutes)
-      );
+  return totals;
+}
 
-    const winnerUids =
-      entries
-        .filter(([, minutes]) => minutes === max)
-        .map(([uid]) => uid);
 
-    const winners =
-      winnerUids.map((uid) => {
+/* =========================================================
+   日別MVP
+========================================================= */
 
-        const student =
-          classStudents.find(
-            (s) => s.uid === uid
-          );
+function getDailyMvp(day) {
 
-        return {
-          uid,
-          nickname:
-            student?.nickname || "名前不明"
-        };
-      });
+  const daily =
+    getDailyTotals()[day] ||
+    {};
+
+  const entries =
+    Object.entries(daily);
+
+  if (!entries.length) {
 
     return {
-      winners,
-      minutes: max
+
+      winners: [],
+
+      minutes: 0
+
     };
   }
 
+  const max =
+    Math.max(
+      ...entries.map(
+        ([, minutes]) =>
+          minutes
+      )
+    );
 
-  function renderCalendar() {
+  const winnerUids =
+    entries
+      .filter(
+        ([, minutes]) =>
+          minutes === max
+      )
+      .map(
+        ([uid]) =>
+          uid
+      );
 
-    renderCalendarTitle();
+  const winners =
+    winnerUids.map(
+      (uid) => {
 
-    const grid =
-      $("calendarGrid");
+        const student =
+          classStudents.find(
+            (s) =>
+              s.uid === uid
+          );
 
-    grid.innerHTML = "";
+        return {
 
-    const firstDay =
-      new Date(
-        calendarYear,
-        calendarMonth,
-        1
-      ).getDay();
+          uid,
 
-    const daysInMonth =
-      new Date(
-        calendarYear,
-        calendarMonth + 1,
-        0
-      ).getDate();
+          nickname:
+            student?.nickname ||
+            "名前不明"
 
-    const dailyTotals =
-      getDailyTotals();
-
-    const now =
-      new Date();
-
-    for (let i = 0; i < firstDay; i++) {
-
-      const empty =
-        document.createElement("div");
-
-      empty.className =
-        "calendar-day empty-day";
-
-      grid.appendChild(empty);
-    }
-
-    for (
-      let day = 1;
-      day <= daysInMonth;
-      day++
-    ) {
-
-      const div =
-        document.createElement("div");
-
-      div.className =
-        "calendar-day";
-
-      const isToday =
-        calendarYear === now.getFullYear() &&
-        calendarMonth === now.getMonth() &&
-        day === now.getDate();
-
-      if (isToday) {
-        div.classList.add("today");
+        };
       }
+    );
 
-      const mvp =
-        getDailyMvp(day);
+  return {
 
-      if (mvp.winners.length) {
-        div.classList.add("mvp-day");
-      }
+    winners,
 
-      const total =
-        Object.values(
-          dailyTotals[day] || {}
-        ).reduce(
-          (sum, value) =>
-            sum + Number(value || 0),
-          0
-        );
+    minutes:
+      max
 
-      div.innerHTML = `
-        <div class="calendar-day-number">
-          ${day}
-        </div>
+  };
+}
 
-        ${
-          mvp.winners.length
-            ? `<span class="calendar-medal">🏆</span>`
-            : ""
-        }
 
-        ${
-          total > 0
-            ? `<div class="calendar-minutes">${total}分</div>`
-            : ""
-        }
-      `;
+/* =========================================================
+   カレンダー表示
+========================================================= */
 
-      div.onclick = () =>
-        showCalendarDetail(day);
+function renderCalendar() {
 
-      grid.appendChild(div);
-    }
+  renderCalendarTitle();
+
+  const grid =
+    $("calendarGrid");
+
+  grid.innerHTML =
+    "";
+
+  const firstDay =
+    new Date(
+      calendarYear,
+      calendarMonth,
+      1
+    ).getDay();
+
+  const daysInMonth =
+    new Date(
+      calendarYear,
+      calendarMonth + 1,
+      0
+    ).getDate();
+
+  const dailyTotals =
+    getDailyTotals();
+
+  const now =
+    new Date();
+
+  for (
+    let i = 0;
+    i < firstDay;
+    i++
+  ) {
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "calendar-day empty-day";
+
+    grid.appendChild(empty);
   }
 
+  for (
+    let day = 1;
+    day <= daysInMonth;
+    day++
+  ) {
 
-  function showCalendarDetail(day) {
+    const div =
+      document.createElement(
+        "div"
+      );
 
-    const detail =
-      $("calendarDetail");
+    div.className =
+      "calendar-day";
+
+    const isToday =
+      calendarYear ===
+        now.getFullYear() &&
+
+      calendarMonth ===
+        now.getMonth() &&
+
+      day ===
+        now.getDate();
+
+    if (isToday) {
+
+      div.classList.add(
+        "today"
+      );
+    }
 
     const mvp =
       getDailyMvp(day);
 
-    if (!mvp.winners.length) {
+    if (
+      mvp.winners.length
+    ) {
 
-      detail.classList.remove("hidden");
-
-      detail.innerHTML =
-        `${calendarYear}年${calendarMonth + 1}月${day}日は、MVPはいません。`;
-
-      return;
+      div.classList.add(
+        "mvp-day"
+      );
     }
 
-    const names =
-      mvp.winners
-        .map(
-          (winner) =>
-            escapeHtml(winner.nickname)
-        )
-        .join("、");
+    const total =
+      Object.values(
+        dailyTotals[day] || {}
+      ).reduce(
+        (sum, value) =>
+          sum +
+          Number(
+            value || 0
+          ),
+        0
+      );
 
-    detail.classList.remove("hidden");
+    div.innerHTML = `
 
-    detail.innerHTML = `
-      <strong>🏆 ${calendarMonth + 1}月${day}日のMVP</strong><br>
-      ${names}<br>
-      学習時間：${mvp.minutes}分
+      <div class="calendar-day-number">
+        ${day}
+      </div>
+
+      ${
+        mvp.winners.length
+          ? `<span class="calendar-medal">🏆</span>`
+          : ""
+      }
+
+      ${
+        total > 0
+          ? `<div class="calendar-minutes">${total}分</div>`
+          : ""
+      }
+
     `;
+
+    div.onclick =
+      () =>
+        showCalendarDetail(day);
+
+    grid.appendChild(div);
+  }
+}
+
+
+/* =========================================================
+   カレンダー詳細
+========================================================= */
+
+function showCalendarDetail(day) {
+
+  const detail =
+    $("calendarDetail");
+
+  const mvp =
+    getDailyMvp(day);
+
+  if (
+    !mvp.winners.length
+  ) {
+
+    detail.classList.remove(
+      "hidden"
+    );
+
+    detail.innerHTML =
+      `${calendarYear}年${
+        calendarMonth + 1
+      }月${day}日は、MVPはいません。`;
+
+    return;
   }
 
+  const names =
+    mvp.winners
+      .map(
+        (winner) =>
+          escapeHtml(
+            winner.nickname
+          )
+      )
+      .join("、");
 
-  /* =========================================================
-     MVP集計
-  ========================================================= */
+  detail.classList.remove(
+    "hidden"
+  );
 
-  async function refreshMvpSummary() {
+  detail.innerHTML = `
 
-    if (!currentUser) return;
+    <strong>
+      🏆 ${calendarMonth + 1}月${day}日のMVP
+    </strong>
 
-    const now =
-      new Date();
+    <br>
 
-    const year =
-      now.getFullYear();
+    ${names}
 
-    const month =
-      now.getMonth();
+    <br>
 
-    const start =
-      new Date(
-        year,
-        month,
-        1,
-        0,
-        0,
-        0,
-        0
-      );
+    学習時間：
+    ${mvp.minutes}分
 
-    const end =
-      new Date(
-        year,
-        month + 1,
-        1,
-        0,
-        0,
-        0,
-        0
-      );
+  `;
+}
 
-    try {
 
-      const snapshot =
-        await getDocs(
-          query(
-            collection(db, "studySessions"),
-            where(
-              "classId",
-              "==",
-              CLASS_ID
-            ),
-            where(
-              "date",
-              ">=",
-              Timestamp.fromDate(start)
-            ),
-            where(
-              "date",
-              "<",
-              Timestamp.fromDate(end)
+/* =========================================================
+   今月MVP
+========================================================= */
+
+async function refreshMvpSummary() {
+
+  if (!currentUser) return;
+
+  const now =
+    new Date();
+
+  const year =
+    now.getFullYear();
+
+  const month =
+    now.getMonth();
+
+  const start =
+    new Date(
+      year,
+      month,
+      1,
+      0,
+      0,
+      0,
+      0
+    );
+
+  const end =
+    new Date(
+      year,
+      month + 1,
+      1,
+      0,
+      0,
+      0,
+      0
+    );
+
+  try {
+
+    /*
+     日付だけで取得
+    */
+
+    const snapshot =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "studySessions"
+          ),
+          where(
+            "date",
+            ">=",
+            Timestamp.fromDate(
+              start
+            )
+          ),
+          where(
+            "date",
+            "<",
+            Timestamp.fromDate(
+              end
             )
           )
-        );
+        )
+      );
 
-      const daily = {};
+    const daily = {};
 
-      snapshot.forEach((docSnap) => {
+    snapshot.forEach(
+      (docSnap) => {
 
         const data =
           docSnap.data();
+
+        if (
+          data.classId &&
+          data.classId !== CLASS_ID
+        ) {
+          return;
+        }
 
         const date =
           data.date?.toDate?.();
@@ -2898,108 +3729,174 @@
         }
 
         daily[day][uid] =
-          (daily[day][uid] || 0) +
-          Number(data.minutes || 0);
-      });
+          (
+            daily[day][uid] ||
+            0
+          ) +
+          Number(
+            data.minutes || 0
+          );
+      }
+    );
 
-      const mvpCounts = {};
+    const mvpCounts = {};
 
-      let totalMvpDays = 0;
+    let totalMvpDays = 0;
 
-      Object.values(daily).forEach((dayData) => {
+    Object.values(daily)
+      .forEach(
+        (dayData) => {
 
-        const values =
-          Object.values(dayData);
+          const values =
+            Object.values(
+              dayData
+            );
 
-        if (!values.length) return;
+          if (!values.length) {
+            return;
+          }
 
-        const max =
-          Math.max(...values);
+          const max =
+            Math.max(
+              ...values
+            );
 
-        if (max <= 0) return;
+          if (max <= 0) {
+            return;
+          }
 
-        totalMvpDays++;
+          totalMvpDays++;
 
-        Object.entries(dayData)
-          .filter(([, minutes]) =>
-            minutes === max
+          Object.entries(
+            dayData
           )
-          .forEach(([uid]) => {
+            .filter(
+              ([, minutes]) =>
+                minutes === max
+            )
+            .forEach(
+              ([uid]) => {
 
-            mvpCounts[uid] =
-              (mvpCounts[uid] || 0) + 1;
-          });
-      });
+                mvpCounts[uid] =
+                  (
+                    mvpCounts[uid] ||
+                    0
+                  ) + 1;
+              }
+            );
+        }
+      );
 
-      const myMvpCount =
-        currentUser
-          ? (mvpCounts[currentUser.uid] || 0)
-          : 0;
+    const myMvpCount =
+      currentUser
+        ? (
+            mvpCounts[
+              currentUser.uid
+            ] || 0
+          )
+        : 0;
 
-      const top =
-        Object.entries(mvpCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
+    const top =
+      Object.entries(
+        mvpCounts
+      )
+        .sort(
+          (a, b) =>
+            b[1] - a[1]
+        )
+        .slice(0, 5);
 
-      const topText =
-        top.length
-          ? top
-              .map(([uid, count], index) => {
+    const topText =
+      top.length
+        ? top
+            .map(
+              (
+                [uid, count],
+                index
+              ) => {
 
                 const student =
                   classStudents.find(
-                    (s) => s.uid === uid
+                    (s) =>
+                      s.uid === uid
                   );
 
                 return `
+
                   <div style="
                     display:flex;
                     justify-content:space-between;
                     padding:4px 0;
                   ">
+
                     <span>
                       ${index + 1}位　
                       ${escapeHtml(
-                        student?.nickname || "名前不明"
+                        student?.nickname ||
+                        "名前不明"
                       )}
                     </span>
-                    <strong>${count}回</strong>
+
+                    <strong>
+                      ${count}回
+                    </strong>
+
                   </div>
+
                 `;
-              })
-              .join("")
-          : "まだMVPはいません。";
+              }
+            )
+            .join("")
+        : "まだMVPはいません。";
 
-      $("mvpSummary").innerHTML = `
-        <strong>今月のMVP</strong><br>
-        MVPになった日：${totalMvpDays}日<br>
-        あなたのMVP回数：${myMvpCount}回
+    $("mvpSummary").innerHTML = `
 
-        <div style="
-          margin-top:10px;
-          border-top:1px solid #eadca9;
-          padding-top:8px;
-        ">
-          ${topText}
-        </div>
-      `;
+      <strong>今月のMVP</strong>
 
-    } catch (error) {
+      <br>
 
-      console.error(error);
+      MVPになった日：
+      ${totalMvpDays}日
 
-      $("mvpSummary").textContent =
-        "MVP情報の読み込みに失敗しました。";
-    }
+      <br>
+
+      あなたのMVP回数：
+      ${myMvpCount}回
+
+      <div style="
+        margin-top:10px;
+        border-top:1px solid #eadca9;
+        padding-top:8px;
+      ">
+
+        ${topText}
+
+      </div>
+
+    `;
+
+  } catch (error) {
+
+    console.error(
+      "MVP読み込みエラー",
+      error
+    );
+
+    $("mvpSummary").textContent =
+      "MVP情報の読み込みに失敗しました。";
   }
+}
 
 
-  /* =========================================================
-     MVP累計
-     ボタンを押したときだけ読み込む
-  ========================================================= */
+/* =========================================================
+   MVP累計
+   ボタンを押したときだけ
+========================================================= */
 
-  window.loadMvpAllTime = async function(force = false) {
+window.loadMvpAllTime =
+  async function(
+    force = false
+  ) {
 
     if (!currentUser) return;
 
@@ -3007,7 +3904,9 @@
       mvpAllTimeLoaded &&
       !force
     ) {
+
       renderMvpAllTime();
+
       return;
     }
 
@@ -3019,136 +3918,214 @@
       const snapshot =
         await getDocs(
           query(
-            collection(db, "studySessions"),
-            where(
-              "classId",
-              "==",
-              CLASS_ID
+            collection(
+              db,
+              "studySessions"
             )
           )
         );
 
       const daily = {};
 
-      snapshot.forEach((docSnap) => {
+      snapshot.forEach(
+        (docSnap) => {
 
-        const data =
-          docSnap.data();
+          const data =
+            docSnap.data();
 
-        const date =
-          data.date?.toDate?.();
+          if (
+            data.classId &&
+            data.classId !== CLASS_ID
+          ) {
+            return;
+          }
 
-        if (!date) return;
+          const date =
+            data.date?.toDate?.();
 
-        const dateKey =
-          `${date.getFullYear()}-` +
-          `${String(date.getMonth() + 1).padStart(2, "0")}-` +
-          `${String(date.getDate()).padStart(2, "0")}`;
+          if (!date) return;
 
-        const uid =
-          data.studentId;
+          const dateKey =
+            `${date.getFullYear()}-` +
+            `${String(
+              date.getMonth() + 1
+            ).padStart(2, "0")}-` +
+            `${String(
+              date.getDate()
+            ).padStart(2, "0")}`;
 
-        if (!daily[dateKey]) {
-          daily[dateKey] = {};
+          const uid =
+            data.studentId;
+
+          if (!daily[dateKey]) {
+            daily[dateKey] = {};
+          }
+
+          daily[dateKey][uid] =
+            (
+              daily[dateKey][uid] ||
+              0
+            ) +
+            Number(
+              data.minutes || 0
+            );
         }
-
-        daily[dateKey][uid] =
-          (daily[dateKey][uid] || 0) +
-          Number(data.minutes || 0);
-      });
+      );
 
       const counts = {};
 
-      Object.values(daily).forEach((dayData) => {
+      Object.values(daily)
+        .forEach(
+          (dayData) => {
 
-        const values =
-          Object.values(dayData);
+            const values =
+              Object.values(
+                dayData
+              );
 
-        if (!values.length) return;
+            if (!values.length) {
+              return;
+            }
 
-        const max =
-          Math.max(...values);
+            const max =
+              Math.max(
+                ...values
+              );
 
-        if (max <= 0) return;
+            if (max <= 0) {
+              return;
+            }
 
-        Object.entries(dayData)
-          .filter(([, minutes]) =>
-            minutes === max
-          )
-          .forEach(([uid]) => {
+            Object.entries(
+              dayData
+            )
+              .filter(
+                ([, minutes]) =>
+                  minutes === max
+              )
+              .forEach(
+                ([uid]) => {
 
-            counts[uid] =
-              (counts[uid] || 0) + 1;
-          });
-      });
+                  counts[uid] =
+                    (
+                      counts[uid] ||
+                      0
+                    ) + 1;
+                }
+              );
+          }
+        );
 
-      mvpAllTimeCache = counts;
-      mvpAllTimeLoaded = true;
+      mvpAllTimeCache =
+        counts;
+
+      mvpAllTimeLoaded =
+        true;
 
       renderMvpAllTime();
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "MVP累計読み込みエラー",
+        error
+      );
 
       $("mvpRanking").innerHTML =
         `<div class="empty">
-          MVP回数の読み込みに失敗しました。
+          MVP回数の読み込みに失敗しました。<br>
+          ${escapeHtml(
+            error?.message ||
+            String(error)
+          )}
         </div>`;
     }
   };
 
 
-  function renderMvpAllTime() {
+/* =========================================================
+   MVP累計表示
+========================================================= */
 
-    if (!mvpAllTimeCache) {
+function renderMvpAllTime() {
 
-      $("mvpRanking").innerHTML =
-        '<div class="empty">「MVP回数を更新」を押してください。</div>';
-
-      return;
-    }
-
-    const ranking =
-      classStudents
-        .map((student) => ({
-          ...student,
-          count:
-            mvpAllTimeCache[student.uid] || 0
-        }))
-        .filter((student) =>
-          student.count > 0
-        )
-        .sort((a, b) =>
-          b.count - a.count ||
-          a.nickname.localeCompare(b.nickname, "ja")
-        );
-
-    if (!ranking.length) {
-
-      $("mvpRanking").innerHTML =
-        '<div class="empty">まだMVPはいません。</div>';
-
-      return;
-    }
+  if (!mvpAllTimeCache) {
 
     $("mvpRanking").innerHTML =
-      ranking
-        .map((student, index) => {
+      '<div class="empty">「MVP回数を更新」を押してください。</div>';
+
+    return;
+  }
+
+  const ranking =
+    classStudents
+      .map(
+        (student) => ({
+
+          ...student,
+
+          count:
+            mvpAllTimeCache[
+              student.uid
+            ] || 0
+
+        })
+      )
+      .filter(
+        (student) =>
+          student.count > 0
+      )
+      .sort(
+        (a, b) =>
+          b.count - a.count ||
+          a.nickname.localeCompare(
+            b.nickname,
+            "ja"
+          )
+      );
+
+  if (!ranking.length) {
+
+    $("mvpRanking").innerHTML =
+      '<div class="empty">まだMVPはいません。</div>';
+
+    return;
+  }
+
+  $("mvpRanking").innerHTML =
+    ranking
+      .map(
+        (student, index) => {
 
           const isMe =
-            student.uid === currentUser?.uid;
+            student.uid ===
+            currentUser?.uid;
 
           return `
-            <div class="ranking-item ${isMe ? "my-rank" : ""}">
+
+            <div
+              class="ranking-item ${
+                isMe
+                  ? "my-rank"
+                  : ""
+              }">
 
               <div class="rank-number">
                 ${index + 1}位
               </div>
 
               <div class="rank-name">
-                ${escapeHtml(student.nickname)}
-                ${isMe ? "（自分）" : ""}
+
+                ${escapeHtml(
+                  student.nickname
+                )}
+
+                ${
+                  isMe
+                    ? "（自分）"
+                    : ""
+                }
+
               </div>
 
               <div class="rank-minutes">
@@ -3156,22 +4133,30 @@
               </div>
 
             </div>
+
           `;
-        })
-        .join("");
-  }
+        }
+      )
+      .join("");
+}
 
 
-  /* =========================================================
-     管理者
-     月間合計のみ表示
-  ========================================================= */
+/* =========================================================
+   管理者
+   月間合計のみ
+========================================================= */
 
-  window.loadAdminMonth = async function(force = false) {
+window.loadAdminMonth =
+  async function(
+    force = false
+  ) {
 
     if (!currentUser) return;
 
-    if (currentUser.uid !== ADMIN_UID) {
+    if (
+      currentUser.uid !==
+      ADMIN_UID
+    ) {
       return;
     }
 
@@ -3180,7 +4165,9 @@
 
     if (!month) {
 
-      alert("月を選択してください。");
+      alert(
+        "月を選択してください。"
+      );
 
       return;
     }
@@ -3200,8 +4187,13 @@
     $("adminResults").innerHTML =
       '<div class="empty">読み込み中...</div>';
 
-    const [year, monthNumber] =
-      month.split("-").map(Number);
+    const [
+      year,
+      monthNumber
+    ] =
+      month
+        .split("-")
+        .map(Number);
 
     const start =
       new Date(
@@ -3228,186 +4220,283 @@
     try {
 
       /*
-        ここも「月を表示」したときだけ1回読み込む。
+       日付だけで取得。
+       classIdはJavaScript側で絞る。
       */
 
       const snapshot =
         await getDocs(
           query(
-            collection(db, "studySessions"),
-            where(
-              "classId",
-              "==",
-              CLASS_ID
+            collection(
+              db,
+              "studySessions"
             ),
             where(
               "date",
               ">=",
-              Timestamp.fromDate(start)
+              Timestamp.fromDate(
+                start
+              )
             ),
             where(
               "date",
               "<",
-              Timestamp.fromDate(end)
+              Timestamp.fromDate(
+                end
+              )
             )
           )
         );
 
       const totals = {};
 
-      classStudents.forEach((student) => {
-        totals[student.uid] = 0;
-      });
+      classStudents.forEach(
+        (student) => {
 
-      snapshot.forEach((docSnap) => {
-
-        const data =
-          docSnap.data();
-
-        const uid =
-          data.studentId;
-
-        if (!(uid in totals)) {
-          return;
+          totals[student.uid] =
+            0;
         }
+      );
 
-        totals[uid] +=
-          Number(data.minutes || 0);
-      });
+      snapshot.forEach(
+        (docSnap) => {
+
+          const data =
+            docSnap.data();
+
+          if (
+            data.classId &&
+            data.classId !== CLASS_ID
+          ) {
+            return;
+          }
+
+          const uid =
+            data.studentId;
+
+          if (
+            !(uid in totals)
+          ) {
+            return;
+          }
+
+          totals[uid] +=
+            Number(
+              data.minutes || 0
+            );
+        }
+      );
 
       const result =
         classStudents
-          .map((student) => ({
-            uid: student.uid,
-            nickname: student.nickname,
-            minutes: totals[student.uid] || 0
-          }))
-          .sort((a, b) =>
-            b.minutes - a.minutes ||
-            a.nickname.localeCompare(b.nickname, "ja")
+          .map(
+            (student) => ({
+
+              uid:
+                student.uid,
+
+              nickname:
+                student.nickname,
+
+              minutes:
+                totals[
+                  student.uid
+                ] || 0
+
+            })
+          )
+          .sort(
+            (a, b) =>
+              b.minutes - a.minutes ||
+              a.nickname.localeCompare(
+                b.nickname,
+                "ja"
+              )
           );
 
-      adminMonthCache[month] = result;
+      adminMonthCache[month] =
+        result;
 
-      renderAdminResults(result);
+      renderAdminResults(
+        result
+      );
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "管理者読み込みエラー",
+        error
+      );
 
       $("adminResults").innerHTML =
         `<div class="empty">
           読み込みに失敗しました。<br>
-          ${escapeHtml(error?.message || String(error))}
+          ${escapeHtml(
+            error?.message ||
+            String(error)
+          )}
         </div>`;
     }
   };
 
 
-  function renderAdminResults(result) {
+/* =========================================================
+   管理者表示
+========================================================= */
 
-    if (!result.length) {
+function renderAdminResults(
+  result
+) {
 
-      $("adminResults").innerHTML =
-        '<div class="empty">生徒がいません。</div>';
-
-      return;
-    }
+  if (!result.length) {
 
     $("adminResults").innerHTML =
-      result
-        .map((student, index) => {
+      '<div class="empty">生徒がいません。</div>';
+
+    return;
+  }
+
+  $("adminResults").innerHTML =
+    result
+      .map(
+        (student, index) => {
 
           return `
+
             <div class="admin-student">
 
               <div class="admin-name">
+
                 ${index + 1}位　
-                ${escapeHtml(student.nickname)}
+                ${escapeHtml(
+                  student.nickname
+                )}
+
               </div>
 
               <div class="admin-total">
+
                 ${student.minutes}分
+
               </div>
 
             </div>
+
           `;
-        })
-        .join("");
-  }
+        }
+      )
+      .join("");
+}
 
 
-  /* =========================================================
-     UI更新
-  ========================================================= */
+/* =========================================================
+   UI更新
+========================================================= */
 
-  function updateAllUI() {
+function updateAllUI() {
 
-    if (!currentUser) return;
+  if (!currentUser) return;
 
-    updateMySummary();
+  updateMySummary();
 
-    updateSubjectChart();
+  updateSubjectChart();
 
-    renderMyRecords();
+  renderMyRecords();
 
-    updateOnlineUI();
+  updateOnlineUI();
 
-    updateTimerDisplay();
+  updateTimerDisplay();
 
-    renderCalendar();
-  }
+  renderCalendar();
+}
 
 
-  /* =========================================================
-     日付・文字列
-  ========================================================= */
+/* =========================================================
+   日付
+========================================================= */
 
-  function formatDateTime(date) {
+function formatDateTime(
+  date
+) {
 
-    return (
-      `${date.getFullYear()}/` +
-      `${String(date.getMonth() + 1).padStart(2, "0")}/` +
-      `${String(date.getDate()).padStart(2, "0")} ` +
-      `${String(date.getHours()).padStart(2, "0")}:` +
-      `${String(date.getMinutes()).padStart(2, "0")}`
+  return (
+
+    `${date.getFullYear()}/` +
+
+    `${String(
+      date.getMonth() + 1
+    ).padStart(2, "0")}/` +
+
+    `${String(
+      date.getDate()
+    ).padStart(2, "0")} ` +
+
+    `${String(
+      date.getHours()
+    ).padStart(2, "0")}:` +
+
+    `${String(
+      date.getMinutes()
+    ).padStart(2, "0")}`
+
+  );
+}
+
+
+/* =========================================================
+   HTMLエスケープ
+========================================================= */
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
     );
-  }
+}
 
 
-  function escapeHtml(value) {
+/* =========================================================
+   ページ終了時
+========================================================= */
 
-    return String(value ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-
-  /* =========================================================
-     ページ終了時
-  ========================================================= */
-
-  window.addEventListener("beforeunload", () => {
-
-    /*
-      タイマー中ならlocalStorageに保存。
-      ブラウザを閉じても復元できるようにする。
-    */
+window.addEventListener(
+  "beforeunload",
+  () => {
 
     if (timerStartTime) {
       saveTimerState();
     }
-  });
+  }
+);
 
 
-  /* =========================================================
-     初期表示
-  ========================================================= */
+/* =========================================================
+   初期表示
+========================================================= */
 
-  resetLoggedOutUI();
+resetLoggedOutUI();
 
 </script>
 
