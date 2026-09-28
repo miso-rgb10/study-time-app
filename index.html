@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>学習時間アプリ</title>
 
   <style>
@@ -15,135 +16,295 @@
       font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "Hiragino Kaku Gothic ProN",
-        "Yu Gothic",
-        Meiryo,
+        "Segoe UI",
+        "Noto Sans JP",
         sans-serif;
       background: #f4f7fb;
-      color: #222;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 20px 14px 50px;
+      color: #333;
     }
 
     header {
+      background: #4f7cff;
+      color: white;
+      padding: 24px 16px;
       text-align: center;
-      margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
     header h1 {
-      margin: 0;
-      font-size: 28px;
-      color: #315dcc;
+      margin: 0 0 6px;
+      font-size: 26px;
     }
 
     header p {
-      margin: 6px 0 0;
-      color: #666;
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.95;
     }
 
-    .card {
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    section {
       background: white;
       border-radius: 16px;
       padding: 18px;
       margin-bottom: 16px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     }
 
-    .card h2 {
+    h2 {
       margin: 0 0 14px;
-      font-size: 20px;
+      font-size: 19px;
+    }
+
+    h3 {
+      margin: 16px 0 10px;
+      font-size: 16px;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
     }
 
     button {
       border: none;
       border-radius: 10px;
-      padding: 11px 15px;
-      background: #4f7cff;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
+      padding: 11px 14px;
       cursor: pointer;
+      font-weight: bold;
     }
 
     button:disabled {
-      background: #aaa;
+      opacity: 0.55;
       cursor: not-allowed;
     }
 
-    button.secondary {
-      background: #777;
+    .primary {
+      background: #4f7cff;
+      color: white;
     }
 
-    button.danger {
-      background: #e05252;
+    .secondary {
+      background: #eef2ff;
+      color: #365bd6;
     }
 
-    button.small {
-      padding: 7px 10px;
-      font-size: 13px;
+    .danger {
+      background: #ffe9e9;
+      color: #d33;
     }
 
-    input,
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d5dbe5;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      background: white;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
+    .gray {
+      background: #eee;
+      color: #555;
     }
 
     .login-box {
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     #loginStatus {
-      margin: 10px 0;
       font-weight: bold;
+      padding: 10px;
+      background: #f5f7fb;
+      border-radius: 10px;
     }
 
     .online-box {
       display: flex;
-      justify-content: space-around;
-      text-align: center;
+      flex-direction: column;
+      gap: 6px;
+      background: #f5fff7;
+      border: 1px solid #d8f2df;
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    .studying-count {
+      font-weight: bold;
+      color: #16853a;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .form-row > * {
+      flex: 1;
+      min-width: 0;
+    }
+
+    select,
+    input[type="number"] {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #d6dbe5;
+      border-radius: 10px;
+      background: white;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
 
-    .online-item {
-      flex: 1;
-      background: #f5f7fb;
+    .summary-card {
+      background: #f5f7ff;
       border-radius: 12px;
-      padding: 12px 5px;
+      padding: 14px;
+      text-align: center;
     }
 
-    .online-number {
+    .summary-card .label {
+      font-size: 12px;
+      color: #777;
+    }
+
+    .summary-card .value {
+      margin-top: 5px;
       font-size: 25px;
       font-weight: bold;
+      color: #365bd6;
+    }
+
+    .timer {
+      text-align: center;
+    }
+
+    #timerDisplay {
+      font-size: 42px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin: 12px 0;
+      color: #333;
+    }
+
+    .timer-status {
+      min-height: 24px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .button-row button {
+      flex: 1;
+      min-width: 130px;
+    }
+
+    .record-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .record-item:last-child {
+      border-bottom: none;
+    }
+
+    .record-main {
+      min-width: 0;
+    }
+
+    .record-subject {
+      font-weight: bold;
+    }
+
+    .record-date {
+      color: #888;
+      font-size: 12px;
       margin-top: 3px;
     }
 
-    .ranking-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
+    .record-minutes {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .small-delete {
+      padding: 7px 10px;
+      font-size: 12px;
+      background: #ffe9e9;
+      color: #c33;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      padding: 20px 0;
+    }
+
+    .subject-row {
+      margin-bottom: 12px;
+    }
+
+    .subject-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .bar-background {
+      height: 12px;
+      background: #edf0f5;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      background: #4f7cff;
+      border-radius: 99px;
+      transition: width 0.3s;
+    }
+
+    .ranking-controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .ranking-controls button {
+      flex: 1;
+    }
+
+    .ranking-refresh {
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+    .ranking-note {
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 10px;
+      line-height: 1.6;
     }
 
     .ranking-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 11px 4px;
+      gap: 10px;
+      padding: 11px 8px;
       border-bottom: 1px solid #eee;
     }
 
@@ -152,15 +313,14 @@
     }
 
     .rank-number {
-      width: 30px;
-      font-weight: bold;
+      width: 35px;
       text-align: center;
+      font-weight: bold;
     }
 
     .rank-name {
       flex: 1;
       min-width: 0;
-      word-break: break-word;
     }
 
     .rank-minutes {
@@ -168,132 +328,28 @@
       white-space: nowrap;
     }
 
-    .self {
-      background: #eef3ff;
-      border-radius: 8px;
+    .my-rank {
+      background: #eef4ff;
+      border-radius: 10px;
     }
 
-    .summary {
-      display: flex;
-      gap: 10px;
-    }
-
-    .summary-box {
-      flex: 1;
-      text-align: center;
-      background: #f5f7fb;
-      border-radius: 12px;
-      padding: 14px;
-    }
-
-    .summary-number {
-      font-size: 26px;
-      font-weight: bold;
-      color: #315dcc;
-    }
-
-    .subject-row {
-      margin-bottom: 13px;
-    }
-
-    .subject-header {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 4px;
-    }
-
-    .bar-bg {
-      width: 100%;
-      height: 12px;
-      background: #e9edf3;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .bar {
-      height: 100%;
-      background: #4f7cff;
-      border-radius: 999px;
-    }
-
-    .record-item {
-      border-bottom: 1px solid #eee;
-      padding: 12px 0;
-    }
-
-    .record-item:last-child {
-      border-bottom: none;
-    }
-
-    .record-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .record-subject {
-      font-weight: bold;
-    }
-
-    .record-minutes {
-      font-weight: bold;
-      color: #315dcc;
-    }
-
-    .record-date {
-      color: #777;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .record-delete {
-      margin-top: 7px;
-    }
-
-    .timer-display {
-      font-size: 44px;
-      font-weight: bold;
-      text-align: center;
-      letter-spacing: 2px;
-      margin: 15px 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .timer-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .timer-buttons button {
-      flex: 1;
-    }
-
-    .timer-status {
-      text-align: center;
-      color: #555;
-      min-height: 22px;
+    .top-rank {
+      font-size: 18px;
     }
 
     .calendar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .calendar-header button {
+      padding: 7px 10px;
     }
 
     .calendar-title {
-      font-size: 20px;
       font-weight: bold;
-    }
-
-    .calendar-buttons {
-      display: flex;
-      gap: 6px;
-    }
-
-    .calendar-buttons button {
-      padding: 7px 10px;
     }
 
     .calendar {
@@ -304,169 +360,126 @@
 
     .calendar-weekday {
       text-align: center;
-      font-weight: bold;
-      font-size: 12px;
-      padding: 4px 0;
-      color: #666;
+      font-size: 11px;
+      color: #777;
+      padding: 5px 0;
     }
 
     .calendar-day {
-      min-height: 54px;
-      border: 1px solid #e1e5eb;
+      min-height: 52px;
       border-radius: 8px;
-      background: white;
+      background: #f7f8fa;
       padding: 5px;
-      font-size: 12px;
       cursor: pointer;
       position: relative;
+      font-size: 12px;
     }
 
-    .calendar-day.empty {
+    .calendar-day:hover {
+      background: #edf2ff;
+    }
+
+    .calendar-day.empty-day {
       background: transparent;
-      border: none;
       cursor: default;
     }
 
     .calendar-day.today {
-      border: 2px solid #4f7cff;
+      outline: 2px solid #4f7cff;
     }
 
-    .calendar-day.mvp {
-      background: #fff8df;
+    .calendar-day.mvp-day {
+      background: #fff6d9;
     }
 
-    .day-number {
+    .calendar-day-number {
       font-weight: bold;
     }
 
-    .mvp-mark {
+    .calendar-medal {
       display: block;
       font-size: 17px;
-      margin-top: 5px;
+      margin-top: 3px;
     }
 
-    .history-detail {
-      margin-top: 12px;
-      padding: 12px;
-      background: #f5f7fb;
+    .calendar-minutes {
+      color: #777;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .calendar-detail {
+      background: #f8f9fb;
       border-radius: 10px;
-      min-height: 40px;
-      line-height: 1.8;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 14px;
+      line-height: 1.7;
     }
 
-    .history-student {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 4px;
-      border-bottom: 1px solid #e5e8ed;
-    }
-
-    .history-student:last-child {
-      border-bottom: none;
-    }
-
-    .history-student-name {
-      flex: 1;
-      min-width: 0;
-      word-break: break-word;
-    }
-
-    .history-student-minutes {
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .history-mvp {
-      background: #fff4c7;
-      border-radius: 8px;
-      font-weight: bold;
+    .mvp-summary {
+      background: #fff8df;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
     }
 
     .admin-box {
-      background: #fff7e6;
-      border: 1px solid #f0d18a;
+      border-top: 1px solid #eee;
+      margin-top: 14px;
+      padding-top: 14px;
     }
 
-    .admin-month-controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .admin-month-controls select {
-      margin: 0;
-    }
-
-    /* 管理者：生徒ごとの月間合計 */
     .admin-student {
-      background: white;
-      border: 1px solid #ead9ae;
-      border-radius: 12px;
-      padding: 12px;
-      margin-top: 10px;
-    }
-
-    .admin-student-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .admin-student:last-child {
+      border-bottom: none;
+    }
+
+    .admin-name {
+      flex: 1;
+    }
+
+    .admin-total {
       font-weight: bold;
     }
 
-    .admin-student-name {
-      flex: 1;
-      min-width: 0;
-      word-break: break-word;
-    }
-
-    .admin-student-total {
-      color: #315dcc;
-      white-space: nowrap;
-    }
-
-    .loading {
-      color: #777;
+    .footer-note {
       text-align: center;
-      padding: 12px;
-    }
-
-    .note {
-      color: #777;
-      font-size: 13px;
-      line-height: 1.6;
+      color: #999;
+      font-size: 11px;
+      padding: 10px 0 30px;
     }
 
     .hidden {
       display: none !important;
     }
 
-    .error {
-      color: #c33;
-      font-weight: bold;
-    }
-
-    .success {
-      color: #27833f;
-      font-weight: bold;
-    }
-
     @media (max-width: 500px) {
-      .container {
-        padding: 14px 10px 40px;
+      main {
+        padding: 10px;
       }
 
-      header h1 {
-        font-size: 24px;
+      section {
+        padding: 14px;
       }
 
-      .timer-display {
-        font-size: 37px;
+      .form-row {
+        flex-direction: column;
+      }
+
+      #timerDisplay {
+        font-size: 34px;
       }
 
       .calendar-day {
-        min-height: 48px;
+        min-height: 46px;
       }
     }
   </style>
@@ -474,150 +487,77 @@
 
 <body>
 
-<div class="container">
+<header>
+  <h1>📚 学習時間</h1>
+  <p>毎日の勉強を記録しよう！</p>
+</header>
 
-  <header>
-    <h1>📚 学習時間</h1>
-    <p>毎日の勉強を記録しよう！</p>
-  </header>
+<main>
 
   <!-- ログイン -->
-  <div class="card login-box">
+  <section>
     <h2>🔐 ログイン</h2>
 
-    <div id="loginStatus">
-      ログインしていません
+    <div class="login-box">
+      <div id="loginStatus">ログインしていません</div>
+
+      <button
+        id="loginButton"
+        class="primary"
+        onclick="loginWithGoogle()">
+        Googleでログイン
+      </button>
+
+      <button
+        id="logoutButton"
+        class="danger hidden"
+        onclick="logout()">
+        ログアウト
+      </button>
     </div>
 
-    <button id="loginButton" onclick="loginWithGoogle()">
-      Googleでログイン
-    </button>
+    <div class="online-box">
+      <div id="onlineCount">🟢 現在ログイン中：0人</div>
+      <div id="studyingCount" class="studying-count">
+        🔥 今！0人が勉強中
+      </div>
+    </div>
+  </section>
+
+  <!-- 手動記録 -->
+  <section id="recordSection" class="hidden">
+    <h2>✏️ 学習時間を記録</h2>
+
+    <div class="form-row">
+      <select id="subject">
+        <option value="国語">国語</option>
+        <option value="数学">数学</option>
+        <option value="英語">英語</option>
+        <option value="理科">理科</option>
+        <option value="社会">社会</option>
+        <option value="その他">その他</option>
+      </select>
+
+      <input
+        id="minutes"
+        type="number"
+        min="1"
+        placeholder="分">
+    </div>
 
     <button
-      id="logoutButton"
-      class="secondary hidden"
-      onclick="logout()"
-      style="margin-left:6px;"
-    >
-      ログアウト
+      class="primary"
+      style="width:100%;"
+      onclick="addRecord()">
+      学習時間を記録する
     </button>
-  </div>
-
-  <!-- オンライン人数 -->
-  <div class="card">
-    <div class="online-box">
-
-      <div class="online-item">
-        <div>🟢 現在ログイン中</div>
-        <div id="onlineCount" class="online-number">0人</div>
-      </div>
-
-      <div class="online-item">
-        <div>🔥 今！勉強中</div>
-        <div id="studyingCount" class="online-number">0人</div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ランキング -->
-  <div class="card">
-    <h2>🏆 クラスランキング</h2>
-
-    <div style="display:flex; gap:8px; margin-bottom:12px;">
-      <button id="todayRankingButton" onclick="setRankingMode('today')">
-        今日
-      </button>
-
-      <button
-        id="allRankingButton"
-        class="secondary"
-        onclick="setRankingMode('all')"
-      >
-        全期間
-      </button>
-
-      <button
-        class="secondary"
-        onclick="refreshAllTimeTotals(true)"
-      >
-        🔄 更新
-      </button>
-    </div>
-
-    <div id="rankingDescription" class="note">
-      今日の学習時間
-    </div>
-
-    <ul id="rankingList" class="ranking-list">
-      <li class="loading">ログインすると表示されます</li>
-    </ul>
-  </div>
-
-  <!-- MVPカレンダー -->
-  <div class="card">
-    <h2>🏅 MVPカレンダー</h2>
-
-    <div class="calendar-header">
-      <div id="calendarTitle" class="calendar-title"></div>
-
-      <div class="calendar-buttons">
-        <button class="secondary" onclick="changeCalendarMonth(-1)">
-          ←
-        </button>
-        <button class="secondary" onclick="changeCalendarMonth(1)">
-          →
-        </button>
-      </div>
-    </div>
-
-    <div class="calendar" id="calendar"></div>
-
-    <div id="historyDetail" class="history-detail">
-      日付をタップすると詳細が表示されます。
-    </div>
-  </div>
-
-  <!-- MVPランキング -->
-  <div class="card">
-    <h2>👑 MVPランキング</h2>
-
-    <button onclick="loadMvpAllTime()">
-      MVP累計を読み込む
-    </button>
-
-    <div id="mvpRankingList" style="margin-top:12px;">
-      <div class="note">
-        読み取り数を抑えるため、自動では読み込みません。
-        必要なときだけボタンを押してください。
-      </div>
-    </div>
-  </div>
-
-  <!-- 管理者 -->
-  <div id="adminCard" class="card admin-box hidden">
-    <h2>👨‍🏫 管理者画面</h2>
-
-    <div class="admin-month-controls">
-      <select id="adminMonthSelect" onchange="loadAdminMonth()"></select>
-    </div>
-
-    <div id="adminMonthTotal" style="margin-top:12px; font-weight:bold;">
-      -
-    </div>
-
-    <div id="adminMonthRecords" style="margin-top:10px;">
-      -
-    </div>
-  </div>
+  </section>
 
   <!-- タイマー -->
-  <div class="card">
+  <section id="timerSection" class="hidden timer">
     <h2>⏱️ 学習タイマー</h2>
 
-    <label for="timerSubject">教科</label>
-
-    <select id="timerSubject">
+    <select id="timerSubject" style="width:100%; margin-bottom:10px;">
       <option value="国語">国語</option>
       <option value="数学">数学</option>
       <option value="英語">英語</option>
@@ -626,112 +566,195 @@
       <option value="その他">その他</option>
     </select>
 
-    <div id="timerDisplay" class="timer-display">
-      00:00:00
-    </div>
+    <div id="timerDisplay">00:00:00</div>
 
     <div id="timerStatus" class="timer-status">
       タイマー停止中
     </div>
 
-    <div class="timer-buttons">
-      <button id="startTimerButton" onclick="startTimer()">
-        ▶ 開始
+    <div class="button-row">
+      <button
+        id="startTimerButton"
+        class="primary"
+        onclick="startTimer()">
+        ▶ スタート
       </button>
 
       <button
         id="stopTimerButton"
         class="danger"
         onclick="stopTimer()"
-        disabled
-      >
-        ⏹ 停止して保存
+        disabled>
+        ■ ストップ
       </button>
     </div>
-  </div>
+  </section>
 
-  <!-- 手動記録 -->
-  <div class="card">
-    <h2>✏️ 学習時間を手動で記録</h2>
-
-    <label for="subject">教科</label>
-
-    <select id="subject">
-      <option value="国語">国語</option>
-      <option value="数学">数学</option>
-      <option value="英語">英語</option>
-      <option value="理科">理科</option>
-      <option value="社会">社会</option>
-      <option value="その他">その他</option>
-    </select>
-
-    <label for="minutes">勉強時間（分）</label>
-
-    <input
-      id="minutes"
-      type="number"
-      min="1"
-      max="1440"
-      placeholder="例：30"
-    >
-
-    <button onclick="addRecord()">
-      ＋ 記録する
-    </button>
-  </div>
-
-  <!-- 今日のまとめ -->
-  <div class="card">
-    <h2>📊 今日のまとめ</h2>
+  <!-- 今日の集計 -->
+  <section id="summarySection" class="hidden">
+    <h2>📊 今日の学習</h2>
 
     <div class="summary">
-
-      <div class="summary-box">
-        <div>今日の学習時間</div>
-        <div id="todayTotal" class="summary-number">
-          0分
-        </div>
+      <div class="summary-card">
+        <div class="label">今日の合計</div>
+        <div id="todayTotal" class="value">0分</div>
       </div>
 
-      <div class="summary-box">
-        <div>記録数</div>
-        <div id="recordCount" class="summary-number">
-          0
-        </div>
+      <div class="summary-card">
+        <div class="label">記録数</div>
+        <div id="recordCount" class="value">0</div>
       </div>
-
     </div>
-
-  </div>
+  </section>
 
   <!-- 教科別 -->
-  <div class="card">
+  <section id="chartSection" class="hidden">
     <h2>📈 教科別</h2>
-
-    <div id="subjectChart">
-      <div class="note">まだ記録がありません。</div>
-    </div>
-  </div>
+    <div id="subjectChart"></div>
+  </section>
 
   <!-- 自分の記録 -->
-  <div class="card">
+  <section id="recordsSection" class="hidden">
     <h2>📝 自分の記録</h2>
 
+    <div class="button-row" style="margin-bottom:10px;">
+      <button
+        class="secondary"
+        onclick="refreshMyRecords()">
+        🔄 記録を更新
+      </button>
+
+      <button
+        class="danger"
+        onclick="clearAll()">
+        🗑️ 全削除
+      </button>
+    </div>
+
     <div id="records">
-      <div class="loading">ログインすると表示されます。</div>
+      <div class="empty">記録はありません</div>
+    </div>
+  </section>
+
+  <!-- ランキング -->
+  <section id="rankingSection" class="hidden">
+    <h2>🏆 クラスランキング</h2>
+
+    <div class="ranking-controls">
+      <button
+        id="todayRankingButton"
+        class="primary"
+        onclick="setRankingMode('today')">
+        今日
+      </button>
+
+      <button
+        id="allRankingButton"
+        class="secondary"
+        onclick="setRankingMode('all')">
+        累計
+      </button>
     </div>
 
     <button
-      class="danger"
-      onclick="clearAll()"
-      style="margin-top:12px;"
-    >
-      🗑️ 自分の記録をすべて削除
+      class="secondary ranking-refresh"
+      onclick="refreshRanking()">
+      🔄 ランキングを更新
     </button>
+
+    <div class="ranking-note">
+      読み取り回数を減らすため、ランキングは自動更新ではなく
+      「ランキングを更新」を押したときに取得します。
+    </div>
+
+    <div id="ranking"></div>
+  </section>
+
+  <!-- MVP -->
+  <section id="mvpSection" class="hidden">
+    <h2>🏆 MVP</h2>
+
+    <div id="mvpSummary" class="mvp-summary">
+      今月のMVP情報を読み込んでいます。
+    </div>
+
+    <h3>📅 学習カレンダー</h3>
+
+    <div class="calendar-header">
+      <button class="secondary" onclick="changeCalendarMonth(-1)">
+        ◀
+      </button>
+
+      <div id="calendarTitle" class="calendar-title">
+        ----年--月
+      </div>
+
+      <button class="secondary" onclick="changeCalendarMonth(1)">
+        ▶
+      </button>
+    </div>
+
+    <div class="calendar">
+      <div class="calendar-weekday">日</div>
+      <div class="calendar-weekday">月</div>
+      <div class="calendar-weekday">火</div>
+      <div class="calendar-weekday">水</div>
+      <div class="calendar-weekday">木</div>
+      <div class="calendar-weekday">金</div>
+      <div class="calendar-weekday">土</div>
+    </div>
+
+    <div id="calendarGrid" class="calendar"></div>
+
+    <div id="calendarDetail" class="calendar-detail hidden"></div>
+
+    <h3>🏆 累計MVP回数</h3>
+
+    <button
+      class="secondary ranking-refresh"
+      onclick="loadMvpAllTime(true)">
+      🔄 MVP回数を更新
+    </button>
+
+    <div id="mvpRanking"></div>
+  </section>
+
+  <!-- 管理者 -->
+  <section id="adminSection" class="hidden">
+    <h2>👨‍🏫 管理者ページ</h2>
+
+    <div class="admin-box">
+      <h3>月別学習時間</h3>
+
+      <div class="form-row">
+        <input
+          id="adminMonth"
+          type="month">
+
+        <button
+          class="primary"
+          onclick="loadAdminMonth(true)">
+          表示
+        </button>
+      </div>
+
+      <div class="ranking-note">
+        生徒ごとの月間合計時間のみ表示します。
+      </div>
+
+      <div id="adminResults">
+        <div class="empty">
+          月を選択してください。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    学習時間アプリ
   </div>
 
-</div>
-
+</main>
 
 <script type="module">
 
@@ -750,11 +773,15 @@
     serverTimestamp,
     doc,
     setDoc,
+    getDoc,
+    getDocs,
     deleteDoc,
     query,
     where,
+    orderBy,
     onSnapshot,
-    getDocs,
+    Timestamp,
+    writeBatch,
     getAggregateFromServer,
     sum
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
@@ -783,33 +810,22 @@
     appId: "1:292063415300:web:3cbf0aef215710ecfd3951"
   };
 
-
   const app = initializeApp(firebaseConfig);
+
   const db = getFirestore(app);
   const auth = getAuth(app);
 
+  const provider = new GoogleAuthProvider();
 
-  /* =========================================================
-     設定
-  ========================================================= */
+  const ALLOWED_DOMAIN = "gs.seito-fku.ed.jp";
 
-  const ALLOWED_DOMAIN =
-    "gs.seito-fku.ed.jp";
+  provider.setCustomParameters({
+    hd: ALLOWED_DOMAIN
+  });
 
-  const ADMIN_UID =
-    "QhPJqo4HoMTBhybxZB8YAftxaTJ3";
+  const CLASS_ID = "z6bxH8sYFjcdfENFXn3K";
 
-  const CLASS_ID =
-    "z6bxH8sYFjcdfENFXn3K";
-
-  const ONLINE_TIMEOUT_MS =
-    100 * 1000;
-
-  const HEARTBEAT_MS =
-    60 * 1000;
-
-  const TIMER_STORAGE_PREFIX =
-    "studyTimeTimer_";
+  const ADMIN_UID = "QhPJqo4HoMTBhybxZB8YAftxaTJ3";
 
 
   /* =========================================================
@@ -819,464 +835,268 @@
   let currentUser = null;
 
   let classStudents = [];
-
-  let todaySessions = [];
-
   let myRecords = [];
-
   let onlineUsers = [];
-
-  let allTimeTotals = {};
-
-  let allTimeLoaded = false;
 
   let rankingMode = "today";
 
+  let rankingLoaded = false;
+  let rankingLoading = false;
+
+  let allTimeTotals = {};
+  let allTimeLoaded = false;
+
   let timerInterval = null;
-
   let timerStartTime = null;
-
-  let timerSubject = null;
-
+  let timerSubject = "";
   let heartbeatInterval = null;
 
-  let rankingStudentsUnsubscribe = null;
-
-  let todaySessionsUnsubscribe = null;
-
+  let myRecordsUnsubscribe = null;
   let onlineUsersUnsubscribe = null;
 
-  let myRecordsUnsubscribe = null;
-
   let calendarYear;
-
   let calendarMonth;
 
   let calendarMonthSessions = [];
-
   let calendarMonthLoadedKey = "";
 
-  let selectedHistoryDate = null;
+  let mvpAllTimeCache = null;
+  let mvpAllTimeLoaded = false;
+
+  let adminMonthCache = {};
 
 
   /* =========================================================
-     タイマー保存
+     DOM
   ========================================================= */
 
-  function getTimerStorageKey(uid) {
-
-    return TIMER_STORAGE_PREFIX + uid;
-  }
-
-
-  function saveTimerState() {
-
-    if (
-      !currentUser ||
-      !timerStartTime ||
-      !timerSubject
-    ) {
-      return;
-    }
-
-    try {
-
-      localStorage.setItem(
-        getTimerStorageKey(
-          currentUser.uid
-        ),
-        JSON.stringify({
-          startTime: timerStartTime,
-          subject: timerSubject
-        })
-      );
-
-    } catch (error) {
-
-      console.error(
-        "タイマー状態の保存に失敗:",
-        error
-      );
-    }
-  }
-
-
-  function loadTimerState() {
-
-    if (!currentUser) {
-      return null;
-    }
-
-    try {
-
-      const raw =
-        localStorage.getItem(
-          getTimerStorageKey(
-            currentUser.uid
-          )
-        );
-
-      if (!raw) {
-        return null;
-      }
-
-      const data =
-        JSON.parse(raw);
-
-      if (
-        !data ||
-        !Number.isFinite(
-          Number(data.startTime)
-        ) ||
-        !data.subject
-      ) {
-
-        localStorage.removeItem(
-          getTimerStorageKey(
-            currentUser.uid
-          )
-        );
-
-        return null;
-      }
-
-      return {
-        startTime:
-          Number(data.startTime),
-
-        subject:
-          String(data.subject)
-      };
-
-    } catch (error) {
-
-      console.error(
-        "タイマー状態の読み込みに失敗:",
-        error
-      );
-
-      return null;
-    }
-  }
-
-
-  function clearTimerState() {
-
-    if (!currentUser) {
-      return;
-    }
-
-    try {
-
-      localStorage.removeItem(
-        getTimerStorageKey(
-          currentUser.uid
-        )
-      );
-
-    } catch (error) {
-
-      console.error(
-        "タイマー状態の削除に失敗:",
-        error
-      );
-    }
-  }
+  const $ = (id) => document.getElementById(id);
 
 
   /* =========================================================
-     ログイン
+     Googleログイン
   ========================================================= */
 
-  await setPersistence(
-    auth,
-    browserLocalPersistence
-  );
+  window.loginWithGoogle = async function() {
 
+    try {
 
-  window.loginWithGoogle =
-    async function() {
+      $("loginButton").disabled = true;
+      $("loginButton").textContent = "ログイン中...";
 
-      try {
+      await setPersistence(auth, browserLocalPersistence);
 
-        const provider =
-          new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
 
-        provider.setCustomParameters({
-          hd: ALLOWED_DOMAIN
-        });
+      const user = result.user;
 
-        await signInWithPopup(
-          auth,
-          provider
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "ログインできませんでした。\n\n" +
-          error.message
-        );
-      }
-    };
-
-
-  window.logout =
-    async function() {
-
-      if (!currentUser) {
-        return;
-      }
-
-      try {
-
-        stopTimerWithoutSave();
-
-        if (heartbeatInterval) {
-
-          clearInterval(
-            heartbeatInterval
-          );
-
-          heartbeatInterval = null;
-        }
-
-        await deleteDoc(
-          doc(
-            db,
-            "onlineUsers",
-            currentUser.uid
-          )
-        ).catch(() => {});
-
+      if (!user.email) {
         await signOut(auth);
 
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "ログアウト中にエラーが発生しました。\n" +
-          error.message
-        );
-      }
-    };
-
-
-  onAuthStateChanged(
-    auth,
-    async (user) => {
-
-      currentUser = user;
-
-      if (!user) {
-
-        resetLoggedOutUI();
+        alert("メールアドレスを取得できませんでした。");
 
         return;
       }
 
-      const email =
-        (user.email || "")
-          .toLowerCase();
+      const email = user.email.toLowerCase();
 
-      if (
-        !email.endsWith(
-          "@" + ALLOWED_DOMAIN
-        )
-      ) {
+      if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
+
+        await signOut(auth);
 
         alert(
           "このアプリは学校のGoogleアカウント専用です。\n\n" +
-          "@gs.seito-fku.ed.jp のアカウントを使用してください。"
+          "@" + ALLOWED_DOMAIN +
+          " のアカウントを使用してください。"
         );
-
-        await signOut(auth);
 
         return;
       }
 
-      document.getElementById(
-        "loginStatus"
-      ).textContent =
-        "👤 " +
-        (
-          user.displayName ||
-          "Googleユーザー"
-        ) +
-        " さんでログイン中";
+    } catch (error) {
 
-      document.getElementById(
-        "loginButton"
-      ).textContent =
-        "ログイン済み";
+      console.error(error);
 
-      document.getElementById(
-        "loginButton"
-      ).disabled =
-        true;
-
-      document
-        .getElementById(
-          "logoutButton"
-        )
-        .classList.remove(
-          "hidden"
-        );
-
-
-      if (
-        user.uid === ADMIN_UID
-      ) {
-
-        document
-          .getElementById(
-            "adminCard"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-        setupAdminMonthSelect();
-
-      } else {
-
-        document
-          .getElementById(
-            "adminCard"
-          )
-          .classList.add(
-            "hidden"
-          );
-      }
-
-
-      await setDoc(
-        doc(
-          db,
-          "students",
-          user.uid
-        ),
-        {
-          nickname:
-            user.displayName ||
-            "Googleユーザー",
-
-          classId:
-            CLASS_ID,
-
-          email:
-            user.email || ""
-        },
-        {
-          merge: true
-        }
+      alert(
+        "ログインに失敗しました。\n\n" +
+        (error?.message || error)
       );
 
+    } finally {
 
-      await updateOnlineStatus();
+      if (!currentUser) {
+        $("loginButton").disabled = false;
+        $("loginButton").textContent = "Googleでログイン";
+      }
+    }
+  };
+
+
+  /* =========================================================
+     ログアウト
+  ========================================================= */
+
+  window.logout = async function() {
+
+    if (!currentUser) return;
+
+    try {
+
+      const uid = currentUser.uid;
+
+      stopTimerWithoutSave();
+
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+
+      try {
+        await deleteDoc(doc(db, "onlineUsers", uid));
+      } catch (e) {
+        console.warn("onlineUsers削除失敗", e);
+      }
+
+      await signOut(auth);
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "ログアウトに失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  };
+
+
+  /* =========================================================
+     認証状態
+  ========================================================= */
+
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+      resetLoggedOutUI();
+
+      return;
+    }
+
+    const email = (user.email || "").toLowerCase();
+
+    if (!email.endsWith("@" + ALLOWED_DOMAIN)) {
+
+      try {
+        await signOut(auth);
+      } catch (e) {}
+
+      resetLoggedOutUI();
+
+      return;
+    }
+
+    currentUser = user;
+
+    $("loginStatus").textContent =
+      `👤 ${user.displayName || "Googleユーザー"} さんでログイン中`;
+
+    $("loginButton").textContent = "ログイン済み";
+    $("loginButton").disabled = true;
+
+    $("logoutButton").classList.remove("hidden");
+
+    showLoggedInSections();
+
+    try {
+
+      /* ---------------------------------------------
+         生徒情報
+         常時監視せず、ログイン時に1回だけ取得
+      --------------------------------------------- */
+
+      await setDoc(
+        doc(db, "students", user.uid),
+        {
+          nickname: user.displayName || "Googleユーザー",
+          classId: CLASS_ID,
+          email: user.email || ""
+        },
+        { merge: true }
+      );
+
+      await loadStudentsOnce();
+
+      await updateOnlineStatus(false);
 
       startHeartbeat();
-
-      listenToStudents();
-
-      listenToTodaySessions();
 
       listenToOnlineUsers();
 
       listenToMyRecords();
 
-      await refreshAllTimeTotals(false);
-
       setupCalendarDate();
 
-      await loadCalendarMonth();
+      await loadCalendarMonth(false);
 
       restoreTimer();
 
       updateAllUI();
-    }
-  );
 
+      if (user.uid === ADMIN_UID) {
+
+        $("adminSection").classList.remove("hidden");
+
+        const now = new Date();
+
+        $("adminMonth").value =
+          `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+      }
+
+      await refreshMvpSummary();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "データの読み込み中にエラーが発生しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+
+  });
+
+
+  /* =========================================================
+     ログアウトUI
+  ========================================================= */
 
   function resetLoggedOutUI() {
 
-    document.getElementById(
-      "loginStatus"
-    ).textContent =
-      "ログインしていません";
-
-    document.getElementById(
-      "loginButton"
-    ).textContent =
-      "Googleでログイン";
-
-    document.getElementById(
-      "loginButton"
-    ).disabled =
-      false;
-
-    document
-      .getElementById(
-        "logoutButton"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document.getElementById(
-      "onlineCount"
-    ).textContent =
-      "0人";
-
-    document.getElementById(
-      "studyingCount"
-    ).textContent =
-      "0人";
-
-    document.getElementById(
-      "rankingList"
-    ).innerHTML =
-      '<li class="loading">ログインすると表示されます</li>';
-
-    document.getElementById(
-      "records"
-    ).innerHTML =
-      '<div class="loading">ログインすると表示されます。</div>';
-
-    document.getElementById(
-      "todayTotal"
-    ).textContent =
-      "0分";
-
-    document.getElementById(
-      "recordCount"
-    ).textContent =
-      "0";
-
-    document.getElementById(
-      "subjectChart"
-    ).innerHTML =
-      '<div class="note">まだ記録がありません。</div>';
+    currentUser = null;
 
     classStudents = [];
-    todaySessions = [];
     myRecords = [];
     onlineUsers = [];
+
     allTimeTotals = {};
     allTimeLoaded = false;
 
+    rankingLoaded = false;
 
-    if (rankingStudentsUnsubscribe) {
-      rankingStudentsUnsubscribe();
-      rankingStudentsUnsubscribe = null;
-    }
+    mvpAllTimeCache = null;
+    mvpAllTimeLoaded = false;
 
-    if (todaySessionsUnsubscribe) {
-      todaySessionsUnsubscribe();
-      todaySessionsUnsubscribe = null;
+    calendarMonthSessions = [];
+    calendarMonthLoadedKey = "";
+
+    adminMonthCache = {};
+
+    if (myRecordsUnsubscribe) {
+      myRecordsUnsubscribe();
+      myRecordsUnsubscribe = null;
     }
 
     if (onlineUsersUnsubscribe) {
@@ -1284,1021 +1104,455 @@
       onlineUsersUnsubscribe = null;
     }
 
-    if (myRecordsUnsubscribe) {
-      myRecordsUnsubscribe();
-      myRecordsUnsubscribe = null;
-    }
-
     if (heartbeatInterval) {
-
-      clearInterval(
-        heartbeatInterval
-      );
-
+      clearInterval(heartbeatInterval);
       heartbeatInterval = null;
     }
 
     stopTimerWithoutSave();
+
+    $("loginStatus").textContent = "ログインしていません";
+
+    $("loginButton").classList.remove("hidden");
+    $("loginButton").disabled = false;
+    $("loginButton").textContent = "Googleでログイン";
+
+    $("logoutButton").classList.add("hidden");
+
+    $("recordSection").classList.add("hidden");
+    $("timerSection").classList.add("hidden");
+    $("summarySection").classList.add("hidden");
+    $("chartSection").classList.add("hidden");
+    $("recordsSection").classList.add("hidden");
+    $("rankingSection").classList.add("hidden");
+    $("mvpSection").classList.add("hidden");
+    $("adminSection").classList.add("hidden");
+
+    $("onlineCount").textContent =
+      "🟢 現在ログイン中：0人";
+
+    $("studyingCount").textContent =
+      "🔥 今！0人が勉強中";
+
+    $("todayTotal").textContent = "0分";
+    $("recordCount").textContent = "0";
+
+    $("records").innerHTML =
+      '<div class="empty">ログインしてください。</div>';
+
+    $("ranking").innerHTML = "";
+
+    $("subjectChart").innerHTML = "";
+
+    $("mvpSummary").textContent =
+      "ログインしてください。";
+
+    $("calendarGrid").innerHTML = "";
+
+    $("calendarDetail").classList.add("hidden");
+
+    $("mvpRanking").innerHTML = "";
+
+    $("adminResults").innerHTML =
+      '<div class="empty">ログインしてください。</div>';
   }
 
 
   /* =========================================================
-     タイマー復元
+     ログイン後表示
   ========================================================= */
 
-  function restoreTimer() {
+  function showLoggedInSections() {
 
-    if (!currentUser) {
-      return;
-    }
-
-    if (timerStartTime) {
-      return;
-    }
-
-    const saved =
-      loadTimerState();
-
-    if (!saved) {
-      return;
-    }
-
-    if (
-      saved.startTime >
-      Date.now()
-    ) {
-
-      clearTimerState();
-
-      return;
-    }
-
-    timerStartTime =
-      saved.startTime;
-
-    timerSubject =
-      saved.subject;
-
-    document.getElementById(
-      "timerSubject"
-    ).value =
-      timerSubject;
-
-    document.getElementById(
-      "timerSubject"
-    ).disabled =
-      true;
-
-    document.getElementById(
-      "startTimerButton"
-    ).disabled =
-      true;
-
-    document.getElementById(
-      "stopTimerButton"
-    ).disabled =
-      false;
-
-    document.getElementById(
-      "timerStatus"
-    ).textContent =
-      "🔥 勉強中（復元しました）";
-
-    timerInterval =
-      setInterval(
-        updateTimerDisplay,
-        1000
-      );
-
-    updateTimerDisplay();
-
-    updateOnlineStatus();
+    $("recordSection").classList.remove("hidden");
+    $("timerSection").classList.remove("hidden");
+    $("summarySection").classList.remove("hidden");
+    $("chartSection").classList.remove("hidden");
+    $("recordsSection").classList.remove("hidden");
+    $("rankingSection").classList.remove("hidden");
+    $("mvpSection").classList.remove("hidden");
   }
 
 
   /* =========================================================
      生徒一覧
+     重要：onSnapshotを使わない
   ========================================================= */
 
-  function listenToStudents() {
+  async function loadStudentsOnce() {
 
-    if (rankingStudentsUnsubscribe) {
-      rankingStudentsUnsubscribe();
-    }
-
-    const q =
+    const snapshot = await getDocs(
       query(
-        collection(
-          db,
-          "students"
-        ),
-        where(
-          "classId",
-          "==",
-          CLASS_ID
-        )
-      );
-
-    rankingStudentsUnsubscribe =
-      onSnapshot(
-        q,
-
-        async (snapshot) => {
-
-          classStudents =
-            snapshot.docs.map(
-              (item) => ({
-                id: item.id,
-                ...item.data()
-              })
-            );
-
-          updateRankings();
-
-          updateAllUI();
-
-          if (
-            currentUser &&
-            currentUser.uid === ADMIN_UID
-          ) {
-
-            const adminCard =
-              document.getElementById(
-                "adminCard"
-              );
-
-            if (
-              !adminCard.classList.contains(
-                "hidden"
-              )
-            ) {
-
-              loadAdminMonth();
-            }
-          }
-
-          if (
-            !allTimeLoaded &&
-            classStudents.length > 0
-          ) {
-
-            await refreshAllTimeTotals(false);
-          }
-
-          /*
-           * 生徒一覧が更新されたら、
-           * 現在表示中のMVP詳細も更新
-           */
-          if (selectedHistoryDate) {
-
-            showHistoryDetail(
-              selectedHistoryDate
-            );
-          }
-        },
-
-        (error) => {
-
-          console.error(
-            "students listener:",
-            error
-          );
-        }
-      );
-  }
-
-
-  /* =========================================================
-     今日の範囲
-  ========================================================= */
-
-  function getTodayRange() {
-
-    const now =
-      new Date();
-
-    const start =
-      new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        0,
-        0,
-        0,
-        0
-      );
-
-    const end =
-      new Date(start);
-
-    end.setDate(
-      end.getDate() + 1
+        collection(db, "students"),
+        where("classId", "==", CLASS_ID)
+      )
     );
 
-    return {
-      start,
-      end
-    };
-  }
+    classStudents = [];
 
+    snapshot.forEach((docSnap) => {
 
-  /* =========================================================
-     今日の学習記録
-  ========================================================= */
+      const data = docSnap.data();
 
-  function listenToTodaySessions() {
+      classStudents.push({
+        uid: docSnap.id,
+        nickname: data.nickname || "名前未設定",
+        classId: data.classId || CLASS_ID
+      });
 
-    if (todaySessionsUnsubscribe) {
-      todaySessionsUnsubscribe();
-    }
+    });
 
-    const {
-      start,
-      end
-    } =
-      getTodayRange();
-
-    const q =
-      query(
-        collection(
-          db,
-          "studySessions"
-        ),
-
-        where(
-          "date",
-          ">=",
-          start
-        ),
-
-        where(
-          "date",
-          "<",
-          end
-        )
-      );
-
-    todaySessionsUnsubscribe =
-      onSnapshot(
-        q,
-
-        (snapshot) => {
-
-          todaySessions =
-            snapshot.docs.map(
-              (item) => ({
-                id: item.id,
-                ...item.data()
-              })
-            );
-
-          updateTodaySummary();
-
-          updateRankings();
-
-          updateAllUI();
-        },
-
-        (error) => {
-
-          console.error(
-            "today sessions listener:",
-            error
-          );
-        }
-      );
+    classStudents.sort((a, b) =>
+      a.nickname.localeCompare(b.nickname, "ja")
+    );
   }
 
 
   /* =========================================================
      自分の記録
+     これは自分のデータだけなのでリアルタイム維持
   ========================================================= */
 
   function listenToMyRecords() {
+
+    if (!currentUser) return;
 
     if (myRecordsUnsubscribe) {
       myRecordsUnsubscribe();
     }
 
-    if (!currentUser) {
-      return;
-    }
+    const q = query(
+      collection(db, "studySessions"),
+      where("studentId", "==", currentUser.uid),
+      orderBy("date", "desc")
+    );
 
-    const q =
-      query(
-        collection(
-          db,
-          "studySessions"
-        ),
-        where(
-          "studentId",
-          "==",
-          currentUser.uid
-        )
-      );
+    myRecordsUnsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
 
-    myRecordsUnsubscribe =
-      onSnapshot(
-        q,
+        myRecords = [];
 
-        (snapshot) => {
+        snapshot.forEach((docSnap) => {
 
-          myRecords =
-            snapshot.docs
-              .map(
-                (item) => ({
-                  id: item.id,
-                  ...item.data()
-                })
-              )
-              .sort(
-                (a, b) =>
-                  getMillis(b.date) -
-                  getMillis(a.date)
-              );
+          myRecords.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
 
-          renderMyRecords();
-        },
+        });
 
-        (error) => {
+        updateMySummary();
 
-          console.error(
-            "my records listener:",
-            error
-          );
-        }
-      );
+        updateSubjectChart();
+
+        renderMyRecords();
+      },
+      (error) => {
+
+        console.error("自分の記録監視エラー", error);
+
+        /*
+          orderByのインデックスがない場合などに
+          画面を完全に壊さない
+        */
+
+        loadMyRecordsFallback();
+      }
+    );
   }
 
 
   /* =========================================================
-     オンライン
+     自分の記録を手動取得
+  ========================================================= */
+
+  async function refreshMyRecords() {
+
+    if (!currentUser) return;
+
+    try {
+
+      const snapshot = await getDocs(
+        query(
+          collection(db, "studySessions"),
+          where("studentId", "==", currentUser.uid)
+        )
+      );
+
+      myRecords = [];
+
+      snapshot.forEach((docSnap) => {
+
+        myRecords.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+
+      });
+
+      myRecords.sort((a, b) => {
+
+        const aTime = a.date?.toMillis?.() || 0;
+        const bTime = b.date?.toMillis?.() || 0;
+
+        return bTime - aTime;
+      });
+
+      updateMySummary();
+      updateSubjectChart();
+      renderMyRecords();
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "記録の更新に失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  }
+
+
+  async function loadMyRecordsFallback() {
+
+    if (!currentUser) return;
+
+    try {
+
+      const snapshot = await getDocs(
+        query(
+          collection(db, "studySessions"),
+          where("studentId", "==", currentUser.uid)
+        )
+      );
+
+      myRecords = [];
+
+      snapshot.forEach((docSnap) => {
+
+        myRecords.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+
+      });
+
+      myRecords.sort((a, b) => {
+
+        const aTime = a.date?.toMillis?.() || 0;
+        const bTime = b.date?.toMillis?.() || 0;
+
+        return bTime - aTime;
+      });
+
+      updateMySummary();
+      updateSubjectChart();
+      renderMyRecords();
+
+    } catch (error) {
+
+      console.error(error);
+    }
+  }
+
+
+  /* =========================================================
+     オンラインユーザー
+     ここはリアルタイム人数のため維持
   ========================================================= */
 
   function listenToOnlineUsers() {
+
+    if (!currentUser) return;
 
     if (onlineUsersUnsubscribe) {
       onlineUsersUnsubscribe();
     }
 
-    const q =
-      query(
-        collection(
-          db,
-          "onlineUsers"
-        ),
-        where(
-          "classId",
-          "==",
-          CLASS_ID
-        )
-      );
+    const q = query(
+      collection(db, "onlineUsers"),
+      where("classId", "==", CLASS_ID)
+    );
 
-    onlineUsersUnsubscribe =
-      onSnapshot(
-        q,
+    onlineUsersUnsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
 
-        (snapshot) => {
+        const now = Date.now();
 
-          onlineUsers =
-            snapshot.docs.map(
-              (item) => ({
-                id: item.id,
-                ...item.data()
-              })
-            );
+        onlineUsers = [];
 
-          updateOnlineCounts();
+        snapshot.forEach((docSnap) => {
 
-          updateRankings();
-        },
+          const data = docSnap.data();
 
-        (error) => {
+          const lastActive =
+            data.lastActive?.toMillis?.() || 0;
 
-          console.error(
-            "onlineUsers listener:",
-            error
-          );
-        }
-      );
+          if (
+            lastActive &&
+            now - lastActive <= ONLINE_TIMEOUT_MS
+          ) {
+
+            onlineUsers.push({
+              uid: docSnap.id,
+              ...data
+            });
+          }
+        });
+
+        updateOnlineUI();
+      },
+      (error) => {
+
+        console.error("オンライン監視エラー", error);
+      }
+    );
   }
 
+
+  const ONLINE_TIMEOUT_MS = 100 * 1000;
+
+
+  /* =========================================================
+     オンライン状態
+  ========================================================= */
+
+  async function updateOnlineStatus(studying) {
+
+    if (!currentUser) return;
+
+    try {
+
+      const timerData =
+        studying && timerStartTime
+          ? {
+              activeStart: Timestamp.fromMillis(timerStartTime),
+              activeSubject: timerSubject || ""
+            }
+          : {
+              activeStart: null,
+              activeSubject: ""
+            };
+
+      await setDoc(
+        doc(db, "onlineUsers", currentUser.uid),
+        {
+          nickname:
+            currentUser.displayName || "Googleユーザー",
+
+          classId: CLASS_ID,
+
+          lastActive: serverTimestamp(),
+
+          studying: !!studying,
+
+          ...timerData
+        },
+        { merge: true }
+      );
+
+    } catch (error) {
+
+      console.error("オンライン状態更新エラー", error);
+    }
+  }
+
+
+  /* =========================================================
+     ハートビート
+  ========================================================= */
 
   function startHeartbeat() {
 
     if (heartbeatInterval) {
-      clearInterval(
-        heartbeatInterval
-      );
+      clearInterval(heartbeatInterval);
     }
 
-    heartbeatInterval =
-      setInterval(
-        updateOnlineStatus,
-        HEARTBEAT_MS
+    heartbeatInterval = setInterval(() => {
+
+      if (!currentUser) return;
+
+      updateOnlineStatus(
+        !!timerStartTime
       );
+
+    }, 60 * 1000);
   }
 
 
-  async function updateOnlineStatus() {
+  /* =========================================================
+     オンラインUI
+  ========================================================= */
 
-    if (!currentUser) {
-      return;
-    }
+  function updateOnlineUI() {
 
-    try {
+    const now = Date.now();
 
-      await setDoc(
-        doc(
-          db,
-          "onlineUsers",
-          currentUser.uid
-        ),
-        {
-          nickname:
-            currentUser.displayName ||
-            "Googleユーザー",
-
-          classId:
-            CLASS_ID,
-
-          lastActive:
-            serverTimestamp(),
-
-          studying:
-            !!timerStartTime,
-
-          activeStart:
-            timerStartTime ||
-            null,
-
-          activeSubject:
-            timerSubject ||
-            null
-        },
-        {
-          merge: true
-        }
-      );
-
-    } catch (error) {
-
-      console.error(
-        "online status:",
-        error
-      );
-    }
-  }
-
-
-  function getActiveOnlineUsers() {
-
-    const now =
-      Date.now();
-
-    return onlineUsers.filter(
-      (item) => {
+    const activeUsers =
+      onlineUsers.filter((u) => {
 
         const lastActive =
-          getMillis(
-            item.lastActive
-          );
-
-        if (!lastActive) {
-          return false;
-        }
+          u.lastActive?.toMillis?.() || 0;
 
         return (
-          now -
-          lastActive <=
-          ONLINE_TIMEOUT_MS
+          lastActive &&
+          now - lastActive <= ONLINE_TIMEOUT_MS
         );
-      }
-    );
-  }
-
-
-  function getStudyingOnlineUsers() {
-
-    return getActiveOnlineUsers()
-      .filter(
-        (item) =>
-          item.studying === true
-      );
-  }
-
-
-  function updateOnlineCounts() {
-
-    const active =
-      getActiveOnlineUsers();
-
-    const studying =
-      getStudyingOnlineUsers();
-
-    document.getElementById(
-      "onlineCount"
-    ).textContent =
-      active.length +
-      "人";
-
-    document.getElementById(
-      "studyingCount"
-    ).textContent =
-      studying.length +
-      "人";
-  }
-
-
-  function getActiveMinutes(
-    studentId
-  ) {
-
-    const user =
-      getStudyingOnlineUsers()
-        .find(
-          item =>
-            item.id ===
-            studentId
-        );
-
-    if (!user) {
-      return 0;
-    }
-
-    const start =
-      Number(
-        user.activeStart
-      );
-
-    if (!start) {
-      return 0;
-    }
-
-    const elapsed =
-      Math.max(
-        0,
-        Date.now() -
-        start
-      );
-
-    return Math.floor(
-      elapsed / 60000
-    );
-  }
-
-
-  /* =========================================================
-     全期間合計
-  ========================================================= */
-
-  async function refreshAllTimeTotals(
-    force = false
-  ) {
-
-    if (!currentUser) {
-      return;
-    }
-
-    if (
-      allTimeLoaded &&
-      !force
-    ) {
-      return;
-    }
-
-    if (
-      classStudents.length === 0
-    ) {
-      return;
-    }
-
-    try {
-
-      const result = {};
-
-      await Promise.all(
-        classStudents.map(
-          async (student) => {
-
-            try {
-
-              const q =
-                query(
-                  collection(
-                    db,
-                    "studySessions"
-                  ),
-
-                  where(
-                    "studentId",
-                    "==",
-                    student.id
-                  )
-                );
-
-              const aggregate =
-                await getAggregateFromServer(
-                  q,
-                  {
-                    totalMinutes:
-                      sum("minutes")
-                  }
-                );
-
-              result[
-                student.id
-              ] =
-                Number(
-                  aggregate
-                    .data()
-                    .totalMinutes ||
-                  0
-                );
-
-            } catch (error) {
-
-              console.error(
-                "aggregate error:",
-                student.id,
-                error
-              );
-
-              result[
-                student.id
-              ] =
-                0;
-            }
-          }
-        )
-      );
-
-      allTimeTotals =
-        result;
-
-      allTimeLoaded =
-        true;
-
-      updateRankings();
-
-    } catch (error) {
-
-      console.error(
-        "all time totals:",
-        error
-      );
-    }
-  }
-
-
-  /* =========================================================
-     ランキング
-  ========================================================= */
-
-  window.setRankingMode =
-    function(mode) {
-
-      rankingMode =
-        mode;
-
-      const todayButton =
-        document.getElementById(
-          "todayRankingButton"
-        );
-
-      const allButton =
-        document.getElementById(
-          "allRankingButton"
-        );
-
-      if (
-        mode === "today"
-      ) {
-
-        todayButton.className =
-          "";
-
-        allButton.className =
-          "secondary";
-
-        document.getElementById(
-          "rankingDescription"
-        ).textContent =
-          "今日の学習時間";
-
-      } else {
-
-        todayButton.className =
-          "secondary";
-
-        allButton.className =
-          "";
-
-        document.getElementById(
-          "rankingDescription"
-        ).textContent =
-          "全期間の学習時間";
-      }
-
-      updateRankings();
-    };
-
-
-  function updateRankings() {
-
-    const list =
-      document.getElementById(
-        "rankingList"
-      );
-
-    if (!currentUser) {
-      return;
-    }
-
-    if (
-      classStudents.length === 0
-    ) {
-
-      list.innerHTML =
-        '<li class="loading">生徒情報を読み込んでいます。</li>';
-
-      return;
-    }
-
-    const studyingUsers =
-      getStudyingOnlineUsers();
-
-    const ranking =
-      classStudents.map(
-        (student) => {
-
-          let minutes = 0;
-
-          if (
-            rankingMode === "today"
-          ) {
-
-            minutes =
-              todaySessions
-                .filter(
-                  session =>
-                    session.studentId ===
-                    student.id
-                )
-                .reduce(
-                  (
-                    total,
-                    session
-                  ) =>
-                    total +
-                    Number(
-                      session.minutes ||
-                      0
-                    ),
-                  0
-                );
-
-          } else {
-
-            minutes =
-              Number(
-                allTimeTotals[
-                  student.id
-                ] || 0
-              );
-          }
-
-          const activeMinutes =
-            getActiveMinutes(
-              student.id
-            );
-
-          minutes +=
-            activeMinutes;
-
-          const isStudying =
-            studyingUsers.some(
-              item =>
-                item.id ===
-                student.id
-            );
-
-          return {
-            ...student,
-            minutes,
-            isStudying
-          };
-        }
-      );
-
-    ranking.sort(
-      (a, b) =>
-        b.minutes -
-        a.minutes
-    );
-
-    const myIndex =
-      ranking.findIndex(
-        item =>
-          item.id ===
-          currentUser.uid
-      );
-
-    let displayRanking =
-      ranking.slice(
-        0,
-        3
-      );
-
-    if (
-      myIndex >= 3
-    ) {
-
-      displayRanking.push({
-        separator: true
       });
 
-      displayRanking.push(
-        ranking[myIndex]
-      );
-    }
+    const studyingUsers =
+      activeUsers.filter((u) => u.studying);
 
-    list.innerHTML =
-      "";
+    $("onlineCount").textContent =
+      `🟢 現在ログイン中：${activeUsers.length}人`;
 
-    displayRanking.forEach(
-      (item) => {
-
-        if (
-          item.separator
-        ) {
-
-          const li =
-            document.createElement(
-              "li"
-            );
-
-          li.style.textAlign =
-            "center";
-
-          li.style.color =
-            "#888";
-
-          li.textContent =
-            "・ ・ ・";
-
-          list.appendChild(
-            li
-          );
-
-          return;
-        }
-
-        const actualRank =
-          ranking.findIndex(
-            x =>
-              x.id ===
-              item.id
-          ) + 1;
-
-        const li =
-          document.createElement(
-            "li"
-          );
-
-        li.className =
-          "ranking-item";
-
-        if (
-          item.id ===
-          currentUser.uid
-        ) {
-
-          li.classList.add(
-            "self"
-          );
-        }
-
-        let medal = "";
-
-        if (
-          actualRank === 1
-        ) {
-
-          medal =
-            "🥇";
-
-        } else if (
-          actualRank === 2
-        ) {
-
-          medal =
-            "🥈";
-
-        } else if (
-          actualRank === 3
-        ) {
-
-          medal =
-            "🥉";
-        }
-
-        const fire =
-          item.isStudying
-            ? " 🔥"
-            : "";
-
-        const self =
-          item.id ===
-          currentUser.uid
-            ? "（自分）"
-            : "";
-
-        li.innerHTML = `
-          <div class="rank-number">
-            ${medal || actualRank + "位"}
-          </div>
-
-          <div class="rank-name">
-            ${escapeHtml(
-              item.nickname ||
-              "名前未設定"
-            )}
-            ${fire}
-            ${self}
-          </div>
-
-          <div class="rank-minutes">
-            ${formatMinutes(
-              item.minutes
-            )}
-          </div>
-        `;
-
-        list.appendChild(
-          li
-        );
-      }
-    );
-
-    if (
-      displayRanking.length === 0
-    ) {
-
-      list.innerHTML =
-        '<li class="loading">まだ記録がありません。</li>';
-    }
+    $("studyingCount").textContent =
+      `🔥 今！${studyingUsers.length}人が勉強中`;
   }
 
 
   /* =========================================================
-     今日のまとめ
+     今日の集計
   ========================================================= */
 
-  function updateTodaySummary() {
+  function isToday(timestamp) {
 
-    if (!currentUser) {
-      return;
-    }
+    if (!timestamp) return false;
 
-    const records =
-      todaySessions.filter(
-        item =>
-          item.studentId ===
-          currentUser.uid
-      );
+    const date = timestamp.toDate
+      ? timestamp.toDate()
+      : new Date(timestamp);
 
-    let total =
-      records.reduce(
-        (
-          sumValue,
-          item
-        ) =>
-          sumValue +
-          Number(
-            item.minutes ||
-            0
-          ),
+    const now = new Date();
+
+    return (
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+    );
+  }
+
+
+  function updateMySummary() {
+
+    const todayRecords =
+      myRecords.filter((record) => isToday(record.date));
+
+    const total =
+      todayRecords.reduce(
+        (sum, record) =>
+          sum + Number(record.minutes || 0),
         0
       );
 
-    if (timerStartTime) {
+    $("todayTotal").textContent =
+      `${total}分`;
 
-      total +=
-        getCurrentTimerMinutes();
-    }
-
-    document.getElementById(
-      "todayTotal"
-    ).textContent =
-      formatMinutes(
-        total
-      );
-
-    document.getElementById(
-      "recordCount"
-    ).textContent =
-      records.length;
+    $("recordCount").textContent =
+      `${todayRecords.length}`;
   }
 
 
@@ -2308,712 +1562,906 @@
 
   function updateSubjectChart() {
 
-    if (!currentUser) {
-      return;
-    }
+    const totals = {
+      国語: 0,
+      数学: 0,
+      英語: 0,
+      理科: 0,
+      社会: 0,
+      その他: 0
+    };
 
-    const records =
-      todaySessions.filter(
-        item =>
-          item.studentId ===
-          currentUser.uid
-      );
-
-    const subjects = [
-      "国語",
-      "数学",
-      "英語",
-      "理科",
-      "社会",
-      "その他"
-    ];
-
-    const totals = {};
-
-    subjects.forEach(
-      subject => {
-        totals[subject] =
-          0;
-      }
-    );
-
-    records.forEach(
-      record => {
+    myRecords
+      .filter((record) => isToday(record.date))
+      .forEach((record) => {
 
         const subject =
-          record.subject ||
-          "その他";
+          record.subject || "その他";
 
-        if (
-          totals[subject] ===
-          undefined
-        ) {
-
-          totals[subject] =
-            0;
+        if (!(subject in totals)) {
+          totals.その他 += Number(record.minutes || 0);
+        } else {
+          totals[subject] += Number(record.minutes || 0);
         }
-
-        totals[subject] +=
-          Number(
-            record.minutes ||
-            0
-          );
-      }
-    );
+      });
 
     const max =
-      Math.max(
-        ...Object.values(
-          totals
-        ),
-        1
-      );
+      Math.max(...Object.values(totals), 1);
 
-    const chart =
-      document.getElementById(
-        "subjectChart"
-      );
+    $("subjectChart").innerHTML =
+      Object.entries(totals)
+        .map(([subject, minutes]) => {
 
-    chart.innerHTML =
-      "";
+          const width =
+            minutes === 0
+              ? 0
+              : Math.max(
+                  3,
+                  (minutes / max) * 100
+                );
 
-    subjects.forEach(
-      subject => {
+          return `
+            <div class="subject-row">
+              <div class="subject-header">
+                <span>${escapeHtml(subject)}</span>
+                <strong>${minutes}分</strong>
+              </div>
 
-        const minutes =
-          totals[subject];
-
-        const percent =
-          minutes === 0
-            ? 0
-            : Math.max(
-                4,
-                (
-                  minutes /
-                  max
-                ) * 100
-              );
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          "subject-row";
-
-        row.innerHTML = `
-          <div class="subject-header">
-            <span>${subject}</span>
-
-            <strong>
-              ${formatMinutes(
-                minutes
-              )}
-            </strong>
-          </div>
-
-          <div class="bar-bg">
-            <div
-              class="bar"
-              style="width:${percent}%"
-            ></div>
-          </div>
-        `;
-
-        chart.appendChild(
-          row
-        );
-      }
-    );
+              <div class="bar-background">
+                <div
+                  class="bar"
+                  style="width:${width}%;">
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
   }
 
 
   /* =========================================================
-     自分の記録
+     自分の記録表示
   ========================================================= */
 
   function renderMyRecords() {
 
-    const container =
-      document.getElementById(
-        "records"
-      );
+    if (!myRecords.length) {
 
-    if (
-      myRecords.length === 0
-    ) {
-
-      container.innerHTML =
-        '<div class="note">まだ記録がありません。</div>';
+      $("records").innerHTML =
+        '<div class="empty">まだ記録がありません。</div>';
 
       return;
     }
 
-    container.innerHTML =
-      "";
+    $("records").innerHTML =
+      myRecords
+        .map((record) => {
 
-    myRecords.forEach(
-      record => {
+          const date =
+            record.date?.toDate
+              ? record.date.toDate()
+              : null;
 
-        const item =
-          document.createElement(
-            "div"
-          );
+          const dateText =
+            date
+              ? formatDateTime(date)
+              : "日時不明";
 
-        item.className =
-          "record-item";
+          return `
+            <div class="record-item">
 
-        const dateText =
-          formatDateTime(
-            record.date
-          );
+              <div class="record-main">
 
-        item.innerHTML = `
-          <div class="record-top">
+                <div class="record-subject">
+                  ${escapeHtml(record.subject || "その他")}
+                </div>
 
-            <div class="record-subject">
-              ${escapeHtml(
-                record.subject ||
-                "その他"
-              )}
+                <div class="record-date">
+                  ${dateText}
+                </div>
+
+              </div>
+
+              <div class="record-minutes">
+                ${Number(record.minutes || 0)}分
+              </div>
+
+              <button
+                class="small-delete"
+                onclick="deleteRecord('${record.id}')">
+                削除
+              </button>
+
             </div>
-
-            <div class="record-minutes">
-              ${formatMinutes(
-                Number(
-                  record.minutes ||
-                  0
-                )
-              )}
-            </div>
-
-          </div>
-
-          <div class="record-date">
-            ${dateText}
-          </div>
-
-          <div class="record-delete">
-            <button
-              class="danger small"
-              data-delete-id="${record.id}"
-            >
-              削除
-            </button>
-          </div>
-        `;
-
-        item
-          .querySelector(
-            "[data-delete-id]"
-          )
-          .addEventListener(
-            "click",
-            () =>
-              deleteRecord(
-                record.id
-              )
-          );
-
-        container.appendChild(
-          item
-        );
-      }
-    );
+          `;
+        })
+        .join("");
   }
 
 
   /* =========================================================
-     手動記録
+     記録追加
   ========================================================= */
 
-  window.addRecord =
-    async function() {
+  window.addRecord = async function() {
 
-      if (!currentUser) {
+    if (!currentUser) {
+      alert("先にGoogleでログインしてください。");
+      return;
+    }
 
-        alert(
-          "先にGoogleでログインしてください。"
-        );
+    const subject =
+      $("subject").value;
 
-        return;
-      }
+    const minutes =
+      Number($("minutes").value);
 
-      const subject =
-        document.getElementById(
-          "subject"
-        ).value;
+    if (!minutes || minutes <= 0) {
 
-      const minutes =
-        Number(
-          document.getElementById(
-            "minutes"
-          ).value
-        );
+      alert("学習時間を1分以上入力してください。");
 
-      if (
-        !Number.isFinite(
-          minutes
-        ) ||
-        minutes <= 0
-      ) {
+      return;
+    }
 
-        alert(
-          "1分以上の時間を入力してください。"
-        );
+    try {
 
-        return;
-      }
+      await addDoc(
+        collection(db, "studySessions"),
+        {
+          studentId: currentUser.uid,
+          classId: CLASS_ID,
+          subject,
+          minutes,
+          date: serverTimestamp()
+        }
+      );
 
-      if (
-        minutes > 1440
-      ) {
+      $("minutes").value = "";
 
-        alert(
-          "学習時間は1440分以内で入力してください。"
-        );
+      /*
+        重要：
+        ここで全員分の累計を再計算しない。
+        読み取り回数削減のためランキングは手動更新。
+      */
 
-        return;
-      }
+      rankingLoaded = false;
+      allTimeLoaded = false;
 
-      try {
+      alert("学習時間を記録しました！");
 
-        await addDoc(
-          collection(
-            db,
-            "studySessions"
-          ),
-          {
-            studentId:
-              currentUser.uid,
+    } catch (error) {
 
-            classId:
-              CLASS_ID,
+      console.error(error);
 
-            subject:
-              subject,
-
-            minutes:
-              Math.floor(
-                minutes
-              ),
-
-            date:
-              serverTimestamp()
-          }
-        );
-
-        document.getElementById(
-          "minutes"
-        ).value =
-          "";
-
-        allTimeLoaded =
-          false;
-
-        await refreshAllTimeTotals(
-          true
-        );
-
-        alert(
-          "学習時間を記録しました！"
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "記録できませんでした。\n\n" +
-          error.message
-        );
-      }
-    };
+      alert(
+        "記録に失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  };
 
 
   /* =========================================================
      記録削除
   ========================================================= */
 
-  window.deleteRecord =
-    async function(id) {
+  window.deleteRecord = async function(id) {
 
-      if (!currentUser) {
-        return;
-      }
+    if (!currentUser) return;
 
-      const ok =
-        confirm(
-          "この記録を削除しますか？"
-        );
+    const target =
+      myRecords.find((record) => record.id === id);
 
-      if (!ok) {
-        return;
-      }
+    if (!target) return;
 
-      try {
+    if (
+      target.studentId !== currentUser.uid
+    ) {
 
-        await deleteDoc(
-          doc(
-            db,
-            "studySessions",
-            id
-          )
-        );
+      alert("自分の記録だけ削除できます。");
 
-        allTimeLoaded =
-          false;
+      return;
+    }
 
-        await refreshAllTimeTotals(
-          true
-        );
+    if (!confirm("この記録を削除しますか？")) {
+      return;
+    }
 
-      } catch (error) {
+    try {
 
-        console.error(error);
+      await deleteDoc(
+        doc(db, "studySessions", id)
+      );
 
-        alert(
-          "削除できませんでした。\n\n" +
-          error.message
-        );
-      }
-    };
+      rankingLoaded = false;
+      allTimeLoaded = false;
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "削除に失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  };
 
 
   /* =========================================================
      全削除
   ========================================================= */
 
-  window.clearAll =
-    async function() {
+  window.clearAll = async function() {
 
-      if (!currentUser) {
-        return;
-      }
+    if (!currentUser) return;
 
-      const ok =
-        confirm(
-          "自分の学習記録をすべて削除しますか？"
+    if (!myRecords.length) {
+
+      alert("削除する記録がありません。");
+
+      return;
+    }
+
+    if (
+      !confirm(
+        "自分の学習記録をすべて削除しますか？"
+      )
+    ) {
+      return;
+    }
+
+    try {
+
+      const batch = writeBatch(db);
+
+      myRecords.forEach((record) => {
+
+        batch.delete(
+          doc(db, "studySessions", record.id)
         );
 
-      if (!ok) {
-        return;
-      }
+      });
 
-      try {
+      await batch.commit();
 
-        const q =
-          query(
-            collection(
-              db,
-              "studySessions"
-            ),
-            where(
-              "studentId",
-              "==",
-              currentUser.uid
-            )
-          );
+      rankingLoaded = false;
+      allTimeLoaded = false;
 
-        const snapshot =
-          await getDocs(q);
+      alert("すべての記録を削除しました。");
 
-        for (
-          const item
-          of snapshot.docs
-        ) {
+    } catch (error) {
 
-          await deleteDoc(
-            doc(
-              db,
-              "studySessions",
-              item.id
-            )
-          );
-        }
+      console.error(error);
 
-        allTimeLoaded =
-          false;
-
-        await refreshAllTimeTotals(
-          true
-        );
-
-        alert(
-          "すべての記録を削除しました。"
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "削除できませんでした。\n\n" +
-          error.message
-        );
-      }
-    };
+      alert(
+        "全削除に失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  };
 
 
   /* =========================================================
      タイマー
   ========================================================= */
 
-  window.startTimer =
-    async function() {
-
-      if (!currentUser) {
-
-        alert(
-          "先にGoogleでログインしてください。"
-        );
-
-        return;
-      }
-
-      if (timerStartTime) {
-        return;
-      }
-
-      timerSubject =
-        document.getElementById(
-          "timerSubject"
-        ).value;
-
-      timerStartTime =
-        Date.now();
-
-      saveTimerState();
-
-      document.getElementById(
-        "startTimerButton"
-      ).disabled =
-        true;
-
-      document.getElementById(
-        "stopTimerButton"
-      ).disabled =
-        false;
-
-      document.getElementById(
-        "timerSubject"
-      ).disabled =
-        true;
-
-      document.getElementById(
-        "timerStatus"
-      ).textContent =
-        "🔥 勉強中";
-
-      await updateOnlineStatus();
-
-      timerInterval =
-        setInterval(
-          updateTimerDisplay,
-          1000
-        );
-
-      updateTimerDisplay();
-    };
+  const TIMER_STORAGE_PREFIX =
+    "studyTimeTimer_";
 
 
-  window.stopTimer =
-    async function() {
+  function timerStorageKey() {
 
-      if (!timerStartTime) {
-        return;
-      }
+    if (!currentUser) return null;
 
-      const start =
-        timerStartTime;
-
-      const subject =
-        timerSubject;
-
-      const elapsedSeconds =
-        Math.max(
-          0,
-          Math.floor(
-            (
-              Date.now() -
-              start
-            ) / 1000
-          )
-        );
-
-      const minutes =
-        Math.max(
-          1,
-          Math.round(
-            elapsedSeconds /
-            60
-          )
-        );
-
-      stopTimerWithoutSave();
-
-      if (!currentUser) {
-        return;
-      }
-
-      try {
-
-        await addDoc(
-          collection(
-            db,
-            "studySessions"
-          ),
-          {
-            studentId:
-              currentUser.uid,
-
-            classId:
-              CLASS_ID,
-
-            subject:
-              subject,
-
-            minutes:
-              minutes,
-
-            date:
-              serverTimestamp()
-          }
-        );
-
-        allTimeLoaded =
-          false;
-
-        await refreshAllTimeTotals(
-          true
-        );
-
-        await updateOnlineStatus();
-
-        document.getElementById(
-          "timerStatus"
-        ).textContent =
-          `${minutes}分として保存しました！`;
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "タイマー記録を保存できませんでした。\n\n" +
-          error.message
-        );
-      }
-    };
+    return TIMER_STORAGE_PREFIX + currentUser.uid;
+  }
 
 
-  function stopTimerWithoutSave() {
+  function saveTimerState() {
 
-    if (timerInterval) {
+    const key = timerStorageKey();
 
-      clearInterval(
-        timerInterval
-      );
+    if (!key || !timerStartTime) return;
 
-      timerInterval =
-        null;
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        startTime: timerStartTime,
+        subject: timerSubject
+      })
+    );
+  }
+
+
+  function loadTimerState() {
+
+    const key = timerStorageKey();
+
+    if (!key) return null;
+
+    const value =
+      localStorage.getItem(key);
+
+    if (!value) return null;
+
+    try {
+      return JSON.parse(value);
+    } catch (e) {
+      return null;
     }
+  }
 
-    clearTimerState();
 
-    timerStartTime =
-      null;
+  function clearTimerState() {
 
-    timerSubject =
-      null;
+    const key = timerStorageKey();
 
-    document.getElementById(
-      "startTimerButton"
-    ).disabled =
-      false;
+    if (!key) return;
 
-    document.getElementById(
-      "stopTimerButton"
-    ).disabled =
-      true;
+    localStorage.removeItem(key);
+  }
 
-    document.getElementById(
-      "timerSubject"
-    ).disabled =
-      false;
 
-    document.getElementById(
-      "timerDisplay"
-    ).textContent =
-      "00:00:00";
+  function formatTimer(seconds) {
 
-    if (currentUser) {
+    seconds = Math.max(
+      0,
+      Math.floor(seconds)
+    );
 
-      document.getElementById(
-        "timerStatus"
-      ).textContent =
-        "タイマー停止中";
-    }
+    const hours =
+      Math.floor(seconds / 3600);
+
+    const minutes =
+      Math.floor((seconds % 3600) / 60);
+
+    const secs =
+      seconds % 60;
+
+    return (
+      String(hours).padStart(2, "0") +
+      ":" +
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(secs).padStart(2, "0")
+    );
   }
 
 
   function updateTimerDisplay() {
 
     if (!timerStartTime) {
+
+      $("timerDisplay").textContent =
+        "00:00:00";
+
       return;
     }
 
     const elapsed =
-      Math.max(
-        0,
-        Math.floor(
-          (
-            Date.now() -
-            timerStartTime
-          ) / 1000
-        )
-      );
-
-    const hours =
       Math.floor(
-        elapsed / 3600
+        (Date.now() - timerStartTime) / 1000
       );
 
-    const minutes =
-      Math.floor(
-        (
-          elapsed %
-          3600
-        ) / 60
-      );
-
-    const seconds =
-      elapsed % 60;
-
-    document.getElementById(
-      "timerDisplay"
-    ).textContent =
-      `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-
-    updateTodaySummary();
-
-    updateRankings();
+    $("timerDisplay").textContent =
+      formatTimer(elapsed);
   }
 
 
-  function getCurrentTimerMinutes() {
+  window.startTimer = async function() {
 
-    if (!timerStartTime) {
-      return 0;
+    if (!currentUser) {
+
+      alert("先にログインしてください。");
+
+      return;
     }
 
-    return Math.floor(
-      (
-        Date.now() -
-        timerStartTime
-      ) / 60000
+    if (timerStartTime) return;
+
+    timerSubject =
+      $("timerSubject").value;
+
+    timerStartTime = Date.now();
+
+    saveTimerState();
+
+    $("timerSubject").disabled = true;
+
+    $("startTimerButton").disabled = true;
+    $("stopTimerButton").disabled = false;
+
+    $("timerStatus").textContent =
+      `「${timerSubject}」を勉強中です`;
+
+    updateTimerDisplay();
+
+    timerInterval =
+      setInterval(updateTimerDisplay, 1000);
+
+    await updateOnlineStatus(true);
+  };
+
+
+  window.stopTimer = async function() {
+
+    if (!currentUser) return;
+
+    if (!timerStartTime) return;
+
+    const startTime =
+      timerStartTime;
+
+    const subject =
+      timerSubject;
+
+    const elapsedSeconds =
+      Math.max(
+        1,
+        Math.floor(
+          (Date.now() - startTime) / 1000
+        )
+      );
+
+    const minutes =
+      Math.max(
+        1,
+        Math.round(elapsedSeconds / 60)
+      );
+
+    /*
+      重要：
+      Firestore保存成功までは
+      localStorageを消さない。
+      保存失敗時にタイマーが消えるのを防止。
+    */
+
+    try {
+
+      await addDoc(
+        collection(db, "studySessions"),
+        {
+          studentId: currentUser.uid,
+          classId: CLASS_ID,
+          subject,
+          minutes,
+          date: serverTimestamp()
+        }
+      );
+
+      stopTimerWithoutSave();
+
+      rankingLoaded = false;
+      allTimeLoaded = false;
+
+      $("timerStatus").textContent =
+        `${minutes}分の学習を記録しました！`;
+
+    } catch (error) {
+
+      console.error(error);
+
+      $("timerStatus").textContent =
+        "保存に失敗しました。タイマー状態は保持しています。";
+
+      alert(
+        "タイマーの記録保存に失敗しました。\n\n" +
+        (error?.message || error)
+      );
+    }
+  };
+
+
+  function stopTimerWithoutSave() {
+
+    if (timerInterval) {
+
+      clearInterval(timerInterval);
+
+      timerInterval = null;
+    }
+
+    timerStartTime = null;
+    timerSubject = "";
+
+    clearTimerState();
+
+    $("timerSubject").disabled = false;
+
+    $("startTimerButton").disabled = false;
+    $("stopTimerButton").disabled = true;
+
+    $("timerDisplay").textContent =
+      "00:00:00";
+
+    if (currentUser) {
+
+      $("timerStatus").textContent =
+        "タイマー停止中";
+
+      updateOnlineStatus(false);
+    }
+  }
+
+
+  function restoreTimer() {
+
+    if (!currentUser) return;
+
+    const saved =
+      loadTimerState();
+
+    if (!saved || !saved.startTime) {
+      return;
+    }
+
+    const startTime =
+      Number(saved.startTime);
+
+    const subject =
+      saved.subject || "その他";
+
+    if (
+      !Number.isFinite(startTime) ||
+      startTime <= 0
+    ) {
+      clearTimerState();
+      return;
+    }
+
+    timerStartTime = startTime;
+    timerSubject = subject;
+
+    $("timerSubject").value =
+      subject;
+
+    $("timerSubject").disabled = true;
+
+    $("startTimerButton").disabled = true;
+    $("stopTimerButton").disabled = false;
+
+    $("timerStatus").textContent =
+      `「${subject}」を勉強中です`;
+
+    updateTimerDisplay();
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
+
+    timerInterval =
+      setInterval(updateTimerDisplay, 1000);
+
+    updateOnlineStatus(true);
+  }
+
+
+  /* =========================================================
+     ランキング
+  ========================================================= */
+
+  window.setRankingMode = async function(mode) {
+
+    rankingMode = mode;
+
+    $("todayRankingButton").className =
+      mode === "today"
+        ? "primary"
+        : "secondary";
+
+    $("allRankingButton").className =
+      mode === "all"
+        ? "primary"
+        : "secondary";
+
+    /*
+      モード切替時に自動読み込みしない。
+      読み取り削減のため、更新ボタンを押したときだけ取得。
+    */
+
+    $("ranking").innerHTML =
+      '<div class="empty">「ランキングを更新」を押してください。</div>';
+  };
+
+
+  window.refreshRanking = async function() {
+
+    if (!currentUser) return;
+
+    if (rankingLoading) return;
+
+    rankingLoading = true;
+
+    $("ranking").innerHTML =
+      '<div class="empty">読み込み中...</div>';
+
+    try {
+
+      await loadStudentsOnce();
+
+      if (rankingMode === "today") {
+
+        await loadTodayRanking();
+
+      } else {
+
+        await loadAllTimeRanking();
+
+      }
+
+      rankingLoaded = true;
+
+    } catch (error) {
+
+      console.error(error);
+
+      $("ranking").innerHTML =
+        `<div class="empty">
+          読み込みに失敗しました。<br>
+          ${escapeHtml(error?.message || String(error))}
+        </div>`;
+
+    } finally {
+
+      rankingLoading = false;
+    }
+  };
+
+
+  /* =========================================================
+     今日のランキング
+     1回のクエリで今日の記録を取得
+  ========================================================= */
+
+  async function loadTodayRanking() {
+
+    const start =
+      new Date();
+
+    start.setHours(0, 0, 0, 0);
+
+    const end =
+      new Date(start);
+
+    end.setDate(end.getDate() + 1);
+
+    const q = query(
+      collection(db, "studySessions"),
+      where("classId", "==", CLASS_ID),
+      where(
+        "date",
+        ">=",
+        Timestamp.fromDate(start)
+      ),
+      where(
+        "date",
+        "<",
+        Timestamp.fromDate(end)
+      )
     );
+
+    const snapshot =
+      await getDocs(q);
+
+    const totals = {};
+
+    classStudents.forEach((student) => {
+      totals[student.uid] = 0;
+    });
+
+    snapshot.forEach((docSnap) => {
+
+      const data =
+        docSnap.data();
+
+      const uid =
+        data.studentId;
+
+      if (!(uid in totals)) {
+        return;
+      }
+
+      totals[uid] +=
+        Number(data.minutes || 0);
+    });
+
+    const ranking =
+      classStudents
+        .map((student) => ({
+          uid: student.uid,
+          nickname: student.nickname,
+          minutes: totals[student.uid] || 0
+        }))
+        .sort((a, b) =>
+          b.minutes - a.minutes ||
+          a.nickname.localeCompare(b.nickname, "ja")
+        );
+
+    renderRanking(ranking);
+  }
+
+
+  /* =========================================================
+     累計ランキング
+     全記録を読むのではなく、生徒ごとの集計クエリを
+     「ランキング更新時だけ」実行
+  ========================================================= */
+
+  async function loadAllTimeRanking() {
+
+    const totals = {};
+
+    classStudents.forEach((student) => {
+      totals[student.uid] = 0;
+    });
+
+    /*
+      記録追加・削除のたびには実行しない。
+      ユーザーがランキング更新を押したときだけ実行する。
+    */
+
+    await Promise.all(
+      classStudents.map(async (student) => {
+
+        try {
+
+          const q = query(
+            collection(db, "studySessions"),
+            where("classId", "==", CLASS_ID),
+            where("studentId", "==", student.uid)
+          );
+
+          const aggregate =
+            await getAggregateFromServer(
+              q,
+              {
+                totalMinutes: sum("minutes")
+              }
+            );
+
+          totals[student.uid] =
+            Number(
+              aggregate.data().totalMinutes || 0
+            );
+
+        } catch (error) {
+
+          console.error(
+            "累計集計エラー",
+            student.uid,
+            error
+          );
+
+          totals[student.uid] = 0;
+        }
+      })
+    );
+
+    allTimeTotals = totals;
+    allTimeLoaded = true;
+
+    const ranking =
+      classStudents
+        .map((student) => ({
+          uid: student.uid,
+          nickname: student.nickname,
+          minutes: totals[student.uid] || 0
+        }))
+        .sort((a, b) =>
+          b.minutes - a.minutes ||
+          a.nickname.localeCompare(b.nickname, "ja")
+        );
+
+    renderRanking(ranking);
+  }
+
+
+  /* =========================================================
+     ランキング表示
+  ========================================================= */
+
+  function renderRanking(ranking) {
+
+    if (!ranking.length) {
+
+      $("ranking").innerHTML =
+        '<div class="empty">生徒がいません。</div>';
+
+      return;
+    }
+
+    const positive =
+      ranking.filter((item) => item.minutes > 0);
+
+    if (!positive.length) {
+
+      $("ranking").innerHTML =
+        '<div class="empty">まだ学習記録がありません。</div>';
+
+      return;
+    }
+
+    const ownIndex =
+      ranking.findIndex(
+        (item) =>
+          item.uid === currentUser?.uid
+      );
+
+    const displayIndexes = [];
+
+    for (
+      let i = 0;
+      i < Math.min(3, ranking.length);
+      i++
+    ) {
+      if (ranking[i].minutes > 0) {
+        displayIndexes.push(i);
+      }
+    }
+
+    if (
+      ownIndex >= 3 &&
+      ownIndex >= 0 &&
+      ranking[ownIndex].minutes > 0
+    ) {
+
+      if (
+        displayIndexes[displayIndexes.length - 1] !==
+        ownIndex
+      ) {
+        displayIndexes.push(-1);
+        displayIndexes.push(ownIndex);
+      }
+    }
+
+    $("ranking").innerHTML =
+      displayIndexes
+        .map((index) => {
+
+          if (index === -1) {
+            return `
+              <div style="
+                text-align:center;
+                color:#999;
+                padding:5px;
+              ">
+                ・ ・ ・
+              </div>
+            `;
+          }
+
+          const item =
+            ranking[index];
+
+          const isMe =
+            item.uid === currentUser?.uid;
+
+          return `
+            <div class="ranking-item ${isMe ? "my-rank" : ""}">
+
+              <div class="rank-number ${
+                index < 3
+                  ? "top-rank"
+                  : ""
+              }">
+                ${index + 1}位
+              </div>
+
+              <div class="rank-name">
+                ${escapeHtml(item.nickname)}
+                ${isMe ? "（自分）" : ""}
+              </div>
+
+              <div class="rank-minutes">
+                ${item.minutes}分
+              </div>
+
+            </div>
+          `;
+        })
+        .join("");
   }
 
 
@@ -3031,63 +2479,51 @@
 
     calendarMonth =
       now.getMonth();
+
+    renderCalendarTitle();
   }
 
 
-  window.changeCalendarMonth =
-    async function(diff) {
+  function renderCalendarTitle() {
 
-      calendarMonth +=
-        diff;
-
-      if (
-        calendarMonth < 0
-      ) {
-
-        calendarMonth =
-          11;
-
-        calendarYear--;
-
-      } else if (
-        calendarMonth > 11
-      ) {
-
-        calendarMonth =
-          0;
-
-        calendarYear++;
-      }
-
-      calendarMonthLoadedKey =
-        "";
-
-      selectedHistoryDate =
-        null;
-
-      await loadCalendarMonth();
-    };
+    $("calendarTitle").textContent =
+      `${calendarYear}年${calendarMonth + 1}月`;
+  }
 
 
-  async function loadCalendarMonth(
-    force = false
-  ) {
+  window.changeCalendarMonth = async function(diff) {
 
-    if (!currentUser) {
-      return;
+    calendarMonth += diff;
+
+    if (calendarMonth < 0) {
+
+      calendarMonth = 11;
+      calendarYear--;
+
+    } else if (calendarMonth > 11) {
+
+      calendarMonth = 0;
+      calendarYear++;
     }
+
+    renderCalendarTitle();
+
+    await loadCalendarMonth(true);
+  };
+
+
+  async function loadCalendarMonth(force) {
+
+    if (!currentUser) return;
 
     const key =
       `${calendarYear}-${calendarMonth}`;
 
     if (
-      calendarMonthLoadedKey ===
-        key &&
-      !force
+      !force &&
+      calendarMonthLoadedKey === key
     ) {
-
       renderCalendar();
-
       return;
     }
 
@@ -3113,101 +2549,138 @@
         0
       );
 
+    const q = query(
+      collection(db, "studySessions"),
+      where("classId", "==", CLASS_ID),
+      where(
+        "date",
+        ">=",
+        Timestamp.fromDate(start)
+      ),
+      where(
+        "date",
+        "<",
+        Timestamp.fromDate(end)
+      )
+    );
+
     try {
-
-      const q =
-        query(
-          collection(
-            db,
-            "studySessions"
-          ),
-
-          where(
-            "date",
-            ">=",
-            start
-          ),
-
-          where(
-            "date",
-            "<",
-            end
-          )
-        );
 
       const snapshot =
         await getDocs(q);
 
-      calendarMonthSessions =
-        snapshot.docs.map(
-          item => ({
-            id: item.id,
-            ...item.data()
-          })
-        );
+      calendarMonthSessions = [];
 
-      calendarMonthLoadedKey =
-        key;
+      snapshot.forEach((docSnap) => {
+
+        calendarMonthSessions.push({
+          id: docSnap.id,
+          ...docSnap.data()
+        });
+
+      });
+
+      calendarMonthLoadedKey = key;
 
       renderCalendar();
 
     } catch (error) {
 
-      console.error(
-        "calendar:",
-        error
-      );
+      console.error(error);
+
+      $("calendarGrid").innerHTML =
+        `<div class="empty">
+          カレンダーの読み込みに失敗しました。
+        </div>`;
     }
+  }
+
+
+  function getDailyTotals() {
+
+    const totals = {};
+
+    calendarMonthSessions.forEach((session) => {
+
+      const date =
+        session.date?.toDate?.();
+
+      if (!date) return;
+
+      const day =
+        date.getDate();
+
+      const uid =
+        session.studentId;
+
+      if (!totals[day]) {
+        totals[day] = {};
+      }
+
+      totals[day][uid] =
+        (totals[day][uid] || 0) +
+        Number(session.minutes || 0);
+    });
+
+    return totals;
+  }
+
+
+  function getDailyMvp(day) {
+
+    const daily =
+      getDailyTotals()[day] || {};
+
+    const entries =
+      Object.entries(daily);
+
+    if (!entries.length) {
+      return {
+        winners: [],
+        minutes: 0
+      };
+    }
+
+    const max =
+      Math.max(
+        ...entries.map(([, minutes]) => minutes)
+      );
+
+    const winnerUids =
+      entries
+        .filter(([, minutes]) => minutes === max)
+        .map(([uid]) => uid);
+
+    const winners =
+      winnerUids.map((uid) => {
+
+        const student =
+          classStudents.find(
+            (s) => s.uid === uid
+          );
+
+        return {
+          uid,
+          nickname:
+            student?.nickname || "名前不明"
+        };
+      });
+
+    return {
+      winners,
+      minutes: max
+    };
   }
 
 
   function renderCalendar() {
 
-    const calendar =
-      document.getElementById(
-        "calendar"
-      );
+    renderCalendarTitle();
 
-    const title =
-      document.getElementById(
-        "calendarTitle"
-      );
+    const grid =
+      $("calendarGrid");
 
-    title.textContent =
-      `${calendarYear}年${calendarMonth + 1}月`;
-
-    calendar.innerHTML =
-      "";
-
-    const weekdays = [
-      "日",
-      "月",
-      "火",
-      "水",
-      "木",
-      "金",
-      "土"
-    ];
-
-    weekdays.forEach(
-      day => {
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-        div.className =
-          "calendar-weekday";
-
-        div.textContent =
-          day;
-
-        calendar.appendChild(
-          div
-        );
-      }
-    );
+    grid.innerHTML = "";
 
     const firstDay =
       new Date(
@@ -3223,23 +2696,21 @@
         0
       ).getDate();
 
-    for (
-      let i = 0;
-      i < firstDay;
-      i++
-    ) {
+    const dailyTotals =
+      getDailyTotals();
 
-      const div =
-        document.createElement(
-          "div"
-        );
+    const now =
+      new Date();
 
-      div.className =
-        "calendar-day empty";
+    for (let i = 0; i < firstDay; i++) {
 
-      calendar.appendChild(
-        div
-      );
+      const empty =
+        document.createElement("div");
+
+      empty.className =
+        "calendar-day empty-day";
+
+      grid.appendChild(empty);
     }
 
     for (
@@ -3249,1141 +2720,621 @@
     ) {
 
       const div =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       div.className =
         "calendar-day";
 
-      const date =
-        new Date(
-          calendarYear,
-          calendarMonth,
-          day
-        );
+      const isToday =
+        calendarYear === now.getFullYear() &&
+        calendarMonth === now.getMonth() &&
+        day === now.getDate();
 
-      const dateKey =
-        makeDateKey(
-          date
-        );
-
-      const now =
-        new Date();
-
-      if (
-        now.getFullYear() ===
-          calendarYear &&
-        now.getMonth() ===
-          calendarMonth &&
-        now.getDate() ===
-          day
-      ) {
-
-        div.classList.add(
-          "today"
-        );
+      if (isToday) {
+        div.classList.add("today");
       }
 
       const mvp =
-        calculateDailyMvp(
-          dateKey
-        );
+        getDailyMvp(day);
 
-      if (
-        mvp.length > 0
-      ) {
-
-        div.classList.add(
-          "mvp"
-        );
+      if (mvp.winners.length) {
+        div.classList.add("mvp-day");
       }
 
+      const total =
+        Object.values(
+          dailyTotals[day] || {}
+        ).reduce(
+          (sum, value) =>
+            sum + Number(value || 0),
+          0
+        );
+
       div.innerHTML = `
-        <div class="day-number">
+        <div class="calendar-day-number">
           ${day}
         </div>
 
         ${
-          mvp.length > 0
-            ? '<span class="mvp-mark">🏆</span>'
+          mvp.winners.length
+            ? `<span class="calendar-medal">🏆</span>`
+            : ""
+        }
+
+        ${
+          total > 0
+            ? `<div class="calendar-minutes">${total}分</div>`
             : ""
         }
       `;
 
-      div.addEventListener(
-        "click",
-        () =>
-          showHistoryDetail(
-            dateKey
-          )
-      );
+      div.onclick = () =>
+        showCalendarDetail(day);
 
-      calendar.appendChild(
-        div
-      );
+      grid.appendChild(div);
     }
   }
 
 
-  function calculateDailyMvp(
-    dateKey
-  ) {
+  function showCalendarDetail(day) {
 
-    const totals = {};
+    const detail =
+      $("calendarDetail");
 
-    calendarMonthSessions.forEach(
-      session => {
+    const mvp =
+      getDailyMvp(day);
 
-        const millis =
-          getMillis(
-            session.date
-          );
+    if (!mvp.winners.length) {
 
-        if (!millis) {
-          return;
-        }
+      detail.classList.remove("hidden");
 
-        const date =
-          new Date(
-            millis
-          );
+      detail.innerHTML =
+        `${calendarYear}年${calendarMonth + 1}月${day}日は、MVPはいません。`;
 
-        const key =
-          makeDateKey(
-            date
-          );
-
-        if (
-          key !== dateKey
-        ) {
-          return;
-        }
-
-        const studentId =
-          session.studentId;
-
-        if (!studentId) {
-          return;
-        }
-
-        totals[studentId] =
-          (
-            totals[studentId] ||
-            0
-          ) +
-          Number(
-            session.minutes ||
-            0
-          );
-      }
-    );
-
-    const values =
-      Object.values(
-        totals
-      );
-
-    if (
-      values.length === 0
-    ) {
-
-      return [];
+      return;
     }
 
-    const max =
-      Math.max(
-        ...values
-      );
+    const names =
+      mvp.winners
+        .map(
+          (winner) =>
+            escapeHtml(winner.nickname)
+        )
+        .join("、");
 
-    if (
-      max <= 0
-    ) {
+    detail.classList.remove("hidden");
 
-      return [];
-    }
-
-    return Object.entries(
-      totals
-    )
-      .filter(
-        ([, minutes]) =>
-          minutes === max
-      )
-      .map(
-        ([studentId]) =>
-          ({
-            studentId,
-            minutes: max
-          })
-      );
+    detail.innerHTML = `
+      <strong>🏆 ${calendarMonth + 1}月${day}日のMVP</strong><br>
+      ${names}<br>
+      学習時間：${mvp.minutes}分
+    `;
   }
 
 
   /* =========================================================
-     ★ MVPカレンダー詳細
-     ★ クラス全員の合計時間を表示
+     MVP集計
   ========================================================= */
 
-  function getDailyStudentTotals(
-    dateKey
-  ) {
+  async function refreshMvpSummary() {
 
-    const totals = {};
+    if (!currentUser) return;
 
-    /*
-     * クラス全員を最初に0分で登録
-     */
-    classStudents.forEach(
-      student => {
+    const now =
+      new Date();
 
-        totals[
-          student.id
-        ] = 0;
-      }
-    );
+    const year =
+      now.getFullYear();
 
-    /*
-     * その日の記録を加算
-     */
-    calendarMonthSessions.forEach(
-      session => {
+    const month =
+      now.getMonth();
 
-        const millis =
-          getMillis(
-            session.date
-          );
-
-        if (!millis) {
-          return;
-        }
-
-        const sessionDate =
-          new Date(
-            millis
-          );
-
-        const key =
-          makeDateKey(
-            sessionDate
-          );
-
-        if (
-          key !== dateKey
-        ) {
-          return;
-        }
-
-        const studentId =
-          session.studentId;
-
-        if (!studentId) {
-          return;
-        }
-
-        if (
-          totals[studentId] ===
-          undefined
-        ) {
-          totals[studentId] = 0;
-        }
-
-        totals[studentId] +=
-          Number(
-            session.minutes ||
-            0
-          );
-      }
-    );
-
-    return totals;
-  }
-
-
-  async function showHistoryDetail(
-    dateKey
-  ) {
-
-    selectedHistoryDate =
-      dateKey;
-
-    const detail =
-      document.getElementById(
-        "historyDetail"
+    const start =
+      new Date(
+        year,
+        month,
+        1,
+        0,
+        0,
+        0,
+        0
       );
 
-    /*
-     * Firebaseから新しく読み込まず、
-     * すでに取得している月データを使用する。
-     */
-    const totals =
-      getDailyStudentTotals(
-        dateKey
+    const end =
+      new Date(
+        year,
+        month + 1,
+        1,
+        0,
+        0,
+        0,
+        0
       );
 
-    /*
-     * その日の最高時間
-     */
-    const values =
-      Object.values(
-        totals
-      );
+    try {
 
-    const maxMinutes =
-      values.length > 0
-        ? Math.max(
-            ...values
-          )
-        : 0;
-
-    /*
-     * MVP
-     */
-    const mvpIds =
-      maxMinutes > 0
-        ? Object.entries(
-            totals
-          )
-            .filter(
-              ([, minutes]) =>
-                minutes ===
-                maxMinutes
+      const snapshot =
+        await getDocs(
+          query(
+            collection(db, "studySessions"),
+            where(
+              "classId",
+              "==",
+              CLASS_ID
+            ),
+            where(
+              "date",
+              ">=",
+              Timestamp.fromDate(start)
+            ),
+            where(
+              "date",
+              "<",
+              Timestamp.fromDate(end)
             )
-            .map(
-              ([studentId]) =>
-                studentId
-            )
-        : [];
-
-
-    /*
-     * 生徒を学習時間の多い順に並べる
-     */
-    const studentsForDay =
-      classStudents
-        .map(
-          student => ({
-            ...student,
-
-            minutes:
-              Number(
-                totals[
-                  student.id
-                ] || 0
-              ),
-
-            isMvp:
-              mvpIds.includes(
-                student.id
-              )
-          })
-        )
-        .sort(
-          (a, b) => {
-
-            if (
-              b.minutes !==
-              a.minutes
-            ) {
-
-              return (
-                b.minutes -
-                a.minutes
-              );
-            }
-
-            return (
-              a.nickname ||
-              ""
-            ).localeCompare(
-              b.nickname ||
-              "",
-              "ja"
-            );
-          }
+          )
         );
 
+      const daily = {};
 
-    /*
-     * 自分の時間
-     */
-    const myMinutes =
-      currentUser
-        ? Number(
-            totals[
-              currentUser.uid
-            ] || 0
-          )
-        : 0;
+      snapshot.forEach((docSnap) => {
 
+        const data =
+          docSnap.data();
 
-    let html =
-      `<strong>${dateKey}</strong><br><br>`;
+        const date =
+          data.date?.toDate?.();
 
-    html +=
-      `👤 自分：${formatMinutes(
-        myMinutes
-      )}<br>`;
+        if (!date) return;
 
-    if (
-      mvpIds.length > 0
-    ) {
+        const day =
+          date.getDate();
 
-      html +=
-        `<br>🏆 <strong>MVP</strong>：`;
+        const uid =
+          data.studentId;
 
-      const mvpNames =
-        studentsForDay
-          .filter(
-            student =>
-              student.isMvp
-          )
-          .map(
-            student =>
-              escapeHtml(
-                student.nickname ||
-                "名前未設定"
-              )
-          );
-
-      html +=
-        mvpNames.join(
-          "、"
-        );
-
-      html +=
-        `（${formatMinutes(
-          maxMinutes
-        )}）<br>`;
-
-    } else {
-
-      html +=
-        `<br>🏆 <strong>MVP</strong>：なし<br>`;
-    }
-
-
-    html +=
-      `<br><strong>📊 クラス全員の学習時間</strong>`;
-
-    /*
-     * 全員の時間を表示
-     */
-    if (
-      studentsForDay.length ===
-      0
-    ) {
-
-      html +=
-        `<div class="note" style="margin-top:8px;">
-          生徒情報を読み込んでいます。
-        </div>`;
-
-    } else {
-
-      html +=
-        `<div style="margin-top:8px;">`;
-
-      studentsForDay.forEach(
-        (
-          student,
-          index
-        ) => {
-
-          const isSelf =
-            currentUser &&
-            student.id ===
-            currentUser.uid;
-
-          const classes =
-            [
-              "history-student",
-              student.isMvp
-                ? "history-mvp"
-                : ""
-            ]
-              .filter(
-                Boolean
-              )
-              .join(
-                " "
-              );
-
-          const medal =
-            student.isMvp
-              ? "🏆 "
-              : "";
-
-          const self =
-            isSelf
-              ? "（自分）"
-              : "";
-
-          html += `
-            <div class="${classes}">
-
-              <div
-                style="
-                  width:28px;
-                  text-align:center;
-                  font-weight:bold;
-                "
-              >
-                ${index + 1}
-              </div>
-
-              <div class="history-student-name">
-                ${medal}
-                ${escapeHtml(
-                  student.nickname ||
-                  "名前未設定"
-                )}
-                ${self}
-              </div>
-
-              <div class="history-student-minutes">
-                ${formatMinutes(
-                  student.minutes
-                )}
-              </div>
-
-            </div>
-          `;
+        if (!daily[day]) {
+          daily[day] = {};
         }
-      );
 
-      html +=
-        `</div>`;
+        daily[day][uid] =
+          (daily[day][uid] || 0) +
+          Number(data.minutes || 0);
+      });
+
+      const mvpCounts = {};
+
+      let totalMvpDays = 0;
+
+      Object.values(daily).forEach((dayData) => {
+
+        const values =
+          Object.values(dayData);
+
+        if (!values.length) return;
+
+        const max =
+          Math.max(...values);
+
+        if (max <= 0) return;
+
+        totalMvpDays++;
+
+        Object.entries(dayData)
+          .filter(([, minutes]) =>
+            minutes === max
+          )
+          .forEach(([uid]) => {
+
+            mvpCounts[uid] =
+              (mvpCounts[uid] || 0) + 1;
+          });
+      });
+
+      const myMvpCount =
+        currentUser
+          ? (mvpCounts[currentUser.uid] || 0)
+          : 0;
+
+      const top =
+        Object.entries(mvpCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+
+      const topText =
+        top.length
+          ? top
+              .map(([uid, count], index) => {
+
+                const student =
+                  classStudents.find(
+                    (s) => s.uid === uid
+                  );
+
+                return `
+                  <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    padding:4px 0;
+                  ">
+                    <span>
+                      ${index + 1}位　
+                      ${escapeHtml(
+                        student?.nickname || "名前不明"
+                      )}
+                    </span>
+                    <strong>${count}回</strong>
+                  </div>
+                `;
+              })
+              .join("")
+          : "まだMVPはいません。";
+
+      $("mvpSummary").innerHTML = `
+        <strong>今月のMVP</strong><br>
+        MVPになった日：${totalMvpDays}日<br>
+        あなたのMVP回数：${myMvpCount}回
+
+        <div style="
+          margin-top:10px;
+          border-top:1px solid #eadca9;
+          padding-top:8px;
+        ">
+          ${topText}
+        </div>
+      `;
+
+    } catch (error) {
+
+      console.error(error);
+
+      $("mvpSummary").textContent =
+        "MVP情報の読み込みに失敗しました。";
     }
-
-
-    detail.innerHTML =
-      html;
   }
 
 
   /* =========================================================
      MVP累計
+     ボタンを押したときだけ読み込む
   ========================================================= */
 
-  window.loadMvpAllTime =
-    async function() {
+  window.loadMvpAllTime = async function(force = false) {
 
-      if (!currentUser) {
-
-        alert(
-          "先にログインしてください。"
-        );
-
-        return;
-      }
-
-      const container =
-        document.getElementById(
-          "mvpRankingList"
-        );
-
-      container.innerHTML =
-        '<div class="loading">MVPデータを計算中...</div>';
-
-      try {
-
-        const snapshot =
-          await getDocs(
-            collection(
-              db,
-              "studySessions"
-            )
-          );
-
-        const dailyTotals = {};
-
-        snapshot.docs.forEach(
-          item => {
-
-            const data =
-              item.data();
-
-            const millis =
-              getMillis(
-                data.date
-              );
-
-            if (!millis) {
-              return;
-            }
-
-            const date =
-              new Date(
-                millis
-              );
-
-            const dateKey =
-              makeDateKey(
-                date
-              );
-
-            const studentId =
-              data.studentId;
-
-            if (
-              !dailyTotals[
-                dateKey
-              ]
-            ) {
-
-              dailyTotals[
-                dateKey
-              ] = {};
-            }
-
-            dailyTotals[
-              dateKey
-            ][studentId] =
-              (
-                dailyTotals[
-                  dateKey
-                ][studentId] ||
-                0
-              ) +
-              Number(
-                data.minutes ||
-                0
-              );
-          }
-        );
-
-        const mvpCounts = {};
-
-        Object.values(
-          dailyTotals
-        ).forEach(
-          day => {
-
-            const values =
-              Object.values(
-                day
-              );
-
-            if (
-              values.length ===
-              0
-            ) {
-              return;
-            }
-
-            const max =
-              Math.max(
-                ...values
-              );
-
-            Object.entries(
-              day
-            ).forEach(
-              (
-                [
-                  studentId,
-                  minutes
-                ]
-              ) => {
-
-                if (
-                  minutes ===
-                  max
-                ) {
-
-                  mvpCounts[
-                    studentId
-                  ] =
-                    (
-                      mvpCounts[
-                        studentId
-                      ] ||
-                      0
-                    ) + 1;
-                }
-              }
-            );
-          }
-        );
-
-        const ranking =
-          classStudents
-            .map(
-              student => ({
-                ...student,
-
-                mvpCount:
-                  mvpCounts[
-                    student.id
-                  ] || 0
-              })
-            )
-            .sort(
-              (a, b) =>
-                b.mvpCount -
-                a.mvpCount
-            );
-
-        const myIndex =
-          ranking.findIndex(
-            item =>
-              item.id ===
-              currentUser.uid
-          );
-
-        let display =
-          ranking.slice(
-            0,
-            3
-          );
-
-        if (
-          myIndex >= 3
-        ) {
-
-          display.push({
-            separator: true
-          });
-
-          display.push(
-            ranking[myIndex]
-          );
-        }
-
-        container.innerHTML =
-          "";
-
-        display.forEach(
-          item => {
-
-            if (
-              item.separator
-            ) {
-
-              const div =
-                document.createElement(
-                  "div"
-                );
-
-              div.style.textAlign =
-                "center";
-
-              div.style.color =
-                "#888";
-
-              div.textContent =
-                "・ ・ ・";
-
-              container.appendChild(
-                div
-              );
-
-              return;
-            }
-
-            const rank =
-              ranking.findIndex(
-                x =>
-                  x.id ===
-                  item.id
-              ) + 1;
-
-            const div =
-              document.createElement(
-                "div"
-              );
-
-            div.className =
-              "ranking-item";
-
-            if (
-              item.id ===
-              currentUser.uid
-            ) {
-
-              div.classList.add(
-                "self"
-              );
-            }
-
-            div.innerHTML = `
-              <div class="rank-number">
-                ${rank}位
-              </div>
-
-              <div class="rank-name">
-                ${escapeHtml(
-                  item.nickname ||
-                  "名前未設定"
-                )}
-                ${
-                  item.id ===
-                  currentUser.uid
-                    ? "（自分）"
-                    : ""
-                }
-              </div>
-
-              <div class="rank-minutes">
-                ${item.mvpCount}回
-              </div>
-            `;
-
-            container.appendChild(
-              div
-            );
-          }
-        );
-
-        if (
-          ranking.length ===
-          0
-        ) {
-
-          container.innerHTML =
-            '<div class="note">まだMVPデータがありません。</div>';
-        }
-
-      } catch (error) {
-
-        console.error(error);
-
-        container.innerHTML =
-          `<div class="error">
-            MVPデータの読み込みに失敗しました。<br>
-            ${escapeHtml(
-              error.message
-            )}
-          </div>`;
-      }
-    };
-
-
-  /* =========================================================
-     管理者画面
-  ========================================================= */
-
-  function setupAdminMonthSelect() {
-
-    const select =
-      document.getElementById(
-        "adminMonthSelect"
-      );
-
-    select.innerHTML =
-      "";
-
-    const now =
-      new Date();
-
-    for (
-      let i = 0;
-      i < 12;
-      i++
-    ) {
-
-      const date =
-        new Date(
-          now.getFullYear(),
-          now.getMonth() - i,
-          1
-        );
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-      option.value =
-        `${date.getFullYear()}-${date.getMonth()}`;
-
-      option.textContent =
-        `${date.getFullYear()}年${date.getMonth() + 1}月`;
-
-      select.appendChild(
-        option
-      );
-    }
-
-    loadAdminMonth();
-  }
-
-
-  /*
-   * 管理者用月別集計
-   *
-   * 選択した月について
-   *
-   * ・月全体の合計
-   * ・記録がある生徒
-   * ・生徒ごとの月間合計
-   *
-   * のみを表示する。
-   */
-
-  window.loadAdminMonth =
-  async function() {
+    if (!currentUser) return;
 
     if (
-      !currentUser ||
-      currentUser.uid !== ADMIN_UID
+      mvpAllTimeLoaded &&
+      !force
     ) {
+      renderMvpAllTime();
       return;
     }
 
-    const select =
-      document.getElementById(
-        "adminMonthSelect"
-      );
-
-    const value =
-      select.value;
-
-    if (!value) {
-      return;
-    }
-
-    const [
-      yearString,
-      monthString
-    ] =
-      value.split("-");
-
-    const year =
-      Number(yearString);
-
-    const month =
-      Number(monthString);
-
-    const totalElement =
-      document.getElementById(
-        "adminMonthTotal"
-      );
-
-    const recordsElement =
-      document.getElementById(
-        "adminMonthRecords"
-      );
-
-    totalElement.textContent =
-      "読み込み中...";
-
-    recordsElement.innerHTML =
-      '<div class="loading">集計しています...</div>';
+    $("mvpRanking").innerHTML =
+      '<div class="empty">読み込み中...</div>';
 
     try {
 
-      const start =
-        new Date(
-          year,
-          month,
-          1,
-          0,
-          0,
-          0,
-          0
-        );
-
-      const end =
-        new Date(
-          year,
-          month + 1,
-          1,
-          0,
-          0,
-          0,
-          0
-        );
-
-      const q =
-        query(
-          collection(
-            db,
-            "studySessions"
-          ),
-
-          where(
-            "date",
-            ">=",
-            start
-          ),
-
-          where(
-            "date",
-            "<",
-            end
+      const snapshot =
+        await getDocs(
+          query(
+            collection(db, "studySessions"),
+            where(
+              "classId",
+              "==",
+              CLASS_ID
+            )
           )
         );
 
-      const snapshot =
-        await getDocs(q);
+      const daily = {};
 
-      let monthTotal = 0;
+      snapshot.forEach((docSnap) => {
 
-      const studentTotals = {};
+        const data =
+          docSnap.data();
 
-      snapshot.docs.forEach(
-        item => {
+        const date =
+          data.date?.toDate?.();
 
-          const data =
-            item.data();
+        if (!date) return;
 
-          const minutes =
-            Number(
-              data.minutes || 0
-            );
+        const dateKey =
+          `${date.getFullYear()}-` +
+          `${String(date.getMonth() + 1).padStart(2, "0")}-` +
+          `${String(date.getDate()).padStart(2, "0")}`;
 
-          monthTotal += minutes;
+        const uid =
+          data.studentId;
 
-          const studentId =
-            data.studentId;
-
-          if (!studentId) {
-            return;
-          }
-
-          if (
-            !studentTotals[
-              studentId
-            ]
-          ) {
-            studentTotals[
-              studentId
-            ] = 0;
-          }
-
-          studentTotals[
-            studentId
-          ] += minutes;
+        if (!daily[dateKey]) {
+          daily[dateKey] = {};
         }
-      );
 
-      totalElement.textContent =
-        `📚 ${year}年${month + 1}月の合計：${formatMinutes(monthTotal)}`;
+        daily[dateKey][uid] =
+          (daily[dateKey][uid] || 0) +
+          Number(data.minutes || 0);
+      });
 
-      if (
-        Object.keys(
-          studentTotals
-        ).length === 0
-      ) {
+      const counts = {};
 
-        recordsElement.innerHTML =
-          '<div class="note">この月の記録はありません。</div>';
+      Object.values(daily).forEach((dayData) => {
 
-        return;
-      }
+        const values =
+          Object.values(dayData);
 
-      const studentsWithTotals =
-        Object.entries(
-          studentTotals
-        )
-        .map(
-          (
-            [
-              studentId,
-              minutes
-            ]
-          ) => {
+        if (!values.length) return;
 
-            const student =
-              classStudents.find(
-                item =>
-                  item.id ===
-                  studentId
-              );
+        const max =
+          Math.max(...values);
 
-            return {
-              studentId,
-              name:
-                student?.nickname ||
-                "名前未設定",
-              minutes
-            };
-          }
-        )
-        .sort(
-          (a, b) => {
+        if (max <= 0) return;
 
-            if (
-              b.minutes !==
-              a.minutes
-            ) {
+        Object.entries(dayData)
+          .filter(([, minutes]) =>
+            minutes === max
+          )
+          .forEach(([uid]) => {
 
-              return (
-                b.minutes -
-                a.minutes
-              );
-            }
+            counts[uid] =
+              (counts[uid] || 0) + 1;
+          });
+      });
 
-            return a.name.localeCompare(
-              b.name,
-              "ja"
-            );
-          }
-        );
+      mvpAllTimeCache = counts;
+      mvpAllTimeLoaded = true;
 
-      recordsElement.innerHTML =
-        "";
-
-      studentsWithTotals.forEach(
-        (
-          student,
-          index
-        ) => {
-
-          const studentBox =
-            document.createElement(
-              "div"
-            );
-
-          studentBox.className =
-            "admin-student";
-
-          studentBox.innerHTML = `
-
-            <div class="admin-student-header">
-
-              <div class="admin-student-name">
-                ${index + 1}位　
-                ${escapeHtml(
-                  student.name
-                )}
-              </div>
-
-              <div class="admin-student-total">
-                ${formatMinutes(
-                  student.minutes
-                )}
-              </div>
-
-            </div>
-
-          `;
-
-          recordsElement.appendChild(
-            studentBox
-          );
-        });
+      renderMvpAllTime();
 
     } catch (error) {
 
-      console.error(
-        "admin month:",
-        error
-      );
+      console.error(error);
 
-      totalElement.textContent =
-        "読み込みに失敗しました。";
-
-      recordsElement.innerHTML =
-        `<div class="error">
-          ${escapeHtml(
-            error.message
-          )}
+      $("mvpRanking").innerHTML =
+        `<div class="empty">
+          MVP回数の読み込みに失敗しました。
         </div>`;
     }
   };
+
+
+  function renderMvpAllTime() {
+
+    if (!mvpAllTimeCache) {
+
+      $("mvpRanking").innerHTML =
+        '<div class="empty">「MVP回数を更新」を押してください。</div>';
+
+      return;
+    }
+
+    const ranking =
+      classStudents
+        .map((student) => ({
+          ...student,
+          count:
+            mvpAllTimeCache[student.uid] || 0
+        }))
+        .filter((student) =>
+          student.count > 0
+        )
+        .sort((a, b) =>
+          b.count - a.count ||
+          a.nickname.localeCompare(b.nickname, "ja")
+        );
+
+    if (!ranking.length) {
+
+      $("mvpRanking").innerHTML =
+        '<div class="empty">まだMVPはいません。</div>';
+
+      return;
+    }
+
+    $("mvpRanking").innerHTML =
+      ranking
+        .map((student, index) => {
+
+          const isMe =
+            student.uid === currentUser?.uid;
+
+          return `
+            <div class="ranking-item ${isMe ? "my-rank" : ""}">
+
+              <div class="rank-number">
+                ${index + 1}位
+              </div>
+
+              <div class="rank-name">
+                ${escapeHtml(student.nickname)}
+                ${isMe ? "（自分）" : ""}
+              </div>
+
+              <div class="rank-minutes">
+                ${student.count}回
+              </div>
+
+            </div>
+          `;
+        })
+        .join("");
+  }
+
+
+  /* =========================================================
+     管理者
+     月間合計のみ表示
+  ========================================================= */
+
+  window.loadAdminMonth = async function(force = false) {
+
+    if (!currentUser) return;
+
+    if (currentUser.uid !== ADMIN_UID) {
+      return;
+    }
+
+    const month =
+      $("adminMonth").value;
+
+    if (!month) {
+
+      alert("月を選択してください。");
+
+      return;
+    }
+
+    if (
+      adminMonthCache[month] &&
+      !force
+    ) {
+
+      renderAdminResults(
+        adminMonthCache[month]
+      );
+
+      return;
+    }
+
+    $("adminResults").innerHTML =
+      '<div class="empty">読み込み中...</div>';
+
+    const [year, monthNumber] =
+      month.split("-").map(Number);
+
+    const start =
+      new Date(
+        year,
+        monthNumber - 1,
+        1,
+        0,
+        0,
+        0,
+        0
+      );
+
+    const end =
+      new Date(
+        year,
+        monthNumber,
+        1,
+        0,
+        0,
+        0,
+        0
+      );
+
+    try {
+
+      /*
+        ここも「月を表示」したときだけ1回読み込む。
+      */
+
+      const snapshot =
+        await getDocs(
+          query(
+            collection(db, "studySessions"),
+            where(
+              "classId",
+              "==",
+              CLASS_ID
+            ),
+            where(
+              "date",
+              ">=",
+              Timestamp.fromDate(start)
+            ),
+            where(
+              "date",
+              "<",
+              Timestamp.fromDate(end)
+            )
+          )
+        );
+
+      const totals = {};
+
+      classStudents.forEach((student) => {
+        totals[student.uid] = 0;
+      });
+
+      snapshot.forEach((docSnap) => {
+
+        const data =
+          docSnap.data();
+
+        const uid =
+          data.studentId;
+
+        if (!(uid in totals)) {
+          return;
+        }
+
+        totals[uid] +=
+          Number(data.minutes || 0);
+      });
+
+      const result =
+        classStudents
+          .map((student) => ({
+            uid: student.uid,
+            nickname: student.nickname,
+            minutes: totals[student.uid] || 0
+          }))
+          .sort((a, b) =>
+            b.minutes - a.minutes ||
+            a.nickname.localeCompare(b.nickname, "ja")
+          );
+
+      adminMonthCache[month] = result;
+
+      renderAdminResults(result);
+
+    } catch (error) {
+
+      console.error(error);
+
+      $("adminResults").innerHTML =
+        `<div class="empty">
+          読み込みに失敗しました。<br>
+          ${escapeHtml(error?.message || String(error))}
+        </div>`;
+    }
+  };
+
+
+  function renderAdminResults(result) {
+
+    if (!result.length) {
+
+      $("adminResults").innerHTML =
+        '<div class="empty">生徒がいません。</div>';
+
+      return;
+    }
+
+    $("adminResults").innerHTML =
+      result
+        .map((student, index) => {
+
+          return `
+            <div class="admin-student">
+
+              <div class="admin-name">
+                ${index + 1}位　
+                ${escapeHtml(student.nickname)}
+              </div>
+
+              <div class="admin-total">
+                ${student.minutes}分
+              </div>
+
+            </div>
+          `;
+        })
+        .join("");
+  }
 
 
   /* =========================================================
@@ -4392,195 +3343,71 @@
 
   function updateAllUI() {
 
-    updateOnlineCounts();
+    if (!currentUser) return;
 
-    updateTodaySummary();
+    updateMySummary();
 
     updateSubjectChart();
 
-    updateRankings();
-
     renderMyRecords();
+
+    updateOnlineUI();
+
+    updateTimerDisplay();
+
+    renderCalendar();
   }
 
 
   /* =========================================================
-     共通関数
+     日付・文字列
   ========================================================= */
 
-  function getMillis(value) {
+  function formatDateTime(date) {
 
-    if (!value) {
-      return 0;
-    }
-
-    if (
-      typeof value.toMillis ===
-      "function"
-    ) {
-
-      return value.toMillis();
-    }
-
-    if (
-      typeof value.seconds ===
-      "number"
-    ) {
-
-      return (
-        value.seconds *
-          1000 +
-        Math.floor(
-          (
-            value.nanoseconds ||
-            0
-          ) / 1000000
-        )
-      );
-    }
-
-    if (
-      typeof value ===
-      "number"
-    ) {
-
-      return value;
-    }
-
-    if (
-      value instanceof Date
-    ) {
-
-      return value.getTime();
-    }
-
-    return 0;
-  }
-
-
-  function formatMinutes(
-    minutes
-  ) {
-
-    minutes =
-      Math.max(
-        0,
-        Math.floor(
-          Number(
-            minutes
-          ) || 0
-        )
-      );
-
-    return `${minutes}分`;
-  }
-
-
-  function formatDateTime(
-    value
-  ) {
-
-    const millis =
-      getMillis(
-        value
-      );
-
-    if (!millis) {
-      return "日時取得中...";
-    }
-
-    const date =
-      new Date(
-        millis
-      );
-
-    return date.toLocaleString(
-      "ja-JP",
-      {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-      }
+    return (
+      `${date.getFullYear()}/` +
+      `${String(date.getMonth() + 1).padStart(2, "0")}/` +
+      `${String(date.getDate()).padStart(2, "0")} ` +
+      `${String(date.getHours()).padStart(2, "0")}:` +
+      `${String(date.getMinutes()).padStart(2, "0")}`
     );
   }
 
 
-  function makeDateKey(
-    date
-  ) {
+  function escapeHtml(value) {
 
-    return [
-      date.getFullYear(),
-
-      String(
-        date.getMonth() + 1
-      ).padStart(
-        2,
-        "0"
-      ),
-
-      String(
-        date.getDate()
-      ).padStart(
-        2,
-        "0"
-      )
-    ].join("-");
-  }
-
-
-  function pad(
-    value
-  ) {
-
-    return String(
-      value
-    ).padStart(
-      2,
-      "0"
-    );
-  }
-
-
-  function escapeHtml(
-    value
-  ) {
-
-    return String(
-      value ?? ""
-    )
-      .replaceAll(
-        "&",
-        "&amp;"
-      )
-      .replaceAll(
-        "<",
-        "&lt;"
-      )
-      .replaceAll(
-        ">",
-        "&gt;"
-      )
-      .replaceAll(
-        '"',
-        "&quot;"
-      )
-      .replaceAll(
-        "'",
-        "&#039;"
-      );
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
 
   /* =========================================================
-     初期化
+     ページ終了時
   ========================================================= */
 
-  setupCalendarDate();
+  window.addEventListener("beforeunload", () => {
 
-  renderCalendar();
+    /*
+      タイマー中ならlocalStorageに保存。
+      ブラウザを閉じても復元できるようにする。
+    */
+
+    if (timerStartTime) {
+      saveTimerState();
+    }
+  });
+
+
+  /* =========================================================
+     初期表示
+  ========================================================= */
+
+  resetLoggedOutUI();
 
 </script>
 
