@@ -368,7 +368,7 @@
     }
 
     .calendar-day {
-      min-height: 52px;
+      min-height: 62px;
       border-radius: 8px;
       background: #f7f8fa;
       padding: 5px;
@@ -401,13 +401,24 @@
     .calendar-medal {
       display: block;
       font-size: 17px;
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
     .calendar-minutes {
-      color: #777;
+      color: #555;
       font-size: 10px;
       margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    .calendar-self {
+      color: #365bd6;
+      font-weight: bold;
+    }
+
+    .calendar-mvp {
+      color: #a26b00;
+      font-weight: bold;
     }
 
     .calendar-detail {
@@ -417,6 +428,18 @@
       margin-top: 12px;
       font-size: 14px;
       line-height: 1.7;
+    }
+
+    .calendar-detail-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 0;
+      border-bottom: 1px solid #e8e8e8;
+    }
+
+    .calendar-detail-item:last-child {
+      border-bottom: none;
     }
 
     .mvp-summary {
@@ -481,7 +504,12 @@
       }
 
       .calendar-day {
-        min-height: 46px;
+        min-height: 58px;
+        padding: 4px;
+      }
+
+      .calendar-minutes {
+        font-size: 9px;
       }
     }
   </style>
@@ -683,7 +711,9 @@
       🔄 ランキングを更新
     </button>
 
-    <div class="ranking-note">
+    <div
+      id="rankingNote"
+      class="ranking-note">
       読み取り回数を減らすため、
       ランキングはボタンを押したときだけ取得します。
     </div>
@@ -861,7 +891,8 @@ const auth = getAuth(app);
 
 const provider = new GoogleAuthProvider();
 
-const ALLOWED_DOMAIN = "gs.seito-fku.ed.jp";
+const ALLOWED_DOMAIN =
+  "gs.seito-fku.ed.jp";
 
 provider.setCustomParameters({
   hd: ALLOWED_DOMAIN
@@ -928,6 +959,19 @@ const $ = (id) =>
 
 
 /* =========================================================
+   管理者判定
+========================================================= */
+
+function isAdmin() {
+
+  return (
+    currentUser &&
+    currentUser.uid === ADMIN_UID
+  );
+}
+
+
+/* =========================================================
    Googleログイン
 ========================================================= */
 
@@ -936,6 +980,7 @@ window.loginWithGoogle = async function() {
   try {
 
     $("loginButton").disabled = true;
+
     $("loginButton").textContent =
       "ログイン中...";
 
@@ -1116,10 +1161,6 @@ onAuthStateChanged(
 
     try {
 
-      /*
-       生徒情報
-      */
-
       await setDoc(
         doc(
           db,
@@ -1144,16 +1185,7 @@ onAuthStateChanged(
       );
 
 
-      /*
-       生徒一覧
-       */
-
       await loadStudentsOnce();
-
-
-      /*
-       オンライン状態
-       */
 
       await updateOnlineStatus(false);
 
@@ -1161,39 +1193,18 @@ onAuthStateChanged(
 
       listenToOnlineUsers();
 
-
-      /*
-       自分の記録
-       */
-
       listenToMyRecords();
-
-
-      /*
-       カレンダー
-       */
 
       setupCalendarDate();
 
       await loadCalendarMonth(false);
-
-
-      /*
-       タイマー復元
-       */
 
       restoreTimer();
 
       updateAllUI();
 
 
-      /*
-       管理者
-       */
-
-      if (
-        user.uid === ADMIN_UID
-      ) {
+      if (isAdmin()) {
 
         $("adminSection")
           .classList
@@ -1209,9 +1220,7 @@ onAuthStateChanged(
       }
 
 
-      /*
-       MVP
-       */
+      updateRankingNote();
 
       await refreshMvpSummary();
 
@@ -1230,6 +1239,25 @@ onAuthStateChanged(
 
   }
 );
+
+
+/* =========================================================
+   ランキング説明
+========================================================= */
+
+function updateRankingNote() {
+
+  if (isAdmin()) {
+
+    $("rankingNote").textContent =
+      "管理者はクラス全員のランキングを確認できます。";
+
+  } else {
+
+    $("rankingNote").textContent =
+      "上位3人と、自分の順位だけ表示されます。";
+  }
+}
 
 
 /* =========================================================
@@ -1410,7 +1438,6 @@ function showLoggedInSections() {
 
 /* =========================================================
    生徒一覧
-   classIdだけで検索
 ========================================================= */
 
 async function loadStudentsOnce() {
@@ -1467,8 +1494,6 @@ async function loadStudentsOnce() {
 
 /* =========================================================
    自分の記録
-   studentIdだけで取得
-   orderByを使わないので複合インデックス不要
 ========================================================= */
 
 function listenToMyRecords() {
@@ -1505,10 +1530,6 @@ function listenToMyRecords() {
             const data =
               docSnap.data();
 
-            /*
-             現在のクラスだけ表示
-            */
-
             if (
               data.classId &&
               data.classId !== CLASS_ID
@@ -1541,20 +1562,11 @@ function listenToMyRecords() {
           error
         );
 
-        /*
-         リアルタイム監視が失敗しても
-         手動取得で復旧を試す
-        */
-
         loadMyRecordsFallback();
       }
     );
 }
 
-
-/* =========================================================
-   記録を日付順に並べる
-========================================================= */
 
 function sortRecords() {
 
@@ -1572,10 +1584,6 @@ function sortRecords() {
   );
 }
 
-
-/* =========================================================
-   自分の記録を手動取得
-========================================================= */
 
 async function refreshMyRecords() {
 
@@ -1742,10 +1750,6 @@ function listenToOnlineUsers() {
 }
 
 
-/* =========================================================
-   オンライン状態
-========================================================= */
-
 async function updateOnlineStatus(
   studying
 ) {
@@ -1814,10 +1818,6 @@ async function updateOnlineStatus(
 }
 
 
-/* =========================================================
-   ハートビート
-========================================================= */
-
 function startHeartbeat() {
 
   if (heartbeatInterval) {
@@ -1842,10 +1842,6 @@ function startHeartbeat() {
     );
 }
 
-
-/* =========================================================
-   オンラインUI
-========================================================= */
 
 function updateOnlineUI() {
 
@@ -2545,11 +2541,6 @@ window.stopTimer =
 
     try {
 
-      /*
-       保存成功するまで
-       localStorageを消さない
-      */
-
       await addDoc(
         collection(
           db,
@@ -2755,6 +2746,8 @@ window.refreshRanking =
 
       await loadStudentsOnce();
 
+      updateRankingNote();
+
       if (
         rankingMode === "today"
       ) {
@@ -2792,8 +2785,6 @@ window.refreshRanking =
 
 /* =========================================================
    今日のランキング
-   日付だけで取得
-   classIdはJavaScript側で確認
 ========================================================= */
 
 async function loadTodayRanking() {
@@ -2907,7 +2898,6 @@ async function loadTodayRanking() {
 
 /* =========================================================
    累計ランキング
-   studentIdだけで集計
 ========================================================= */
 
 async function loadAllTimeRanking() {
@@ -3017,19 +3007,63 @@ function renderRanking(ranking) {
     return;
   }
 
-  const positive =
-    ranking.filter(
-      (item) =>
-        item.minutes > 0
-    );
 
-  if (!positive.length) {
+  /*
+   管理者
+   → 全員表示
+  */
+
+  if (isAdmin()) {
 
     $("ranking").innerHTML =
-      '<div class="empty">まだ学習記録がありません。</div>';
+      ranking
+        .map(
+          (item, index) => {
+
+            return `
+
+              <div class="ranking-item">
+
+                <div
+                  class="rank-number ${
+                    index < 3
+                      ? "top-rank"
+                      : ""
+                  }">
+
+                  ${index + 1}位
+
+                </div>
+
+                <div class="rank-name">
+
+                  ${escapeHtml(
+                    item.nickname
+                  )}
+
+                </div>
+
+                <div class="rank-minutes">
+
+                  ${item.minutes}分
+
+                </div>
+
+              </div>
+
+            `;
+          }
+        )
+        .join("");
 
     return;
   }
+
+
+  /*
+   生徒
+   → 上位3人＋自分
+  */
 
   const ownIndex =
     ranking.findIndex(
@@ -3039,6 +3073,11 @@ function renderRanking(ranking) {
     );
 
   const displayIndexes = [];
+
+
+  /*
+   上位3人
+   */
 
   for (
     let i = 0;
@@ -3050,25 +3089,38 @@ function renderRanking(ranking) {
     i++
   ) {
 
-    if (
-      ranking[i].minutes > 0
-    ) {
-      displayIndexes.push(i);
-    }
+    displayIndexes.push(i);
   }
 
+
+  /*
+   自分が4位以下なら追加
+   */
+
   if (
-    ownIndex >= 3 &&
-    ownIndex >= 0 &&
-    ranking[ownIndex].minutes > 0
+    ownIndex >= 3
   ) {
 
     displayIndexes.push(-1);
-    displayIndexes.push(ownIndex);
+
+    displayIndexes.push(
+      ownIndex
+    );
   }
 
+
+  /*
+   重複防止
+   */
+
+  const uniqueIndexes =
+    [...new Set(
+      displayIndexes
+    )];
+
+
   $("ranking").innerHTML =
-    displayIndexes
+    uniqueIndexes
       .map(
         (index) => {
 
@@ -3196,7 +3248,6 @@ window.changeCalendarMonth =
 
 /* =========================================================
    カレンダー読み込み
-   日付だけで取得
 ========================================================= */
 
 async function loadCalendarMonth(
@@ -3434,6 +3485,27 @@ function getDailyMvp(day) {
 
 
 /* =========================================================
+   自分の日別分数
+========================================================= */
+
+function getMyDailyMinutes(
+  day
+) {
+
+  if (!currentUser) return 0;
+
+  const daily =
+    getDailyTotals()[day] ||
+    {};
+
+  return Number(
+    daily[currentUser.uid] ||
+    0
+  );
+}
+
+
+/* =========================================================
    カレンダー表示
 ========================================================= */
 
@@ -3460,9 +3532,6 @@ function renderCalendar() {
       calendarMonth + 1,
       0
     ).getDate();
-
-  const dailyTotals =
-    getDailyTotals();
 
   const now =
     new Date();
@@ -3527,37 +3596,93 @@ function renderCalendar() {
       );
     }
 
-    const total =
-      Object.values(
-        dailyTotals[day] || {}
-      ).reduce(
-        (sum, value) =>
-          sum +
-          Number(
-            value || 0
-          ),
-        0
-      );
 
-    div.innerHTML = `
+    /*
+     管理者
+     → その日の全体データがあることを
+       カレンダーにも表示
+    */
 
-      <div class="calendar-day-number">
-        ${day}
-      </div>
+    if (isAdmin()) {
 
-      ${
-        mvp.winners.length
-          ? `<span class="calendar-medal">🏆</span>`
-          : ""
-      }
+      const daily =
+        getDailyTotals()[day] ||
+        {};
 
-      ${
-        total > 0
-          ? `<div class="calendar-minutes">${total}分</div>`
-          : ""
-      }
+      const total =
+        Object.values(
+          daily
+        ).reduce(
+          (sum, value) =>
+            sum +
+            Number(
+              value || 0
+            ),
+          0
+        );
 
-    `;
+      div.innerHTML = `
+
+        <div class="calendar-day-number">
+          ${day}
+        </div>
+
+        ${
+          mvp.winners.length
+            ? `<span class="calendar-medal">🏆</span>`
+            : ""
+        }
+
+        ${
+          total > 0
+            ? `<div class="calendar-minutes">
+                合計 ${total}分
+              </div>`
+            : ""
+        }
+
+      `;
+
+    } else {
+
+      /*
+       生徒
+       → 自分＋MVPだけ
+      */
+
+      const myMinutes =
+        getMyDailyMinutes(day);
+
+      div.innerHTML = `
+
+        <div class="calendar-day-number">
+          ${day}
+        </div>
+
+        ${
+          mvp.winners.length
+            ? `<span class="calendar-medal">🏆</span>`
+            : ""
+        }
+
+        ${
+          myMinutes > 0
+            ? `<div class="calendar-minutes calendar-self">
+                👤 ${myMinutes}分
+              </div>`
+            : ""
+        }
+
+        ${
+          mvp.minutes > 0
+            ? `<div class="calendar-minutes calendar-mvp">
+                🏆 ${mvp.minutes}分
+              </div>`
+            : ""
+        }
+
+      `;
+    }
 
     div.onclick =
       () =>
@@ -3580,31 +3705,131 @@ function showCalendarDetail(day) {
   const mvp =
     getDailyMvp(day);
 
-  if (
-    !mvp.winners.length
-  ) {
+  const daily =
+    getDailyTotals()[day] ||
+    {};
+
+
+  /*
+   管理者
+   → 全員表示
+  */
+
+  if (isAdmin()) {
+
+    const allStudents =
+      classStudents
+        .map(
+          (student) => ({
+
+            uid:
+              student.uid,
+
+            nickname:
+              student.nickname,
+
+            minutes:
+              Number(
+                daily[student.uid] ||
+                0
+              )
+
+          })
+        )
+        .sort(
+          (a, b) =>
+            b.minutes - a.minutes ||
+            a.nickname.localeCompare(
+              b.nickname,
+              "ja"
+            )
+        );
 
     detail.classList.remove(
       "hidden"
     );
 
-    detail.innerHTML =
-      `${calendarYear}年${
-        calendarMonth + 1
-      }月${day}日は、MVPはいません。`;
+    detail.innerHTML = `
+
+      <strong>
+        📅 ${calendarYear}年${calendarMonth + 1}月${day}日
+      </strong>
+
+      <br>
+
+      ${
+        mvp.winners.length
+          ? `🏆 MVP：${mvp.winners
+              .map(
+                (winner) =>
+                  escapeHtml(
+                    winner.nickname
+                  )
+              )
+              .join("、")}
+             （${mvp.minutes}分）`
+          : "🏆 MVP：なし"
+      }
+
+      <div style="
+        margin-top:10px;
+        border-top:1px solid #ddd;
+        padding-top:8px;
+      ">
+
+        ${allStudents
+          .map(
+            (student, index) => {
+
+              return `
+
+                <div class="calendar-detail-item">
+
+                  <span>
+                    ${index + 1}位　
+                    ${escapeHtml(
+                      student.nickname
+                    )}
+                  </span>
+
+                  <strong>
+                    ${student.minutes}分
+                  </strong>
+
+                </div>
+
+              `;
+            }
+          )
+          .join("")}
+
+      </div>
+
+    `;
 
     return;
   }
 
-  const names =
-    mvp.winners
-      .map(
-        (winner) =>
-          escapeHtml(
-            winner.nickname
+
+  /*
+   生徒
+   → 自分＋MVPだけ
+  */
+
+  const myMinutes =
+    getMyDailyMinutes(day);
+
+  const mvpNames =
+    mvp.winners.length
+      ? mvp.winners
+          .map(
+            (winner) =>
+              escapeHtml(
+                winner.nickname
+              )
           )
-      )
-      .join("、");
+          .join("、")
+      : "なし";
 
   detail.classList.remove(
     "hidden"
@@ -3613,17 +3838,36 @@ function showCalendarDetail(day) {
   detail.innerHTML = `
 
     <strong>
-      🏆 ${calendarMonth + 1}月${day}日のMVP
+      📅 ${calendarYear}年${calendarMonth + 1}月${day}日
     </strong>
 
-    <br>
+    <div style="
+      margin-top:8px;
+    ">
 
-    ${names}
+      👤 自分：
+      <strong>
+        ${myMinutes}分
+      </strong>
 
-    <br>
+    </div>
 
-    学習時間：
-    ${mvp.minutes}分
+    <div style="
+      margin-top:6px;
+    ">
+
+      🏆 MVP：
+      <strong>
+        ${mvpNames}
+      </strong>
+
+      ${
+        mvp.minutes > 0
+          ? `（${mvp.minutes}分）`
+          : ""
+      }
+
+    </div>
 
   `;
 }
@@ -3669,10 +3913,6 @@ async function refreshMvpSummary() {
     );
 
   try {
-
-    /*
-     日付だけで取得
-    */
 
     const snapshot =
       await getDocs(
@@ -3796,24 +4036,83 @@ async function refreshMvpSummary() {
           )
         : 0;
 
-    const top =
+    let top =
       Object.entries(
         mvpCounts
       )
         .sort(
           (a, b) =>
             b[1] - a[1]
-        )
-        .slice(0, 5);
+        );
+
+    /*
+     管理者は全員
+     生徒は上位3人＋自分
+    */
+
+    if (!isAdmin()) {
+
+      const ownIndex =
+        top.findIndex(
+          ([uid]) =>
+            uid ===
+            currentUser?.uid
+        );
+
+      const display =
+        top.slice(
+          0,
+          3
+        );
+
+      if (
+        ownIndex >= 3
+      ) {
+
+        display.push(
+          null
+        );
+
+        display.push(
+          top[ownIndex]
+        );
+      }
+
+      top = display;
+    }
+
 
     const topText =
       top.length
         ? top
             .map(
               (
-                [uid, count],
+                entry,
                 index
               ) => {
+
+                if (
+                  entry === null
+                ) {
+
+                  return `
+
+                    <div style="
+                      text-align:center;
+                      color:#999;
+                      padding:4px;
+                    ">
+                      ・ ・ ・
+                    </div>
+
+                  `;
+                }
+
+                const [
+                  uid,
+                  count
+                ] =
+                  entry;
 
                 const student =
                   classStudents.find(
@@ -3821,20 +4120,48 @@ async function refreshMvpSummary() {
                       s.uid === uid
                   );
 
+                const actualRank =
+                  Object.entries(
+                    mvpCounts
+                  )
+                    .sort(
+                      (a, b) =>
+                        b[1] - a[1]
+                    )
+                    .findIndex(
+                      ([id]) =>
+                        id === uid
+                    ) + 1;
+
+                const isMe =
+                  uid ===
+                  currentUser?.uid;
+
                 return `
 
                   <div style="
                     display:flex;
                     justify-content:space-between;
                     padding:4px 0;
+                    ${
+                      isMe
+                        ? "background:#eef4ff;border-radius:8px;padding-left:6px;padding-right:6px;"
+                        : ""
+                    }
                   ">
 
                     <span>
-                      ${index + 1}位　
+                      ${actualRank}位　
                       ${escapeHtml(
                         student?.nickname ||
                         "名前不明"
                       )}
+
+                      ${
+                        isMe
+                          ? "（自分）"
+                          : ""
+                      }
                     </span>
 
                     <strong>
@@ -3890,7 +4217,6 @@ async function refreshMvpSummary() {
 
 /* =========================================================
    MVP累計
-   ボタンを押したときだけ
 ========================================================= */
 
 window.loadMvpAllTime =
@@ -4057,7 +4383,7 @@ function renderMvpAllTime() {
     return;
   }
 
-  const ranking =
+  let ranking =
     classStudents
       .map(
         (student) => ({
@@ -4084,6 +4410,45 @@ function renderMvpAllTime() {
           )
       );
 
+
+  /*
+   生徒は上位3人＋自分
+   管理者は全員
+  */
+
+  if (!isAdmin()) {
+
+    const ownIndex =
+      ranking.findIndex(
+        (student) =>
+          student.uid ===
+          currentUser?.uid
+      );
+
+    const display =
+      ranking.slice(
+        0,
+        3
+      );
+
+    if (
+      ownIndex >= 3
+    ) {
+
+      display.push(
+        null
+      );
+
+      display.push(
+        ranking[ownIndex]
+      );
+    }
+
+    ranking =
+      display;
+  }
+
+
   if (!ranking.length) {
 
     $("mvpRanking").innerHTML =
@@ -4097,9 +4462,58 @@ function renderMvpAllTime() {
       .map(
         (student, index) => {
 
+          if (
+            student === null
+          ) {
+
+            return `
+
+              <div style="
+                text-align:center;
+                color:#999;
+                padding:5px;
+              ">
+                ・ ・ ・
+              </div>
+
+            `;
+          }
+
           const isMe =
             student.uid ===
             currentUser?.uid;
+
+          const actualRank =
+            classStudents
+              .map(
+                (s) => ({
+
+                  ...s,
+
+                  count:
+                    mvpAllTimeCache[
+                      s.uid
+                    ] || 0
+
+                })
+              )
+              .filter(
+                (s) =>
+                  s.count > 0
+              )
+              .sort(
+                (a, b) =>
+                  b.count - a.count ||
+                  a.nickname.localeCompare(
+                    b.nickname,
+                    "ja"
+                  )
+              )
+              .findIndex(
+                (s) =>
+                  s.uid ===
+                  student.uid
+              ) + 1;
 
           return `
 
@@ -4111,7 +4525,7 @@ function renderMvpAllTime() {
               }">
 
               <div class="rank-number">
-                ${index + 1}位
+                ${actualRank}位
               </div>
 
               <div class="rank-name">
@@ -4218,11 +4632,6 @@ window.loadAdminMonth =
       );
 
     try {
-
-      /*
-       日付だけで取得。
-       classIdはJavaScript側で絞る。
-      */
 
       const snapshot =
         await getDocs(
@@ -4408,6 +4817,8 @@ function updateAllUI() {
   updateTimerDisplay();
 
   renderCalendar();
+
+  updateRankingNote();
 }
 
 
