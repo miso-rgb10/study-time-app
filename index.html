@@ -675,13 +675,13 @@ onclick="setRankingMode('all')">
 <button
 class="secondary ranking-refresh"
 onclick="refreshRanking()">
-🔄 ランキングを更新
+🔄 ランキングを再計算
 </button>
 
 <div
 id="rankingNote"
 class="ranking-note">
-集計データから取得します。
+学習記録からリアルタイムで自動集計します。
 </div>
 
 <div id="ranking"></div>
@@ -800,7 +800,7 @@ onclick="loadAdminMonth(true)">
 <div class="ranking-note">
 
 既存のstudySessionsから集計用データを1回だけ作成します。
-過去データを引き継ぐときや、最新の学習記録を集計へ反映するときに使用してください。
+過去データを引き継ぐときや、MVP・管理者月別集計などに使用してください。
 
 </div>
 
@@ -932,6 +932,23 @@ let classStudents=[];
 let myRecords=[];
 
 let onlineUsers=[];
+
+
+/*
+   ============================
+   ランキング用リアルタイムデータ
+   ============================
+
+   studyTotals / dailyTotalsではなく、
+   studySessionsを直接監視します。
+
+   これにより、誰かが学習記録を追加・削除すると
+   ランキングも自動的に更新されます。
+*/
+let rankingSessions=[];
+
+let rankingSessionsUnsubscribe=null;
+
 
 let rankingMode="today";
 
@@ -1243,7 +1260,6 @@ showLoggedInSections();
 
 try{
 
-
 await setDoc(
 
 doc(
@@ -1281,6 +1297,14 @@ startHeartbeat();
 listenToOnlineUsers();
 
 listenToMyRecords();
+
+
+/*
+   ここが今回の重要ポイント。
+
+   ログインしたらstudySessionsをリアルタイム監視します。
+*/
+listenToRankingSessions();
 
 
 setupCalendarDate();
@@ -1361,6 +1385,8 @@ myRecords=[];
 
 onlineUsers=[];
 
+rankingSessions=[];
+
 
 mvpCache=null;
 
@@ -1382,9 +1408,15 @@ if(onlineUsersUnsubscribe)
 onlineUsersUnsubscribe();
 
 
+if(rankingSessionsUnsubscribe)
+rankingSessionsUnsubscribe();
+
+
 myRecordsUnsubscribe=null;
 
 onlineUsersUnsubscribe=null;
+
+rankingSessionsUnsubscribe=null;
 
 
 if(heartbeatInterval)
@@ -1882,17 +1914,6 @@ onclick="deleteRecord('${r.id}')">
 
 /* =========================
    学習記録保存
-=========================
-
-   重要：
-   生徒はstudySessionsだけに書き込みます。
-
-   studyTotals / dailyTotalsは
-   Firestoreルール上、管理者だけが
-   書き込めるため、ここでは更新しません。
-
-   管理者は「集計データを作成・再構築」
-   から集計を更新できます。
 ========================= */
 
 async function addStudySession({
@@ -1936,9 +1957,11 @@ serverTimestamp()
 
 
 /*
-   保存成功後に、自分の記録表示を
-   確実に更新します。
+   studySessionsのonSnapshotが
+   自動で変更を検知するので、
+   ランキングも自動更新されます。
 */
+
 await loadMyRecordsOnce();
 
 }
@@ -1975,13 +1998,6 @@ r.id
 );
 
 
-/*
-   集計データはここでは変更しません。
-
-   削除後、管理者が
-   「集計データを作成・再構築」
-   を実行すると最新状態になります。
-*/
 await loadMyRecordsOnce();
 
 }
@@ -2532,6 +2548,8 @@ updateTimerDisplay,
 await updateOnlineStatus(true);
 
 };
+
+
 /* =========================
    タイマー停止
 ========================= */
@@ -2562,10 +2580,6 @@ Math.round(
 
 try{
 
-/*
-   生徒が直接書き込むのは
-   studySessionsだけです。
-*/
 await addStudySession({
 
 subject:
@@ -2577,9 +2591,6 @@ minutes
 });
 
 
-/*
-   保存成功後にタイマーを終了。
-*/
 stopTimerWithoutSave();
 
 
@@ -2591,14 +2602,7 @@ $("timerStatus").textContent=
 
 console.error(e);
 
-/*
-   保存に失敗した場合は
-   タイマーを終了しません。
 
-   localStorageにも状態が残っているので、
-   もう一度ストップを押して
-   保存を試すことができます。
-*/
 alert(
 "タイマーの記録保存に失敗しました。\n\n"+
 (e?.message||e)
@@ -2711,12 +2715,275 @@ updateOnlineStatus(true);
 };
 
 
-/* =========================
+/* ==================================================
    ランキング
+   ==================================================
+
+   今回の重要変更。
+
+   以前：
+   studyTotals / dailyTotals
+       ↓
+   ランキング
+
+   今回：
+   studySessions
+       ↓
+   JavaScriptでリアルタイム集計
+       ↓
+   ランキング
+
+   これにより、管理者が
+   「集計データを作成・再構築」を押さなくても
+   新しい学習記録がランキングに反映されます。
+================================================== */
+
+
+/* =========================
+   ランキング監視開始
+========================= */
+
+function listenToRankingSessions(){
+
+if(!currentUser)
+return;
+
+
+if(rankingSessionsUnsubscribe)
+rankingSessionsUnsubscribe();
+
+
+rankingSessionsUnsubscribe=
+onSnapshot(
+
+collection(
+db,
+"studySessions"
+),
+
+async snapshot=>{
+
+try{
+
+rankingSessions=
+snapshot.docs
+
+.map(
+d=>({
+
+id:d.id,
+
+...d.data()
+
+})
+)
+
+.filter(
+x=>
+!x.classId||
+x.classId===CLASS_ID
+);
+
+
+/*
+   生徒一覧がまだない場合だけ取得。
+*/
+if(!classStudents.length){
+
+await loadStudentsOnce();
+
+}
+
+
+/*
+   最新データでランキングを即再描画。
+*/
+renderRankingFromSessions();
+
+
+}catch(e){
+
+console.error(
+"ランキング更新エラー:",
+e
+);
+
+$("ranking").innerHTML=
+
+`<div class="empty">
+
+ランキングの更新に失敗しました。<br>
+
+<small>
+${escapeHtml(
+e?.message||e
+)}
+</small>
+
+</div>`;
+
+}
+
+},
+
+e=>{
+
+console.error(
+"ランキング監視エラー:",
+e
+);
+
+
+$("ranking").innerHTML=
+
+`<div class="empty">
+
+ランキングのリアルタイム取得に失敗しました。<br>
+
+<small>
+${escapeHtml(
+e?.message||e
+)}
+</small>
+
+</div>`;
+
+}
+
+);
+
+}
+
+
+/* =========================
+   studySessionsからランキング計算
+========================= */
+
+function calculateRankingFromSessions(){
+
+const totals=
+Object.fromEntries(
+
+classStudents.map(
+x=>[x.uid,0]
+)
+
+);
+
+
+const today=
+dayKey(
+new Date()
+);
+
+
+rankingSessions.forEach(x=>{
+
+/*
+   日付がまだ確定していない
+   serverTimestampの直後などはスキップ。
+*/
+const d=
+x.date?.toDate?.();
+
+
+if(!d)
+return;
+
+
+/*
+   生徒一覧に存在しないUIDは除外。
+*/
+if(
+!(x.studentId in totals)
+)
+return;
+
+
+if(
+rankingMode==="today"&&
+dayKey(d)!==today
+)
+return;
+
+
+totals[x.studentId]+=
+Number(
+x.minutes||0
+);
+
+});
+
+
+return classStudents
+
+.map(
+x=>({
+
+uid:
+x.uid,
+
+nickname:
+x.nickname,
+
+minutes:
+totals[x.uid]||0
+
+})
+)
+
+.sort(
+(a,b)=>
+b.minutes-a.minutes||
+a.nickname.localeCompare(
+b.nickname,
+"ja"
+)
+);
+
+}
+
+
+/* =========================
+   リアルタイムランキング表示
+========================= */
+
+function renderRankingFromSessions(){
+
+if(!currentUser)
+return;
+
+
+if(!classStudents.length){
+
+$("ranking").innerHTML=
+'<div class="empty">生徒がいません。</div>';
+
+return;
+
+}
+
+
+const ranking=
+calculateRankingFromSessions();
+
+
+renderRanking(
+ranking
+);
+
+
+updateRankingNote();
+
+}
+
+
+/* =========================
+   ランキングモード変更
 ========================= */
 
 window.setRankingMode=
-async mode=>{
+mode=>{
 
 rankingMode=
 mode;
@@ -2734,19 +3001,27 @@ mode==="all"
 :"secondary";
 
 
-$("ranking").innerHTML=
-'<div class="empty">「ランキングを更新」を押してください。</div>';
+/*
+   studySessionsはすでにリアルタイムで
+   保持されているので、再取得不要。
+*/
+renderRankingFromSessions();
 
 };
 
 
+/* =========================
+   ランキング手動更新
+========================= */
+
 window.refreshRanking=
 async()=>{
 
-if(
-!currentUser||
-rankingLoading
-)
+if(!currentUser)
+return;
+
+
+if(rankingLoading)
 return;
 
 
@@ -2754,25 +3029,22 @@ rankingLoading=true;
 
 
 $("ranking").innerHTML=
-'<div class="empty">読み込み中...</div>';
+'<div class="empty">ランキングを再計算しています...</div>';
 
 
 try{
 
+/*
+   念のため生徒一覧を最新化。
+*/
 await loadStudentsOnce();
 
 
-if(
-rankingMode==="today"
-){
-
-await loadTodayRanking();
-
-}else{
-
-await loadAllTimeRanking();
-
-}
+/*
+   studySessionsの現在のデータを
+   JavaScriptで再計算。
+*/
+renderRankingFromSessions();
 
 
 }catch(e){
@@ -2781,9 +3053,10 @@ console.error(e);
 
 
 $("ranking").innerHTML=
+
 `<div class="empty">
 
-読み込みに失敗しました。<br>
+ランキングの更新に失敗しました。<br>
 
 ${escapeHtml(
 e?.message||e
@@ -2800,189 +3073,9 @@ rankingLoading=false;
 };
 
 
-async function loadTodayRanking(){
-
-const key=
-dayKey(
-new Date()
-);
-
-
-const s=
-await getDocs(
-
-query(
-
-collection(
-db,
-"dailyTotals"
-),
-
-where(
-"classId",
-"==",
-CLASS_ID
-),
-
-where(
-"dateKey",
-"==",
-key
-)
-
-)
-
-);
-
-
-const totals=
-Object.fromEntries(
-
-classStudents.map(
-x=>[x.uid,0]
-)
-
-);
-
-
-s.forEach(d=>{
-
-const x=
-d.data();
-
-
-if(
-x.studentId in totals
-){
-
-totals[x.studentId]=
-Number(
-x.totalMinutes||0
-);
-
-}
-
-});
-
-
-renderRanking(
-
-classStudents
-
-.map(
-x=>({
-
-uid:
-x.uid,
-
-nickname:
-x.nickname,
-
-minutes:
-totals[x.uid]
-
-})
-)
-
-.sort(
-(a,b)=>
-b.minutes-a.minutes||
-a.nickname.localeCompare(
-b.nickname,
-"ja"
-)
-)
-
-);
-
-};
-
-
-async function loadAllTimeRanking(){
-
-const s=
-await getDocs(
-
-query(
-
-collection(
-db,
-"studyTotals"
-),
-
-where(
-"classId",
-"==",
-CLASS_ID
-)
-
-)
-
-);
-
-
-const totals=
-Object.fromEntries(
-
-classStudents.map(
-x=>[x.uid,0]
-)
-
-);
-
-
-s.forEach(d=>{
-
-const x=
-d.data();
-
-
-if(
-x.studentId in totals
-){
-
-totals[x.studentId]=
-Number(
-x.totalMinutes||0
-);
-
-}
-
-});
-
-
-renderRanking(
-
-classStudents
-
-.map(
-x=>({
-
-uid:
-x.uid,
-
-nickname:
-x.nickname,
-
-minutes:
-totals[x.uid]
-
-})
-)
-
-.sort(
-(a,b)=>
-b.minutes-a.minutes||
-a.nickname.localeCompare(
-b.nickname,
-"ja"
-)
-)
-
-);
-
-};
-
+/* =========================
+   ランキング描画
+========================= */
 
 function renderRanking(r){
 
@@ -3102,15 +3195,19 @@ ${r[i].minutes}分
 };
 
 
+/* =========================
+   ランキング説明
+========================= */
+
 function updateRankingNote(){
 
 $("rankingNote").textContent=
 
 rankingMode==="today"
 
-?"日別集計データから取得します。"
+?"今日のstudySessionsからリアルタイムで自動集計します。"
 
-:"累計集計データから取得します。";
+:"これまでのstudySessionsからリアルタイムで自動集計します。";
 
 };
 
@@ -4330,10 +4427,6 @@ try{
 await loadStudentsOnce();
 
 
-/*
-   studySessionsは管理者なので
-   読み取り可能です。
-*/
 const sessions=
 await getDocs(
 
@@ -4406,12 +4499,6 @@ daily[
 });
 
 
-/*
-   既存の集計データを一度消して、
-   studySessionsの現在の状態から
-   完全に作り直します。
-*/
-
 const oldTotals=
 await getDocs(
 collection(
@@ -4473,11 +4560,6 @@ d.id
 });
 
 
-/*
-   Firestoreの1バッチ最大500件なので
-   450件ずつ処理します。
-*/
-
 for(
 let i=0;
 i<deleteEntries.length;
@@ -4511,10 +4593,6 @@ await b.commit();
 
 }
 
-
-/*
-   新しい累計データを作成。
-*/
 
 const entries=[];
 
@@ -4560,10 +4638,6 @@ m
 
 }
 
-
-/*
-   新しい日別データを作成。
-*/
 
 for(
 const[
@@ -4613,10 +4687,6 @@ m
 }
 
 
-/*
-   450件ずつ作成。
-*/
-
 for(
 let i=0;
 i<entries.length;
@@ -4653,10 +4723,6 @@ await b.commit();
 }
 
 
-/*
-   キャッシュをクリア。
-*/
-
 mvpLoaded=false;
 
 mvpCache=null;
@@ -4666,27 +4732,16 @@ adminMonthCache={};
 calendarLoadedKey="";
 
 
-/*
-   現在表示している画面も
-   新しい集計データで更新。
-*/
-
 await loadStudentsOnce();
 
 await refreshMvpSummary();
 
 
-if(
-rankingMode==="today"
-){
-
-await loadTodayRanking();
-
-}else{
-
-await loadAllTimeRanking();
-
-}
+/*
+   ランキングはstudySessionsから直接計算するため、
+   ここでも自動ランキングを再描画。
+*/
+renderRankingFromSessions();
 
 
 if(
